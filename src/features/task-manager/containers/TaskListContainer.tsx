@@ -129,7 +129,7 @@ export function TaskListContainer() {
             board={board}
             onEdit={openEditModal}
             onDelete={handleDelete}
-            onClick={(id) => navigate(`/tasks/${id}`)}
+            onClick={(id) => navigate(`/app/tasks/${id}`)}
             onArchive={handleArchive}
           />
         ) : (
@@ -139,7 +139,7 @@ export function TaskListContainer() {
             deletingId={isDeleting ? (deletingId ?? null) : null}
             onEdit={openEditModal}
             onDelete={handleDelete}
-            onClick={(id) => navigate(`/tasks/${id}`)}
+            onClick={(id) => navigate(`/app/tasks/${id}`)}
             onCreateNew={openCreateModal}
             onArchive={handleArchive}
           />

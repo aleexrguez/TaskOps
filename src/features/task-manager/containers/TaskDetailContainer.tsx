@@ -23,7 +23,7 @@ export function TaskDetailContainer() {
   const [showConfirm, setShowConfirm] = useState(false);
 
   function handleBack(): void {
-    navigate('/');
+    navigate('/app');
   }
 
   function handleEdit(): void {
@@ -41,7 +41,7 @@ export function TaskDetailContainer() {
     deleteTask(task.id, {
       onSuccess: () => {
         addToast('Task deleted', 'success');
-        navigate('/');
+        navigate('/app');
       },
       onError: () => {
         addToast('Failed to delete task', 'error');

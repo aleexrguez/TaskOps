@@ -7,6 +7,16 @@ import { TaskDashboardContainer } from '../TaskDashboardContainer';
 import { useTaskUIStore } from '../../store';
 import type { Task } from '../../types';
 
+// Mock auth
+vi.mock('@/features/auth/hooks', () => ({
+  useAuth: () => ({
+    user: { id: 'test-user' },
+    session: null,
+    isLoading: false,
+  }),
+  useSignOut: () => ({ signOut: vi.fn(), isPending: false }),
+}));
+
 // Mock child containers to isolate dashboard tests
 vi.mock('../TaskListContainer', () => ({
   TaskListContainer: () => (

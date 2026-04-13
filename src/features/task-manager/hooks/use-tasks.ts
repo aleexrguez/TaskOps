@@ -7,20 +7,24 @@ import {
   deleteTask,
 } from '../api';
 import type { CreateTaskRequest, UpdateTaskRequest } from '../api';
+import { useAuth } from '@/features/auth/hooks';
 import { taskKeys } from './task.keys';
 
 export function useTasks() {
+  const { user } = useAuth();
   return useQuery({
     queryKey: taskKeys.lists(),
     queryFn: fetchTasks,
+    enabled: !!user,
   });
 }
 
 export function useTask(id: string) {
+  const { user } = useAuth();
   return useQuery({
     queryKey: taskKeys.detail(id),
     queryFn: () => fetchTaskById(id),
-    enabled: !!id,
+    enabled: !!user && !!id,
   });
 }
 

@@ -8,6 +8,14 @@ import { useToastStore } from '../../store/toast.store';
 import type { Task } from '../../types';
 import { TaskDetailContainer } from '../TaskDetailContainer';
 
+vi.mock('@/features/auth/hooks', () => ({
+  useAuth: () => ({
+    user: { id: 'test-user' },
+    session: null,
+    isLoading: false,
+  }),
+}));
+
 vi.mock('@/features/task-manager/api', () => ({
   fetchTasks: vi.fn(),
   fetchTaskById: vi.fn(),
@@ -38,10 +46,10 @@ function renderWithProviders(taskId: string) {
 
   return render(
     <QueryClientProvider client={queryClient}>
-      <MemoryRouter initialEntries={[`/tasks/${taskId}`]}>
+      <MemoryRouter initialEntries={[`/app/tasks/${taskId}`]}>
         <Routes>
-          <Route path="/tasks/:id" element={<TaskDetailContainer />} />
-          <Route path="/" element={<div>Dashboard</div>} />
+          <Route path="/app/tasks/:id" element={<TaskDetailContainer />} />
+          <Route path="/app" element={<div>Dashboard</div>} />
         </Routes>
       </MemoryRouter>
     </QueryClientProvider>,

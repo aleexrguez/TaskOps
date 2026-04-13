@@ -1,7 +1,10 @@
 import { useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import { useTasks } from '../hooks/use-tasks';
 import { useAutoPurge } from '../hooks/use-auto-purge';
 import { useTaskUIStore } from '../store/task-ui.store';
+import { useSignOut } from '@/features/auth/hooks';
 import { getTaskStats } from '../utils/task.utils';
 import { TaskStats, ViewToggle, RetentionConfig } from '../components';
 import { TaskListContainer } from './TaskListContainer';
@@ -9,7 +12,10 @@ import { CreateTaskContainer } from './CreateTaskContainer';
 import { EditTaskContainer } from './EditTaskContainer';
 
 export function TaskDashboardContainer() {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { data } = useTasks();
+  const { signOut, isPending: isSigningOut } = useSignOut();
   const openCreateModal = useTaskUIStore((s) => s.openCreateModal);
   const isDarkMode = useTaskUIStore((s) => s.isDarkMode);
   const toggleDarkMode = useTaskUIStore((s) => s.toggleDarkMode);
@@ -17,6 +23,12 @@ export function TaskDashboardContainer() {
   const setViewMode = useTaskUIStore((s) => s.setViewMode);
   const retentionPolicy = useTaskUIStore((s) => s.retentionPolicy);
   const setRetentionPolicy = useTaskUIStore((s) => s.setRetentionPolicy);
+
+  async function handleSignOut() {
+    await signOut();
+    queryClient.clear();
+    navigate('/');
+  }
 
   const stats = useMemo(() => getTaskStats(data?.tasks ?? []), [data]);
   const totalTasks = data?.tasks?.length ?? 0;
@@ -52,6 +64,14 @@ export function TaskDashboardContainer() {
               }
             >
               {isDarkMode ? '☀️' : '🌙'}
+            </button>
+            <button
+              type="button"
+              onClick={handleSignOut}
+              disabled={isSigningOut}
+              className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 disabled:opacity-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+            >
+              {isSigningOut ? 'Signing out...' : 'Sign out'}
             </button>
             <button
               type="button"

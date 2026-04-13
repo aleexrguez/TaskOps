@@ -7,6 +7,15 @@ import { TaskListContainer } from '../TaskListContainer';
 import { useTaskUIStore } from '../../store';
 import type { Task } from '../../types';
 
+// Mock auth — provide authenticated user for hooks with enabled: !!user
+vi.mock('@/features/auth/hooks', () => ({
+  useAuth: () => ({
+    user: { id: 'test-user' },
+    session: null,
+    isLoading: false,
+  }),
+}));
+
 // Mock the API
 vi.mock('../../api', () => ({
   fetchTasks: vi.fn(),
