@@ -1,11 +1,11 @@
 import { useRef, useEffect } from 'react';
 import { purgeTasks } from '../api';
 import { getExpiredTaskIds } from '../utils';
-import { useTaskUIStore } from '../store';
+import { useAppPreferencesStore } from '@/shared/store/app-preferences.store';
 import type { Task } from '../types';
 
 export function useAutoPurge(tasks: Task[]): void {
-  const retentionPolicy = useTaskUIStore((s) => s.retentionPolicy);
+  const retentionPolicy = useAppPreferencesStore((s) => s.retentionPolicy);
   const lastPurgedRef = useRef<string>('');
 
   useEffect(() => {

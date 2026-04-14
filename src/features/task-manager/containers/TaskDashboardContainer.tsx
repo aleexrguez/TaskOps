@@ -4,6 +4,8 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useTasks } from '../hooks/use-tasks';
 import { useAutoPurge } from '../hooks/use-auto-purge';
 import { useTaskUIStore } from '../store/task-ui.store';
+import { useAppPreferencesStore } from '@/shared/store/app-preferences.store';
+import { useApplyTheme } from '@/shared/hooks/use-apply-theme';
 import { useSignOut } from '@/features/auth/hooks';
 import { getTaskStats } from '../utils/task.utils';
 import { TaskStats, ViewToggle, RetentionConfig } from '../components';
@@ -17,17 +19,25 @@ export function TaskDashboardContainer() {
   const { data } = useTasks();
   const { signOut, isPending: isSigningOut } = useSignOut();
   const openCreateModal = useTaskUIStore((s) => s.openCreateModal);
-  const isDarkMode = useTaskUIStore((s) => s.isDarkMode);
-  const toggleDarkMode = useTaskUIStore((s) => s.toggleDarkMode);
+  const theme = useAppPreferencesStore((s) => s.theme);
+  const setTheme = useAppPreferencesStore((s) => s.setTheme);
   const viewMode = useTaskUIStore((s) => s.viewMode);
   const setViewMode = useTaskUIStore((s) => s.setViewMode);
-  const retentionPolicy = useTaskUIStore((s) => s.retentionPolicy);
-  const setRetentionPolicy = useTaskUIStore((s) => s.setRetentionPolicy);
+  const retentionPolicy = useAppPreferencesStore((s) => s.retentionPolicy);
+  const setRetentionPolicy = useAppPreferencesStore(
+    (s) => s.setRetentionPolicy,
+  );
+
+  useApplyTheme();
 
   async function handleSignOut() {
     await signOut();
     queryClient.clear();
     navigate('/');
+  }
+
+  function handleToggleTheme() {
+    setTheme(theme === 'dark' ? 'light' : 'dark');
   }
 
   const stats = useMemo(() => getTaskStats(data?.tasks ?? []), [data]);
@@ -57,13 +67,15 @@ export function TaskDashboardContainer() {
             />
             <button
               type="button"
-              onClick={toggleDarkMode}
+              onClick={handleToggleTheme}
               className="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 bg-white text-lg shadow-sm transition-colors hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"
               aria-label={
-                isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'
+                theme === 'dark'
+                  ? 'Switch to light mode'
+                  : 'Switch to dark mode'
               }
             >
-              {isDarkMode ? '☀️' : '🌙'}
+              {theme === 'dark' ? '☀️' : '🌙'}
             </button>
             <button
               type="button"

@@ -26,10 +26,7 @@ function fromDbRow(row: DbTaskRow): Task {
   };
 }
 
-function toDbInsert(
-  input: CreateTaskInput,
-  userId: string,
-): DbTaskInsert {
+function toDbInsert(input: CreateTaskInput, userId: string): DbTaskInsert {
   return {
     user_id: userId,
     title: input.title,

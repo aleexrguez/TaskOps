@@ -5,6 +5,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { TaskDashboardContainer } from '../TaskDashboardContainer';
 import { useTaskUIStore } from '../../store';
+import { useAppPreferencesStore } from '@/shared/store/app-preferences.store';
 import type { Task } from '../../types';
 
 // Mock auth
@@ -44,6 +45,21 @@ vi.mock('../../api', () => ({
 
 import { fetchTasks } from '../../api';
 
+// jsdom doesn't have matchMedia — needed by useApplyTheme
+Object.defineProperty(window, 'matchMedia', {
+  writable: true,
+  value: vi.fn().mockImplementation((query: string) => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: vi.fn(),
+    removeListener: vi.fn(),
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+    dispatchEvent: vi.fn(),
+  })),
+});
+
 function makeTask(overrides: Partial<Task> = {}): Task {
   return {
     id: crypto.randomUUID(),
@@ -70,7 +86,7 @@ function createWrapper() {
   };
 }
 
-describe('TaskDashboardContainer — Block 1 features', () => {
+describe('TaskDashboardContainer', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     useTaskUIStore.setState({
@@ -79,6 +95,9 @@ describe('TaskDashboardContainer — Block 1 features', () => {
       searchQuery: '',
       viewMode: 'list',
       showArchived: false,
+    });
+    useAppPreferencesStore.setState({
+      theme: 'system',
       retentionPolicy: 'never',
     });
 
@@ -115,7 +134,6 @@ describe('TaskDashboardContainer — Block 1 features', () => {
     const Wrapper = createWrapper();
     render(<TaskDashboardContainer />, { wrapper: Wrapper });
 
-    // RetentionConfig renders a select with options like "5 days", "7 days", etc.
     const retentionSelect = screen.getByRole('combobox');
     expect(retentionSelect).toBeInTheDocument();
 
@@ -145,7 +163,7 @@ describe('TaskDashboardContainer — Block 1 features', () => {
     await user.selectOptions(retentionSelect, '7d');
 
     await waitFor(() => {
-      expect(useTaskUIStore.getState().retentionPolicy).toBe('7d');
+      expect(useAppPreferencesStore.getState().retentionPolicy).toBe('7d');
     });
   });
 });

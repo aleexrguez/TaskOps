@@ -5,7 +5,7 @@ import { type ReactNode } from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 import { useAutoPurge } from '../../hooks';
-import { useTaskUIStore } from '../../store';
+import { useAppPreferencesStore } from '@/shared/store/app-preferences.store';
 import { purgeTasks } from '../../api';
 import type { Task } from '../../types';
 
@@ -97,12 +97,12 @@ describe('useAutoPurge', () => {
     vi.clearAllMocks();
     localStorage.clear();
     // Always start with a safe default — no auto-purge
-    useTaskUIStore.setState({ retentionPolicy: 'never' });
+    useAppPreferencesStore.setState({ retentionPolicy: 'never' });
     (purgeTasks as ReturnType<typeof vi.fn>).mockResolvedValue(undefined);
   });
 
   it('does NOT call purgeTasks when retentionPolicy is "never"', async () => {
-    useTaskUIStore.setState({ retentionPolicy: 'never' });
+    useAppPreferencesStore.setState({ retentionPolicy: 'never' });
 
     const expiredTasks = [makeExpiredTask('t1'), makeExpiredTask('t2')];
     const { Wrapper } = createWrapper();
@@ -118,7 +118,7 @@ describe('useAutoPurge', () => {
   });
 
   it('does NOT call purgeTasks when tasks array is empty', async () => {
-    useTaskUIStore.setState({ retentionPolicy: '7d' });
+    useAppPreferencesStore.setState({ retentionPolicy: '7d' });
 
     const { Wrapper } = createWrapper();
 
@@ -132,7 +132,7 @@ describe('useAutoPurge', () => {
   });
 
   it('does NOT call purgeTasks when no tasks are expired (all within retention window)', async () => {
-    useTaskUIStore.setState({ retentionPolicy: '7d' });
+    useAppPreferencesStore.setState({ retentionPolicy: '7d' });
 
     const freshTasks = [makeFreshDoneTask('t1'), makeFreshDoneTask('t2')];
     const { Wrapper } = createWrapper();
@@ -147,7 +147,7 @@ describe('useAutoPurge', () => {
   });
 
   it('calls purgeTasks with expired task IDs when there are expired done tasks', async () => {
-    useTaskUIStore.setState({ retentionPolicy: '7d' });
+    useAppPreferencesStore.setState({ retentionPolicy: '7d' });
 
     const expiredTasks = [
       makeExpiredTask('expired-1'),
@@ -172,7 +172,7 @@ describe('useAutoPurge', () => {
   });
 
   it('does NOT call purgeTasks again on re-render with the same expired IDs', async () => {
-    useTaskUIStore.setState({ retentionPolicy: '7d' });
+    useAppPreferencesStore.setState({ retentionPolicy: '7d' });
 
     const expiredTasks = [makeExpiredTask('stable-1')];
     const { Wrapper } = createWrapper();
@@ -195,7 +195,7 @@ describe('useAutoPurge', () => {
   });
 
   it('calls purgeTasks again if the expired IDs change (new expired tasks appear)', async () => {
-    useTaskUIStore.setState({ retentionPolicy: '7d' });
+    useAppPreferencesStore.setState({ retentionPolicy: '7d' });
 
     const firstExpired = [makeExpiredTask('first-1')];
     const { Wrapper } = createWrapper();
@@ -219,7 +219,7 @@ describe('useAutoPurge', () => {
 
   it('calls purgeTasks again if retentionPolicy changes to a stricter value', async () => {
     // Start with 30d — task completed 20 days ago is NOT expired
-    useTaskUIStore.setState({ retentionPolicy: '30d' });
+    useAppPreferencesStore.setState({ retentionPolicy: '30d' });
 
     const taskCompletedTwentyDaysAgo = makeTask({
       id: 'borderline-1',
@@ -245,7 +245,7 @@ describe('useAutoPurge', () => {
 
     // Switch to 7d policy — now 20 days IS expired → must trigger a purge
     act(() => {
-      useTaskUIStore.setState({ retentionPolicy: '7d' });
+      useAppPreferencesStore.setState({ retentionPolicy: '7d' });
     });
 
     rerender({ tasks: [taskCompletedTwentyDaysAgo] });

@@ -32,8 +32,10 @@ export type CreateTaskInput = z.infer<typeof createTaskInputSchema>;
 export const updateTaskInputSchema = createTaskInputSchema.partial();
 export type UpdateTaskInput = z.infer<typeof updateTaskInputSchema>;
 
-export const retentionPolicySchema = z.enum(['5d', '7d', '30d', 'never']);
-export type RetentionPolicy = z.infer<typeof retentionPolicySchema>;
+export {
+  retentionPolicySchema,
+  type RetentionPolicy,
+} from '@/shared/types/preferences.types';
 
 export const viewModeSchema = z.enum(['list', 'board']);
 export type ViewMode = z.infer<typeof viewModeSchema>;
