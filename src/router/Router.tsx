@@ -7,7 +7,7 @@ import { LoginContainer, RegisterContainer } from '@/features/auth';
 import { LandingPage } from '@/features/landing';
 import { AppShellContainer } from '@/shared/components/app-shell';
 import { RecurrencesPlaceholder } from '@/features/recurrences';
-import { SettingsPlaceholder } from '@/features/settings';
+import { SettingsContainer } from '@/features/settings';
 import { ProtectedRoute } from './ProtectedRoute';
 import { PublicOnlyRoute } from './PublicOnlyRoute';
 
@@ -54,7 +54,7 @@ export function Router() {
           <Route path="tasks" element={<TaskDashboardContainer />} />
           <Route path="tasks/:id" element={<TaskDetailContainer />} />
           <Route path="recurrences" element={<RecurrencesPlaceholder />} />
-          <Route path="settings" element={<SettingsPlaceholder />} />
+          <Route path="settings" element={<SettingsContainer />} />
         </Route>
 
         {/* Catch-all */}

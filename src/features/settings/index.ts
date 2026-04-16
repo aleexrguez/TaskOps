@@ -1,1 +1,1 @@
-export { SettingsPlaceholder } from './components/SettingsPlaceholder';
+export { SettingsContainer } from './containers/SettingsContainer';

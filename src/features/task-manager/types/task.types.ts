@@ -17,6 +17,8 @@ export const taskSchema = z.object({
   isArchived: z.boolean().default(false),
   createdAt: z.iso.datetime(),
   updatedAt: z.iso.datetime(),
+  recurrenceTemplateId: z.string().uuid().optional(),
+  recurrenceDateKey: z.string().optional(), // YYYY-MM-DD
 });
 export type Task = z.infer<typeof taskSchema>;
 
