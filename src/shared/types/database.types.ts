@@ -48,6 +48,47 @@ export interface Database {
           recurrence_date_key?: string | null;
         };
       };
+      recurrence_templates: {
+        Row: {
+          id: string;
+          user_id: string;
+          title: string;
+          description: string | null;
+          priority: string;
+          frequency: string;
+          weekly_days: number[] | null;
+          monthly_day: number | null;
+          is_active: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          title: string;
+          description?: string | null;
+          priority?: string;
+          frequency: string;
+          weekly_days?: number[] | null;
+          monthly_day?: number | null;
+          is_active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          title?: string;
+          description?: string | null;
+          priority?: string;
+          frequency?: string;
+          weekly_days?: number[] | null;
+          monthly_day?: number | null;
+          is_active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;
