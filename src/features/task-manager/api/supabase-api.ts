@@ -23,6 +23,8 @@ function fromDbRow(row: DbTaskRow): Task {
     isArchived: row.is_archived,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
+    recurrenceTemplateId: row.recurrence_template_id ?? undefined,
+    recurrenceDateKey: row.recurrence_date_key ?? undefined,
   };
 }
 
@@ -130,9 +132,23 @@ export async function updateTask(
 export async function deleteTask(id: string): Promise<void> {
   await requireAuthenticatedUser();
 
-  const { error } = await supabase.from('tasks').delete().eq('id', id);
+  // Check if this is a generated recurring task
+  const { data: existing, error: fetchError } = await supabase
+    .from('tasks')
+    .select('recurrence_date_key')
+    .eq('id', id)
+    .single();
 
-  if (error) throw new Error(`Task not found: ${id}`);
+  if (fetchError || !existing) throw new Error(`Task not found: ${id}`);
+
+  if (existing.recurrence_date_key) {
+    throw new Error(
+      'Cannot delete a recurring task. Complete or archive it instead.',
+    );
+  }
+
+  const { error } = await supabase.from('tasks').delete().eq('id', id);
+  if (error) throw new Error(error.message);
 }
 
 export async function archiveTask(id: string): Promise<Task> {

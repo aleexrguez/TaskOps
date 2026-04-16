@@ -14,6 +14,8 @@ export interface Database {
           is_archived: boolean;
           created_at: string;
           updated_at: string;
+          recurrence_template_id: string | null;
+          recurrence_date_key: string | null;
         };
         Insert: {
           id?: string;
@@ -27,6 +29,8 @@ export interface Database {
           is_archived?: boolean;
           created_at?: string;
           updated_at?: string;
+          recurrence_template_id?: string | null;
+          recurrence_date_key?: string | null;
         };
         Update: {
           id?: string;
@@ -40,6 +44,8 @@ export interface Database {
           is_archived?: boolean;
           created_at?: string;
           updated_at?: string;
+          recurrence_template_id?: string | null;
+          recurrence_date_key?: string | null;
         };
       };
     };
