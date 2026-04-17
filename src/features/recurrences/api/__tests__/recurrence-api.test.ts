@@ -46,6 +46,7 @@ function makeDbRow(overrides: Record<string, unknown> = {}) {
     frequency: 'daily',
     weekly_days: null,
     monthly_day: null,
+    lead_time_days: 0,
     is_active: true,
     created_at: '2026-04-16T10:00:00.000Z',
     updated_at: '2026-04-16T10:00:00.000Z',
@@ -86,6 +87,7 @@ describe('fetchRecurrences — fromDbRow mapping', () => {
       frequency: 'daily',
       weeklyDays: undefined,
       monthlyDay: undefined,
+      leadTimeDays: 0,
       isActive: true,
       createdAt: '2026-04-16T10:00:00.000Z',
       updatedAt: '2026-04-16T10:00:00.000Z',
@@ -137,6 +139,46 @@ describe('fetchRecurrences — fromDbRow mapping', () => {
     expect(recurrences[0].frequency).toBe('monthly');
     expect(recurrences[0].monthlyDay).toBe(15);
     expect(recurrences[0].weeklyDays).toBeUndefined();
+  });
+
+  it('maps lead_time_days from DB row to leadTimeDays in domain', async () => {
+    const dbRow = makeDbRow({
+      frequency: 'monthly',
+      monthly_day: 15,
+      lead_time_days: 7,
+    });
+
+    const mockSelect = vi.fn().mockResolvedValue({
+      data: [dbRow],
+      error: null,
+      count: 1,
+    });
+
+    vi.mocked(supabase.from).mockReturnValue(
+      asFromReturn({ select: mockSelect }),
+    );
+
+    const { recurrences } = await fetchRecurrences();
+
+    expect(recurrences[0].leadTimeDays).toBe(7);
+  });
+
+  it('maps lead_time_days = 0 from DB row to leadTimeDays = 0', async () => {
+    const dbRow = makeDbRow({ lead_time_days: 0 });
+
+    const mockSelect = vi.fn().mockResolvedValue({
+      data: [dbRow],
+      error: null,
+      count: 1,
+    });
+
+    vi.mocked(supabase.from).mockReturnValue(
+      asFromReturn({ select: mockSelect }),
+    );
+
+    const { recurrences } = await fetchRecurrences();
+
+    expect(recurrences[0].leadTimeDays).toBe(0);
   });
 
   it('maps null optional fields to undefined (description, weeklyDays, monthlyDay)', async () => {
@@ -224,6 +266,64 @@ describe('createRecurrence — toDbInsert mapping', () => {
         frequency: 'weekly',
         weekly_days: [1, 3],
         monthly_day: null,
+      }),
+    );
+  });
+
+  it('creates a monthly recurrence with leadTimeDays — mapped to lead_time_days', async () => {
+    const returnedRow = makeDbRow({
+      frequency: 'monthly',
+      monthly_day: 15,
+      lead_time_days: 5,
+    });
+
+    const mockSingle = vi
+      .fn()
+      .mockResolvedValue({ data: returnedRow, error: null });
+    const mockSelect = vi.fn().mockReturnValue({ single: mockSingle });
+    const mockInsert = vi.fn().mockReturnValue({ select: mockSelect });
+
+    vi.mocked(supabase.from).mockReturnValue(
+      asFromReturn({ insert: mockInsert }),
+    );
+
+    await createRecurrence({
+      frequency: 'monthly',
+      title: 'Monthly report',
+      monthlyDay: 15,
+      leadTimeDays: 5,
+    });
+
+    expect(mockInsert).toHaveBeenCalledWith(
+      expect.objectContaining({
+        frequency: 'monthly',
+        monthly_day: 15,
+        lead_time_days: 5,
+      }),
+    );
+  });
+
+  it('creates a daily recurrence — lead_time_days defaults to 0', async () => {
+    const returnedRow = makeDbRow({ frequency: 'daily', lead_time_days: 0 });
+
+    const mockSingle = vi
+      .fn()
+      .mockResolvedValue({ data: returnedRow, error: null });
+    const mockSelect = vi.fn().mockReturnValue({ single: mockSingle });
+    const mockInsert = vi.fn().mockReturnValue({ select: mockSelect });
+
+    vi.mocked(supabase.from).mockReturnValue(
+      asFromReturn({ insert: mockInsert }),
+    );
+
+    await createRecurrence({
+      frequency: 'daily',
+      title: 'Daily standup',
+    });
+
+    expect(mockInsert).toHaveBeenCalledWith(
+      expect.objectContaining({
+        lead_time_days: 0,
       }),
     );
   });
@@ -326,6 +426,27 @@ describe('CRUD operations', () => {
       expect.objectContaining({ title: 'Updated title', is_active: false }),
     );
     expect(mockEq).toHaveBeenCalledWith('id', 'tmpl-uuid-001');
+  });
+
+  it('updateRecurrence sends lead_time_days when leadTimeDays is provided', async () => {
+    const updatedRow = makeDbRow({ lead_time_days: 7 });
+
+    const mockSingle = vi
+      .fn()
+      .mockResolvedValue({ data: updatedRow, error: null });
+    const mockSelect = vi.fn().mockReturnValue({ single: mockSingle });
+    const mockEq = vi.fn().mockReturnValue({ select: mockSelect });
+    const mockUpdate = vi.fn().mockReturnValue({ eq: mockEq });
+
+    vi.mocked(supabase.from).mockReturnValue(
+      asFromReturn({ update: mockUpdate }),
+    );
+
+    await updateRecurrence('tmpl-uuid-001', { leadTimeDays: 7 });
+
+    expect(mockUpdate).toHaveBeenCalledWith(
+      expect.objectContaining({ lead_time_days: 7 }),
+    );
   });
 
   it('deleteRecurrence deletes by id', async () => {
@@ -436,6 +557,33 @@ describe('generateTasks — batch insert', () => {
       priority: 'medium',
       status: 'todo',
     });
+  });
+
+  it('sets due_date to the dateKey on each generated task', async () => {
+    const mockUpsert = vi.fn().mockResolvedValue({ error: null });
+
+    vi.mocked(supabase.from).mockReturnValue(
+      asFromReturn({ upsert: mockUpsert }),
+    );
+
+    await generateTasks([
+      {
+        templateId: 'tmpl-uuid-001',
+        dateKey: '2026-04-17',
+        title: 'Daily standup',
+        priority: 'medium',
+      },
+      {
+        templateId: 'tmpl-uuid-002',
+        dateKey: '2026-04-18',
+        title: 'Weekly review',
+        priority: 'high',
+      },
+    ]);
+
+    const [rows] = mockUpsert.mock.calls[0] as [Record<string, unknown>[]];
+    expect(rows[0]).toMatchObject({ due_date: '2026-04-17' });
+    expect(rows[1]).toMatchObject({ due_date: '2026-04-18' });
   });
 
   it('throws on supabase error', async () => {

@@ -130,6 +130,31 @@ describe('recurrenceTemplateSchema', () => {
     ).toThrow();
   });
 
+  it('defaults leadTimeDays to 0 when not provided', () => {
+    const result = recurrenceTemplateSchema.parse(BASE_TEMPLATE);
+    expect(result.leadTimeDays).toBe(0);
+  });
+
+  it('accepts leadTimeDays of 14 (at cap)', () => {
+    const result = recurrenceTemplateSchema.parse({
+      ...BASE_TEMPLATE,
+      leadTimeDays: 14,
+    });
+    expect(result.leadTimeDays).toBe(14);
+  });
+
+  it('rejects leadTimeDays of 15 (exceeds cap)', () => {
+    expect(() =>
+      recurrenceTemplateSchema.parse({ ...BASE_TEMPLATE, leadTimeDays: 15 }),
+    ).toThrow();
+  });
+
+  it('rejects leadTimeDays of -1', () => {
+    expect(() =>
+      recurrenceTemplateSchema.parse({ ...BASE_TEMPLATE, leadTimeDays: -1 }),
+    ).toThrow();
+  });
+
   it('rejects monthlyDay outside 1-31', () => {
     expect(() =>
       recurrenceTemplateSchema.parse({
@@ -381,6 +406,72 @@ describe('createRecurrenceInputSchema', () => {
 });
 
 // ---------------------------------------------------------------------------
+// 3b. createRecurrenceInputSchema — leadTimeDays
+// ---------------------------------------------------------------------------
+
+describe('createRecurrenceInputSchema — leadTimeDays', () => {
+  it('accepts monthly input with leadTimeDays = 5', () => {
+    const result = createRecurrenceInputSchema.parse({
+      frequency: 'monthly',
+      title: 'Monthly report',
+      monthlyDay: 15,
+      leadTimeDays: 5,
+    });
+    expect((result as { leadTimeDays: number }).leadTimeDays).toBe(5);
+  });
+
+  it('rejects monthly input with leadTimeDays = 15 (exceeds cap of 14)', () => {
+    expect(() =>
+      createRecurrenceInputSchema.parse({
+        frequency: 'monthly',
+        title: 'Monthly report',
+        monthlyDay: 15,
+        leadTimeDays: 15,
+      }),
+    ).toThrow();
+  });
+
+  it('rejects monthly input with leadTimeDays = -1', () => {
+    expect(() =>
+      createRecurrenceInputSchema.parse({
+        frequency: 'monthly',
+        title: 'Monthly report',
+        monthlyDay: 15,
+        leadTimeDays: -1,
+      }),
+    ).toThrow();
+  });
+
+  it('defaults leadTimeDays to 0 when not provided for monthly', () => {
+    const result = createRecurrenceInputSchema.parse({
+      frequency: 'monthly',
+      title: 'Monthly report',
+      monthlyDay: 15,
+    });
+    expect((result as { leadTimeDays: number }).leadTimeDays).toBe(0);
+  });
+
+  it('daily input does not accept leadTimeDays (field is absent from the type)', () => {
+    // Daily never has leadTimeDays — the field should not exist in the output
+    const result = createRecurrenceInputSchema.parse({
+      frequency: 'daily',
+      title: 'Morning routine',
+    });
+    expect('leadTimeDays' in result).toBe(false);
+  });
+
+  it('weekly input does not accept leadTimeDays (field is absent from the type)', () => {
+    // Weekly never has leadTimeDays — the field should not exist in the output
+    const result = createRecurrenceInputSchema.parse({
+      frequency: 'weekly',
+      title: 'Team sync',
+      weeklyDays: [1, 3],
+    });
+    expect('leadTimeDays' in result).toBe(false);
+  });
+});
+
+// ---------------------------------------------------------------------------
 // 4. updateRecurrenceInputSchema
 // ---------------------------------------------------------------------------
 
@@ -419,6 +510,23 @@ describe('updateRecurrenceInputSchema', () => {
   it('rejects an invalid priority', () => {
     expect(() =>
       updateRecurrenceInputSchema.parse({ priority: 'critical' }),
+    ).toThrow();
+  });
+
+  it('accepts a partial update with only leadTimeDays', () => {
+    const result = updateRecurrenceInputSchema.parse({ leadTimeDays: 7 });
+    expect(result.leadTimeDays).toBe(7);
+  });
+
+  it('rejects leadTimeDays of 15 in update (exceeds cap)', () => {
+    expect(() =>
+      updateRecurrenceInputSchema.parse({ leadTimeDays: 15 }),
+    ).toThrow();
+  });
+
+  it('rejects leadTimeDays of -1 in update', () => {
+    expect(() =>
+      updateRecurrenceInputSchema.parse({ leadTimeDays: -1 }),
     ).toThrow();
   });
 });

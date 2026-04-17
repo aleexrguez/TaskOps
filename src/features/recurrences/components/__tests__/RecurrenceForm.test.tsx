@@ -53,6 +53,34 @@ describe('RecurrenceForm — conditional fields', () => {
     expect(screen.queryByLabelText(/monthly day/i)).not.toBeInTheDocument();
   });
 
+  it('does not show lead time input when frequency is daily', () => {
+    render(<RecurrenceForm onSubmit={vi.fn()} />);
+
+    expect(screen.queryByLabelText(/lead time/i)).not.toBeInTheDocument();
+    expect(screen.queryByLabelText(/days before/i)).not.toBeInTheDocument();
+  });
+
+  it('does not show lead time input when frequency is weekly', async () => {
+    const user = userEvent.setup();
+    render(<RecurrenceForm onSubmit={vi.fn()} />);
+
+    await user.selectOptions(screen.getByLabelText(/frequency/i), 'weekly');
+
+    expect(screen.queryByLabelText(/lead time/i)).not.toBeInTheDocument();
+    expect(screen.queryByLabelText(/days before/i)).not.toBeInTheDocument();
+  });
+
+  it('shows lead time input when frequency is monthly', async () => {
+    const user = userEvent.setup();
+    render(<RecurrenceForm onSubmit={vi.fn()} />);
+
+    await user.selectOptions(screen.getByLabelText(/frequency/i), 'monthly');
+
+    expect(
+      screen.getByLabelText(/generate.*days.*before|days.*before/i),
+    ).toBeInTheDocument();
+  });
+
   it('shows WeeklyDaysPicker when frequency is weekly', async () => {
     const user = userEvent.setup();
     render(<RecurrenceForm onSubmit={vi.fn()} />);
@@ -142,6 +170,47 @@ describe('RecurrenceForm — submission', () => {
         monthlyDay: 15,
       }),
     );
+  });
+
+  it('calls onSubmit with leadTimeDays for monthly frequency', async () => {
+    const user = userEvent.setup();
+    const onSubmit = vi.fn();
+    render(<RecurrenceForm onSubmit={onSubmit} />);
+
+    await user.type(screen.getByLabelText(/title/i), 'Monthly Report');
+    await user.selectOptions(screen.getByLabelText(/frequency/i), 'monthly');
+    await user.clear(screen.getByLabelText(/monthly day/i));
+    await user.type(screen.getByLabelText(/monthly day/i), '15');
+    await user.clear(
+      screen.getByLabelText(/generate.*days.*before|days.*before/i),
+    );
+    await user.type(
+      screen.getByLabelText(/generate.*days.*before|days.*before/i),
+      '5',
+    );
+    await user.click(screen.getByRole('button', { name: /submit/i }));
+
+    expect(onSubmit).toHaveBeenCalledOnce();
+    expect(onSubmit).toHaveBeenCalledWith(
+      expect.objectContaining({
+        frequency: 'monthly',
+        monthlyDay: 15,
+        leadTimeDays: 5,
+      }),
+    );
+  });
+
+  it('calls onSubmit for daily without leadTimeDays in payload', async () => {
+    const user = userEvent.setup();
+    const onSubmit = vi.fn();
+    render(<RecurrenceForm onSubmit={onSubmit} />);
+
+    await user.type(screen.getByLabelText(/title/i), 'Daily Standup');
+    await user.click(screen.getByRole('button', { name: /submit/i }));
+
+    expect(onSubmit).toHaveBeenCalledOnce();
+    const payload = onSubmit.mock.calls[0][0] as Record<string, unknown>;
+    expect('leadTimeDays' in payload).toBe(false);
   });
 
   it('does not call onSubmit when title is empty', async () => {

@@ -90,6 +90,81 @@ export function getOccurrenceDateForToday(
   }
 }
 
+/**
+ * Returns an array of dateKeys (YYYY-MM-DD) whose lead-time window includes
+ * today. For daily/weekly this is equivalent to the old single-value logic.
+ * For monthly with leadTimeDays > 0, it returns the occurrence date if today
+ * falls within the [occurrenceDate - leadTimeDays, occurrenceDate] window.
+ *
+ * The returned dateKey is ALWAYS the occurrence/due date, never today.
+ */
+export function getOccurrencesInWindow(
+  template: RecurrenceTemplate,
+  today: Date = new Date(),
+): string[] {
+  const year = today.getFullYear();
+  const month = today.getMonth() + 1; // 1-indexed
+
+  switch (template.frequency) {
+    case 'daily': {
+      return [formatDateKey(today)];
+    }
+
+    case 'weekly': {
+      if (!template.weeklyDays || template.weeklyDays.length === 0) {
+        return [];
+      }
+      const isoDay = getISODayOfWeek(today);
+      return template.weeklyDays.includes(isoDay) ? [formatDateKey(today)] : [];
+    }
+
+    case 'monthly': {
+      if (template.monthlyDay === undefined) {
+        return [];
+      }
+
+      const leadTime = template.leadTimeDays ?? 0;
+
+      // Check this month's occurrence
+      const thisMonthDay = clampMonthlyDay(template.monthlyDay, year, month);
+      const thisMonthOccurrence = new Date(year, month - 1, thisMonthDay);
+
+      // Check next month's occurrence (for cross-month lead windows)
+      const nextMonth = month === 12 ? 1 : month + 1;
+      const nextYear = month === 12 ? year + 1 : year;
+      const nextMonthDay = clampMonthlyDay(
+        template.monthlyDay,
+        nextYear,
+        nextMonth,
+      );
+      const nextMonthOccurrence = new Date(
+        nextYear,
+        nextMonth - 1,
+        nextMonthDay,
+      );
+
+      const result: string[] = [];
+      const todayTime = today.getTime();
+
+      for (const occurrence of [thisMonthOccurrence, nextMonthOccurrence]) {
+        const occurrenceTime = occurrence.getTime();
+        const generationStartTime =
+          occurrenceTime - leadTime * 24 * 60 * 60 * 1000;
+
+        if (todayTime >= generationStartTime && todayTime <= occurrenceTime) {
+          result.push(formatDateKey(occurrence));
+        }
+      }
+
+      // Deduplicate (clamping could produce same date for two months edge case)
+      return [...new Set(result)];
+    }
+
+    default:
+      return [];
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Pending generation
 // ---------------------------------------------------------------------------
@@ -116,25 +191,26 @@ export function getPendingGenerations(
   for (const template of templates) {
     if (!template.isActive) continue;
 
-    const dateKey = getOccurrenceDateForToday(template, today);
-    if (dateKey === null) continue;
+    const dateKeys = getOccurrencesInWindow(template, today);
 
-    const alreadyExists = existingTasks.some(
-      (task) =>
-        task.recurrenceTemplateId === template.id &&
-        task.recurrenceDateKey === dateKey,
-    );
-    if (alreadyExists) continue;
+    for (const dateKey of dateKeys) {
+      const alreadyExists = existingTasks.some(
+        (task) =>
+          task.recurrenceTemplateId === template.id &&
+          task.recurrenceDateKey === dateKey,
+      );
+      if (alreadyExists) continue;
 
-    pending.push({
-      templateId: template.id,
-      dateKey,
-      title: template.title,
-      ...(template.description !== undefined
-        ? { description: template.description }
-        : {}),
-      priority: template.priority,
-    });
+      pending.push({
+        templateId: template.id,
+        dateKey,
+        title: template.title,
+        ...(template.description !== undefined
+          ? { description: template.description }
+          : {}),
+        priority: template.priority,
+      });
+    }
   }
 
   return pending;

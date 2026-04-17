@@ -27,6 +27,7 @@ function fromDbRow(row: DbRecurrenceRow): RecurrenceTemplate {
     frequency: row.frequency as RecurrenceTemplate['frequency'],
     weeklyDays: row.weekly_days ?? undefined,
     monthlyDay: row.monthly_day ?? undefined,
+    leadTimeDays: row.lead_time_days,
     isActive: row.is_active,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
@@ -45,6 +46,7 @@ function toDbInsert(
     frequency: input.frequency,
     weekly_days: 'weeklyDays' in input ? (input.weeklyDays ?? null) : null,
     monthly_day: 'monthlyDay' in input ? (input.monthlyDay ?? null) : null,
+    lead_time_days: 'leadTimeDays' in input ? (input.leadTimeDays ?? 0) : 0,
   };
 }
 
@@ -109,6 +111,8 @@ export async function updateRecurrence(
     updates.description = input.description ?? null;
   if (input.priority !== undefined) updates.priority = input.priority;
   if (input.isActive !== undefined) updates.is_active = input.isActive;
+  if (input.leadTimeDays !== undefined)
+    updates.lead_time_days = input.leadTimeDays;
 
   const { data, error } = await supabase
     .from('recurrence_templates')
@@ -151,6 +155,7 @@ export async function generateTasks(
     status: 'todo',
     recurrence_template_id: p.templateId,
     recurrence_date_key: p.dateKey,
+    due_date: p.dateKey,
   }));
 
   // ON CONFLICT DO NOTHING — handled by the unique index on

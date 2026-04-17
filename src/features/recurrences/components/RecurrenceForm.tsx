@@ -19,6 +19,7 @@ interface FormState {
   frequency: RecurrenceFrequency;
   weeklyDays: number[];
   monthlyDay: string;
+  leadTimeDays: string;
 }
 
 function buildInitialState(
@@ -37,6 +38,10 @@ function buildInitialState(
       initial?.frequency === 'monthly' && 'monthlyDay' in (initial ?? {})
         ? String((initial as { monthlyDay?: number }).monthlyDay ?? 1)
         : '1',
+    leadTimeDays:
+      initial?.frequency === 'monthly' && 'leadTimeDays' in (initial ?? {})
+        ? String((initial as { leadTimeDays?: number }).leadTimeDays ?? 0)
+        : '0',
   };
 }
 
@@ -122,6 +127,7 @@ export function RecurrenceForm({
         title: fields.title,
         priority: fields.priority,
         monthlyDay: Number(fields.monthlyDay),
+        leadTimeDays: Number(fields.leadTimeDays),
         ...(fields.description ? { description: fields.description } : {}),
       };
     }
@@ -227,6 +233,24 @@ export function RecurrenceForm({
           {errors.monthlyDay && (
             <p className="text-xs text-red-500">{errors.monthlyDay}</p>
           )}
+        </div>
+      )}
+
+      {fields.frequency === 'monthly' && (
+        <div className="flex flex-col gap-1">
+          <label htmlFor="leadTimeDays" className={labelClass}>
+            Generate task X days before (0–14)
+          </label>
+          <input
+            id="leadTimeDays"
+            name="leadTimeDays"
+            type="number"
+            min={0}
+            max={14}
+            value={fields.leadTimeDays}
+            onChange={handleChange}
+            className={inputClass}
+          />
         </div>
       )}
 

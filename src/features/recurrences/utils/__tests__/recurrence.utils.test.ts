@@ -7,6 +7,7 @@ import {
   clampMonthlyDay,
   formatDateKey,
   getOccurrenceDateForToday,
+  getOccurrencesInWindow,
   getPendingGenerations,
   formatWeeklyDays,
   formatMonthlyDay,
@@ -590,5 +591,166 @@ describe('isGeneratedTask', () => {
   it('returns false when task recurrenceDateKey is undefined', () => {
     const task = makeTask({ recurrenceDateKey: undefined });
     expect(isGeneratedTask(task)).toBe(false);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// 11. getOccurrencesInWindow — monthly lead time
+// ---------------------------------------------------------------------------
+
+describe('getOccurrencesInWindow — monthly lead time', () => {
+  it('returns occurrence dateKey when today is within lead window (5 days before Jan 1)', () => {
+    // today = Dec 27 2026, occurrence = Jan 1 2027, leadTimeDays = 5
+    // generationStart = Dec 27 → today >= start → include
+    const template = makeTemplate({
+      frequency: 'monthly',
+      monthlyDay: 1,
+      leadTimeDays: 5,
+    });
+    const today = new Date(2026, 11, 27); // Dec 27 2026
+    expect(getOccurrencesInWindow(template, today)).toEqual(['2027-01-01']);
+  });
+
+  it('returns occurrence dateKey when today is exactly at the lead window boundary', () => {
+    // today = Dec 26 2026, generationStart = Jan 1 - 5 = Dec 27 → NOT in window
+    // Actually: generationStart = Jan 1 minus 5 days = Dec 27 2026
+    // Dec 26 is BEFORE Dec 27 → outside window → returns []
+    const template = makeTemplate({
+      frequency: 'monthly',
+      monthlyDay: 1,
+      leadTimeDays: 5,
+    });
+    const today = new Date(2026, 11, 26); // Dec 26 2026
+    expect(getOccurrencesInWindow(template, today)).toEqual([]);
+  });
+
+  it('returns occurrence dateKey when today equals generationStart (boundary inclusive)', () => {
+    // today = Dec 27 2026 = generationStart (Jan 1 - 5 days) → in window
+    const template = makeTemplate({
+      frequency: 'monthly',
+      monthlyDay: 1,
+      leadTimeDays: 5,
+    });
+    const today = new Date(2026, 11, 27); // Dec 27 2026
+    expect(getOccurrencesInWindow(template, today)).toEqual(['2027-01-01']);
+  });
+
+  it('returns occurrence dateKey when today IS the due date', () => {
+    // today = Jan 1 2027, occurrence = Jan 1 2027, leadTimeDays = 5
+    const template = makeTemplate({
+      frequency: 'monthly',
+      monthlyDay: 1,
+      leadTimeDays: 5,
+    });
+    const today = new Date(2027, 0, 1); // Jan 1 2027
+    expect(getOccurrencesInWindow(template, today)).toEqual(['2027-01-01']);
+  });
+
+  it('returns [] when today is outside the lead window (too early)', () => {
+    // today = Dec 25 2026, generationStart = Dec 27 → outside window
+    const template = makeTemplate({
+      frequency: 'monthly',
+      monthlyDay: 1,
+      leadTimeDays: 5,
+    });
+    const today = new Date(2026, 11, 25); // Dec 25 2026
+    expect(getOccurrencesInWindow(template, today)).toEqual([]);
+  });
+
+  it('behaves like current logic for leadTimeDays = 0 (returns dateKey only on due date)', () => {
+    const template = makeTemplate({
+      frequency: 'monthly',
+      monthlyDay: 1,
+      leadTimeDays: 0,
+    });
+    const dueDate = new Date(2027, 0, 1); // Jan 1 2027
+    expect(getOccurrencesInWindow(template, dueDate)).toEqual(['2027-01-01']);
+  });
+
+  it('returns [] for leadTimeDays = 0 when today is not the due date', () => {
+    const template = makeTemplate({
+      frequency: 'monthly',
+      monthlyDay: 1,
+      leadTimeDays: 0,
+    });
+    const dayBefore = new Date(2026, 11, 31); // Dec 31 2026
+    expect(getOccurrencesInWindow(template, dayBefore)).toEqual([]);
+  });
+
+  it('handles clamping correctly — monthlyDay 31, leadTimeDays 5, Feb 28 non-leap', () => {
+    // occurrence = Feb 28 2023 (31 clamped to 28), generationStart = Feb 23 2023
+    const template = makeTemplate({
+      frequency: 'monthly',
+      monthlyDay: 31,
+      leadTimeDays: 5,
+    });
+    const today = new Date(2023, 1, 25); // Feb 25 2023 — within window
+    expect(getOccurrencesInWindow(template, today)).toEqual(['2023-02-28']);
+  });
+
+  it('handles lead window crossing month boundary (day 3, leadTimeDays 5, today Nov 28)', () => {
+    // occurrence = Dec 3 2026, generationStart = Nov 28 2026
+    // today = Nov 28 → exactly at boundary → in window
+    const template = makeTemplate({
+      frequency: 'monthly',
+      monthlyDay: 3,
+      leadTimeDays: 5,
+    });
+    const today = new Date(2026, 10, 28); // Nov 28 2026
+    expect(getOccurrencesInWindow(template, today)).toEqual(['2026-12-03']);
+  });
+
+  it('daily with leadTimeDays = 0 returns [todayKey] (same as before)', () => {
+    const template = makeTemplate({ frequency: 'daily', leadTimeDays: 0 });
+    const today = new Date(2026, 0, 10); // Jan 10 2026
+    expect(getOccurrencesInWindow(template, today)).toEqual(['2026-01-10']);
+  });
+
+  it('weekly with leadTimeDays = 0 returns [todayKey] when day matches', () => {
+    const template = makeTemplate({
+      frequency: 'weekly',
+      weeklyDays: [1],
+      leadTimeDays: 0,
+    });
+    const monday = new Date(2024, 0, 8); // Monday
+    expect(getOccurrencesInWindow(template, monday)).toEqual(['2024-01-08']);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// 12. getPendingGenerations — lead time dedup
+// ---------------------------------------------------------------------------
+
+describe('getPendingGenerations — monthly with lead time', () => {
+  it('returns pending with correct dateKey (occurrence date, not generation date) for early gen', () => {
+    // today = Nov 28 2026, occurrence = Dec 3, leadTimeDays = 5
+    const template = makeTemplate({
+      frequency: 'monthly',
+      monthlyDay: 3,
+      leadTimeDays: 5,
+    });
+    const today = new Date(2026, 10, 28); // Nov 28
+
+    const result = getPendingGenerations([template], [], today);
+
+    expect(result).toHaveLength(1);
+    expect(result[0].dateKey).toBe('2026-12-03');
+  });
+
+  it('skips template when task already exists for the occurrence dateKey', () => {
+    const template = makeTemplate({
+      frequency: 'monthly',
+      monthlyDay: 3,
+      leadTimeDays: 5,
+    });
+    const today = new Date(2026, 10, 28); // Nov 28 — within window for Dec 3
+    const existingTask = makeTask({
+      recurrenceTemplateId: template.id,
+      recurrenceDateKey: '2026-12-03', // task already generated for Dec 3
+    });
+
+    const result = getPendingGenerations([template], [existingTask], today);
+
+    expect(result).toHaveLength(0);
   });
 });

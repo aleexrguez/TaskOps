@@ -58,6 +58,7 @@ export interface Database {
           frequency: string;
           weekly_days: number[] | null;
           monthly_day: number | null;
+          lead_time_days: number;
           is_active: boolean;
           created_at: string;
           updated_at: string;
@@ -71,6 +72,7 @@ export interface Database {
           frequency: string;
           weekly_days?: number[] | null;
           monthly_day?: number | null;
+          lead_time_days?: number;
           is_active?: boolean;
           created_at?: string;
           updated_at?: string;
@@ -84,6 +86,7 @@ export interface Database {
           frequency?: string;
           weekly_days?: number[] | null;
           monthly_day?: number | null;
+          lead_time_days?: number;
           is_active?: boolean;
           created_at?: string;
           updated_at?: string;

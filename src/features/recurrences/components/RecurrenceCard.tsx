@@ -54,9 +54,15 @@ export function RecurrenceCard({
         </div>
       </div>
 
-      <p className="mb-3 text-xs text-gray-500 dark:text-gray-400">
+      <p className="mb-1 text-xs text-gray-500 dark:text-gray-400">
         {frequencyLabel}
       </p>
+
+      {(template.leadTimeDays ?? 0) > 0 && (
+        <p className="mb-3 text-xs text-indigo-500 dark:text-indigo-400">
+          Generates {template.leadTimeDays} days early
+        </p>
+      )}
 
       <div className="flex flex-wrap items-center gap-2">
         <span

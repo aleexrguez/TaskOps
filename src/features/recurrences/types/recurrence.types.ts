@@ -12,6 +12,7 @@ export const recurrenceTemplateSchema = z.object({
   frequency: recurrenceFrequencySchema,
   weeklyDays: z.array(z.number().int().min(1).max(7)).optional(), // 1=Mon..7=Sun
   monthlyDay: z.number().int().min(1).max(31).optional(),
+  leadTimeDays: z.number().int().min(0).max(14).default(0),
   isActive: z.boolean().default(true),
   createdAt: z.iso.datetime(),
   updatedAt: z.iso.datetime(),
@@ -44,6 +45,7 @@ export const createRecurrenceInputSchema = z.discriminatedUnion('frequency', [
     description: z.string().max(2000).optional(),
     priority: taskPrioritySchema.default('medium'),
     monthlyDay: z.number().int().min(1).max(31),
+    leadTimeDays: z.number().int().min(0).max(14).default(0),
   }),
 ]);
 export type CreateRecurrenceInput = z.infer<typeof createRecurrenceInputSchema>;
@@ -53,5 +55,6 @@ export const updateRecurrenceInputSchema = z.object({
   description: z.string().max(2000).optional(),
   priority: taskPrioritySchema.optional(),
   isActive: z.boolean().optional(),
+  leadTimeDays: z.number().int().min(0).max(14).optional(),
 });
 export type UpdateRecurrenceInput = z.infer<typeof updateRecurrenceInputSchema>;

@@ -31,7 +31,20 @@ const monthlyTemplate: RecurrenceTemplate = {
   priority: 'low',
   frequency: 'monthly',
   monthlyDay: 15,
+  leadTimeDays: 0,
   isActive: false,
+  createdAt: '2026-04-01T10:00:00.000Z',
+  updatedAt: '2026-04-01T10:00:00.000Z',
+};
+
+const monthlyWithLeadTemplate: RecurrenceTemplate = {
+  id: 'template-uuid-004',
+  title: 'Early Monthly',
+  priority: 'medium',
+  frequency: 'monthly',
+  monthlyDay: 1,
+  leadTimeDays: 5,
+  isActive: true,
   createdAt: '2026-04-01T10:00:00.000Z',
   updatedAt: '2026-04-01T10:00:00.000Z',
 };
@@ -77,6 +90,28 @@ describe('RecurrenceCard — rendering', () => {
     render(<RecurrenceCard template={monthlyTemplate} />);
 
     expect(screen.getByText(/paused/i)).toBeInTheDocument();
+  });
+
+  it('shows lead time info when leadTimeDays > 0', () => {
+    render(<RecurrenceCard template={monthlyWithLeadTemplate} />);
+
+    expect(screen.getByText(/generates 5 days early/i)).toBeInTheDocument();
+  });
+
+  it('does not show lead time info when leadTimeDays is 0', () => {
+    render(<RecurrenceCard template={monthlyTemplate} />);
+
+    expect(
+      screen.queryByText(/generates.*days early/i),
+    ).not.toBeInTheDocument();
+  });
+
+  it('does not show lead time info when leadTimeDays is absent (daily template)', () => {
+    render(<RecurrenceCard template={baseTemplate} />);
+
+    expect(
+      screen.queryByText(/generates.*days early/i),
+    ).not.toBeInTheDocument();
   });
 });
 
