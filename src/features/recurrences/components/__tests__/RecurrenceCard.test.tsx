@@ -52,9 +52,7 @@ describe('RecurrenceCard — rendering', () => {
   it('displays the frequency label with days for a weekly template', () => {
     render(<RecurrenceCard template={weeklyTemplate} />);
 
-    expect(
-      screen.getByText('Weekly (Mon, Wed, Fri)'),
-    ).toBeInTheDocument();
+    expect(screen.getByText('Weekly (Mon, Wed, Fri)')).toBeInTheDocument();
   });
 
   it('displays the frequency label with ordinal day for a monthly template', () => {
@@ -92,9 +90,7 @@ describe('RecurrenceCard — callbacks', () => {
   it('renders Delete button when onDelete is provided', () => {
     render(<RecurrenceCard template={baseTemplate} onDelete={vi.fn()} />);
 
-    expect(
-      screen.getByRole('button', { name: /delete/i }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /delete/i })).toBeInTheDocument();
   });
 
   it('does not render Edit button when onEdit is not provided', () => {

@@ -53,7 +53,10 @@ export function Router() {
           <Route index element={<Navigate to="tasks" replace />} />
           <Route path="tasks" element={<TaskDashboardContainer />} />
           <Route path="tasks/:id" element={<TaskDetailContainer />} />
-          <Route path="recurrences" element={<RecurrenceDashboardContainer />} />
+          <Route
+            path="recurrences"
+            element={<RecurrenceDashboardContainer />}
+          />
           <Route path="settings" element={<SettingsContainer />} />
         </Route>
 

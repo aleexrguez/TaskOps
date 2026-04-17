@@ -1,4 +1,4 @@
-import { render, screen, waitFor, within } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MemoryRouter } from 'react-router-dom';
@@ -33,8 +33,9 @@ vi.mock('../../api/recurrence-api', () => ({
 }));
 
 vi.mock('@/features/task-manager/store/toast.store', () => ({
-  useToastStore: vi.fn((selector: (s: { addToast: ReturnType<typeof vi.fn> }) => unknown) =>
-    selector({ addToast: mockAddToast }),
+  useToastStore: vi.fn(
+    (selector: (s: { addToast: ReturnType<typeof vi.fn> }) => unknown) =>
+      selector({ addToast: mockAddToast }),
   ),
 }));
 
@@ -52,7 +53,9 @@ vi.mock('../../hooks/use-recurrences', () => ({
 
 import { useRecurrences } from '../../hooks/use-recurrences';
 
-function makeTemplate(overrides: Partial<RecurrenceTemplate> = {}): RecurrenceTemplate {
+function makeTemplate(
+  overrides: Partial<RecurrenceTemplate> = {},
+): RecurrenceTemplate {
   return {
     id: crypto.randomUUID(),
     title: 'Morning exercise',
@@ -99,14 +102,18 @@ describe('RecurrenceDashboardContainer', () => {
     const Wrapper = createWrapper();
     render(<RecurrenceDashboardContainer />, { wrapper: Wrapper });
 
-    expect(screen.getByRole('heading', { name: /recurrences/i, level: 1 })).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: /recurrences/i, level: 1 }),
+    ).toBeInTheDocument();
   });
 
   it('renders "New Recurrence" button', () => {
     const Wrapper = createWrapper();
     render(<RecurrenceDashboardContainer />, { wrapper: Wrapper });
 
-    expect(screen.getByRole('button', { name: /new recurrence/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /new recurrence/i }),
+    ).toBeInTheDocument();
   });
 
   it('shows loading state while fetching', () => {
@@ -136,7 +143,9 @@ describe('RecurrenceDashboardContainer', () => {
     render(<RecurrenceDashboardContainer />, { wrapper: Wrapper });
 
     expect(screen.getByText(/failed to fetch/i)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /try again/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /try again/i }),
+    ).toBeInTheDocument();
   });
 
   it('calls refetch when "Try again" is clicked', async () => {
@@ -227,7 +236,9 @@ describe('RecurrenceDashboardContainer', () => {
     await user.click(screen.getByRole('button', { name: /delete/i }));
 
     expect(screen.getByRole('dialog')).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: /delete recurrence/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: /delete recurrence/i }),
+    ).toBeInTheDocument();
   });
 
   it('calls deleteRecurrence mutation when confirm delete is clicked', async () => {
@@ -249,7 +260,9 @@ describe('RecurrenceDashboardContainer', () => {
 
     // Click the confirm Delete button inside the dialog (not the card's Delete button)
     const dialog = screen.getByRole('dialog');
-    const confirmButton = within(dialog).getByRole('button', { name: /^delete$/i });
+    const confirmButton = within(dialog).getByRole('button', {
+      name: /^delete$/i,
+    });
     await user.click(confirmButton);
 
     expect(mockDeleteMutate).toHaveBeenCalledWith('tmpl-1', expect.any(Object));

@@ -13,7 +13,10 @@ const DAYS: { value: number; label: string }[] = [
   { value: 7, label: 'Sun' },
 ];
 
-export function WeeklyDaysPicker({ selectedDays, onChange }: WeeklyDaysPickerProps) {
+export function WeeklyDaysPicker({
+  selectedDays,
+  onChange,
+}: WeeklyDaysPickerProps) {
   function handleToggle(day: number): void {
     const isSelected = selectedDays.includes(day);
     const next = isSelected

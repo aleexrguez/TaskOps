@@ -50,9 +50,7 @@ describe('RecurrenceForm — conditional fields', () => {
     render(<RecurrenceForm onSubmit={vi.fn()} />);
 
     // Default frequency is daily — no extra fields
-    expect(
-      screen.queryByLabelText(/monthly day/i),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByLabelText(/monthly day/i)).not.toBeInTheDocument();
   });
 
   it('shows WeeklyDaysPicker when frequency is weekly', async () => {

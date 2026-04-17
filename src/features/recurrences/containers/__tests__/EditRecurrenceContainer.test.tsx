@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MemoryRouter } from 'react-router-dom';
@@ -25,8 +25,9 @@ vi.mock('../../api/recurrence-api', () => ({
 }));
 
 vi.mock('@/features/task-manager/store/toast.store', () => ({
-  useToastStore: vi.fn((selector: (s: { addToast: ReturnType<typeof vi.fn> }) => unknown) =>
-    selector({ addToast: mockAddToast }),
+  useToastStore: vi.fn(
+    (selector: (s: { addToast: ReturnType<typeof vi.fn> }) => unknown) =>
+      selector({ addToast: mockAddToast }),
   ),
 }));
 
@@ -45,7 +46,9 @@ vi.mock('../../hooks/use-recurrences', () => ({
 
 import { useRecurrence } from '../../hooks/use-recurrences';
 
-function makeTemplate(overrides: Partial<RecurrenceTemplate> = {}): RecurrenceTemplate {
+function makeTemplate(
+  overrides: Partial<RecurrenceTemplate> = {},
+): RecurrenceTemplate {
   return {
     id: 'template-1',
     title: 'Morning exercise',
@@ -91,15 +94,22 @@ describe('EditRecurrenceContainer', () => {
     const Wrapper = createWrapper();
     render(<EditRecurrenceContainer />, { wrapper: Wrapper });
 
-    expect(screen.queryByRole('heading', { name: /edit recurrence/i })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('heading', { name: /edit recurrence/i }),
+    ).not.toBeInTheDocument();
   });
 
   it('does not render form when modal is open but no template is selected', () => {
-    useRecurrenceUIStore.setState({ isEditModalOpen: true, selectedTemplateId: null });
+    useRecurrenceUIStore.setState({
+      isEditModalOpen: true,
+      selectedTemplateId: null,
+    });
     const Wrapper = createWrapper();
     render(<EditRecurrenceContainer />, { wrapper: Wrapper });
 
-    expect(screen.queryByRole('heading', { name: /edit recurrence/i })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('heading', { name: /edit recurrence/i }),
+    ).not.toBeInTheDocument();
   });
 
   it('renders form when modal is open and template is selected', () => {
@@ -110,7 +120,9 @@ describe('EditRecurrenceContainer', () => {
     const Wrapper = createWrapper();
     render(<EditRecurrenceContainer />, { wrapper: Wrapper });
 
-    expect(screen.getByRole('heading', { name: /edit recurrence/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: /edit recurrence/i }),
+    ).toBeInTheDocument();
   });
 
   it('shows loading spinner while fetching template', () => {

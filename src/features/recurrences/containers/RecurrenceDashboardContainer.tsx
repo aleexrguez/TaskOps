@@ -9,7 +9,8 @@ import { EditRecurrenceContainer } from './EditRecurrenceContainer';
 
 export function RecurrenceDashboardContainer() {
   const { data, isLoading, isError, error, refetch } = useRecurrences();
-  const { mutate: deleteRecurrence, isPending: isDeleting, variables: deletingId } = useDeleteRecurrence();
+  const { mutate: deleteRecurrence, isPending: isDeleting } =
+    useDeleteRecurrence();
   const openCreateModal = useRecurrenceUIStore((s) => s.openCreateModal);
   const openEditModal = useRecurrenceUIStore((s) => s.openEditModal);
   const addToast = useToastStore((s) => s.addToast);
@@ -40,14 +41,19 @@ export function RecurrenceDashboardContainer() {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center py-12" role="status" aria-label="Loading">
+      <div
+        className="flex justify-center py-12"
+        role="status"
+        aria-label="Loading"
+      >
         <div className="h-8 w-8 animate-spin rounded-full border-2 border-indigo-600 border-t-transparent" />
       </div>
     );
   }
 
   if (isError) {
-    const message = error instanceof Error ? error.message : 'Something went wrong.';
+    const message =
+      error instanceof Error ? error.message : 'Something went wrong.';
     return (
       <div>
         <div className="mb-8 flex items-center justify-between">
@@ -56,7 +62,9 @@ export function RecurrenceDashboardContainer() {
           </h1>
         </div>
         <div className="rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-800 dark:bg-red-900/20">
-          <p className="text-sm font-medium text-red-700 dark:text-red-400">{message}</p>
+          <p className="text-sm font-medium text-red-700 dark:text-red-400">
+            {message}
+          </p>
           <button
             type="button"
             onClick={() => refetch()}

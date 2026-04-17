@@ -24,8 +24,9 @@ vi.mock('../../api/recurrence-api', () => ({
 }));
 
 vi.mock('@/features/task-manager/store/toast.store', () => ({
-  useToastStore: vi.fn((selector: (s: { addToast: ReturnType<typeof vi.fn> }) => unknown) =>
-    selector({ addToast: mockAddToast }),
+  useToastStore: vi.fn(
+    (selector: (s: { addToast: ReturnType<typeof vi.fn> }) => unknown) =>
+      selector({ addToast: mockAddToast }),
   ),
 }));
 
@@ -40,8 +41,6 @@ vi.mock('../../hooks/use-recurrences', () => ({
     error: null,
   }),
 }));
-
-import { createRecurrence } from '../../api/recurrence-api';
 
 function createWrapper() {
   const queryClient = new QueryClient({
@@ -70,7 +69,9 @@ describe('CreateRecurrenceContainer', () => {
     const Wrapper = createWrapper();
     render(<CreateRecurrenceContainer />, { wrapper: Wrapper });
 
-    expect(screen.queryByRole('heading', { name: /new recurrence/i })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('heading', { name: /new recurrence/i }),
+    ).not.toBeInTheDocument();
     expect(screen.queryByLabelText(/title/i)).not.toBeInTheDocument();
   });
 
@@ -79,7 +80,9 @@ describe('CreateRecurrenceContainer', () => {
     const Wrapper = createWrapper();
     render(<CreateRecurrenceContainer />, { wrapper: Wrapper });
 
-    expect(screen.getByRole('heading', { name: /new recurrence/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: /new recurrence/i }),
+    ).toBeInTheDocument();
     expect(screen.getByLabelText(/title/i)).toBeInTheDocument();
   });
 

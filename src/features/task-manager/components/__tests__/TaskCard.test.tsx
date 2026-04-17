@@ -217,9 +217,7 @@ describe('TaskCard — recurring task behavior', () => {
 
     render(<TaskCard task={baseRecurringTask} onEdit={onEdit} />);
 
-    expect(
-      screen.getByRole('button', { name: /edit/i }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /edit/i })).toBeInTheDocument();
   });
 
   it('still shows archive button for done recurring tasks', () => {

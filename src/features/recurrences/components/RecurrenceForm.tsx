@@ -21,7 +21,9 @@ interface FormState {
   monthlyDay: string;
 }
 
-function buildInitialState(initial?: Partial<CreateRecurrenceInput>): FormState {
+function buildInitialState(
+  initial?: Partial<CreateRecurrenceInput>,
+): FormState {
   return {
     title: initial?.title ?? '',
     description: initial?.description ?? '',
@@ -55,7 +57,9 @@ export function RecurrenceForm({
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   function handleChange(
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
   ): void {
     const { name, value } = e.target;
     setFields((prev) => ({ ...prev, [name]: value }));
@@ -140,9 +144,7 @@ export function RecurrenceForm({
           className={inputClass}
           placeholder="Recurrence title"
         />
-        {errors.title && (
-          <p className="text-xs text-red-500">{errors.title}</p>
-        )}
+        {errors.title && <p className="text-xs text-red-500">{errors.title}</p>}
       </div>
 
       <div className="flex flex-col gap-1">

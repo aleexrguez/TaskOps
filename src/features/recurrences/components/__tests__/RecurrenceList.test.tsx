@@ -43,14 +43,15 @@ describe('RecurrenceList — rendering', () => {
   it('shows default empty message when list is empty and no emptyMessage prop', () => {
     render(<RecurrenceList templates={[]} />);
 
-    expect(
-      screen.getByText(/no recurrences found/i),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/no recurrences found/i)).toBeInTheDocument();
   });
 
   it('shows custom emptyMessage when provided and list is empty', () => {
     render(
-      <RecurrenceList templates={[]} emptyMessage="No templates yet. Create one!" />,
+      <RecurrenceList
+        templates={[]}
+        emptyMessage="No templates yet. Create one!"
+      />,
     );
 
     expect(
@@ -61,9 +62,7 @@ describe('RecurrenceList — rendering', () => {
   it('does not show empty message when list has templates', () => {
     render(<RecurrenceList templates={templates} />);
 
-    expect(
-      screen.queryByText(/no recurrences found/i),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByText(/no recurrences found/i)).not.toBeInTheDocument();
   });
 });
 

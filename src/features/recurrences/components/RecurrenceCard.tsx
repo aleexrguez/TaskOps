@@ -9,13 +9,19 @@ interface RecurrenceCardProps {
 
 const PRIORITY_BADGE: Record<string, string> = {
   low: 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300',
-  medium: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
+  medium:
+    'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
   high: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
 };
 
-export function RecurrenceCard({ template, onEdit, onDelete }: RecurrenceCardProps) {
+export function RecurrenceCard({
+  template,
+  onEdit,
+  onDelete,
+}: RecurrenceCardProps) {
   const frequencyLabel = formatFrequencyLabel(template);
-  const priorityClass = PRIORITY_BADGE[template.priority] ?? PRIORITY_BADGE.medium;
+  const priorityClass =
+    PRIORITY_BADGE[template.priority] ?? PRIORITY_BADGE.medium;
 
   return (
     <div
