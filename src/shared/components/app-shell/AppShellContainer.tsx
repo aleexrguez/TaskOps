@@ -21,20 +21,6 @@ export function AppShellContainer() {
 
   const { data: tasksData } = useTasks();
   const { data: recurrencesData } = useRecurrences();
-
-  // DEBUG: trace data flowing into auto-generate
-  console.log('[AppShell] mounted');
-  console.log('[AppShell] tasksData:', tasksData);
-  console.log('[AppShell] recurrencesData:', recurrencesData);
-  console.log(
-    '[AppShell] recurrences count:',
-    recurrencesData?.recurrences?.length ?? 'undefined',
-  );
-  console.log(
-    '[AppShell] tasks count:',
-    tasksData?.tasks?.length ?? 'undefined',
-  );
-
   useAutoGenerate(recurrencesData?.recurrences ?? [], tasksData?.tasks ?? []);
 
   const isSidebarCollapsed = useAppPreferencesStore(

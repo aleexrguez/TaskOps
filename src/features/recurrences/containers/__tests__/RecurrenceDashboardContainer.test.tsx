@@ -187,6 +187,55 @@ describe('RecurrenceDashboardContainer', () => {
     expect(screen.getByText('Evening reading')).toBeInTheDocument();
   });
 
+  it('renders a "Daily" section heading when there are daily templates', () => {
+    (useRecurrences as ReturnType<typeof vi.fn>).mockReturnValue({
+      data: {
+        recurrences: [
+          makeTemplate({ id: 'tmpl-1', title: 'Morning run', frequency: 'daily' }),
+        ],
+        total: 1,
+      },
+      isLoading: false,
+      isError: false,
+      error: null,
+      refetch: vi.fn(),
+    });
+    const Wrapper = createWrapper();
+    render(<RecurrenceDashboardContainer />, { wrapper: Wrapper });
+
+    expect(
+      screen.getByRole('heading', { name: /daily/i, level: 2 }),
+    ).toBeInTheDocument();
+  });
+
+  it('groups templates by frequency — shows "Weekly" and "Monthly" headings for mixed templates', () => {
+    (useRecurrences as ReturnType<typeof vi.fn>).mockReturnValue({
+      data: {
+        recurrences: [
+          makeTemplate({ id: 'tmpl-1', title: 'Weekly review', frequency: 'weekly', weeklyDays: [1] }),
+          makeTemplate({ id: 'tmpl-2', title: 'Pay bills', frequency: 'monthly', monthlyDay: 1 }),
+        ],
+        total: 2,
+      },
+      isLoading: false,
+      isError: false,
+      error: null,
+      refetch: vi.fn(),
+    });
+    const Wrapper = createWrapper();
+    render(<RecurrenceDashboardContainer />, { wrapper: Wrapper });
+
+    expect(
+      screen.getByRole('heading', { name: /weekly/i, level: 2 }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: /monthly/i, level: 2 }),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole('heading', { name: /daily/i, level: 2 }),
+    ).not.toBeInTheDocument();
+  });
+
   it('opens create modal when "New Recurrence" button is clicked', async () => {
     const user = userEvent.setup();
     const Wrapper = createWrapper();

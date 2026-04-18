@@ -298,6 +298,30 @@ export function formatFrequencyLabel(template: RecurrenceTemplate): string {
 }
 
 // ---------------------------------------------------------------------------
+// Grouping helpers
+// ---------------------------------------------------------------------------
+
+export interface FrequencyGroups {
+  daily: RecurrenceTemplate[];
+  weekly: RecurrenceTemplate[];
+  monthly: RecurrenceTemplate[];
+}
+
+/**
+ * Groups an array of recurrence templates by their frequency.
+ * Preserves insertion order within each group.
+ */
+export function groupByFrequency(
+  templates: RecurrenceTemplate[],
+): FrequencyGroups {
+  const groups: FrequencyGroups = { daily: [], weekly: [], monthly: [] };
+  for (const template of templates) {
+    groups[template.frequency].push(template);
+  }
+  return groups;
+}
+
+// ---------------------------------------------------------------------------
 // Task classification
 // ---------------------------------------------------------------------------
 

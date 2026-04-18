@@ -2,10 +2,11 @@ import { useState } from 'react';
 import { useRecurrences, useDeleteRecurrence } from '../hooks/use-recurrences';
 import { useRecurrenceUIStore } from '../store/recurrence-ui.store';
 import { useToastStore } from '@/features/task-manager/store/toast.store';
-import { RecurrenceList } from '../components/RecurrenceList';
+import { RecurrenceGroupedLayout } from '../components/RecurrenceGroupedLayout';
 import { ConfirmDialog } from '@/features/task-manager/components/ConfirmDialog';
 import { CreateRecurrenceContainer } from './CreateRecurrenceContainer';
 import { EditRecurrenceContainer } from './EditRecurrenceContainer';
+import { groupByFrequency } from '../utils/recurrence.utils';
 
 export function RecurrenceDashboardContainer() {
   const { data, isLoading, isError, error, refetch } = useRecurrences();
@@ -78,6 +79,7 @@ export function RecurrenceDashboardContainer() {
   }
 
   const templates = data?.recurrences ?? [];
+  const groups = groupByFrequency(templates);
 
   return (
     <>
@@ -95,8 +97,8 @@ export function RecurrenceDashboardContainer() {
         </button>
       </div>
 
-      <RecurrenceList
-        templates={templates}
+      <RecurrenceGroupedLayout
+        groups={groups}
         onEdit={openEditModal}
         onDelete={handleDeleteRequest}
       />

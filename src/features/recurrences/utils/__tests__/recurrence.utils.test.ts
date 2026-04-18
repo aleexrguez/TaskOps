@@ -13,6 +13,7 @@ import {
   formatMonthlyDay,
   formatFrequencyLabel,
   isGeneratedTask,
+  groupByFrequency,
 } from '../recurrence.utils';
 
 // ---------------------------------------------------------------------------
@@ -752,5 +753,64 @@ describe('getPendingGenerations — monthly with lead time', () => {
     const result = getPendingGenerations([template], [existingTask], today);
 
     expect(result).toHaveLength(0);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// 13. groupByFrequency
+// ---------------------------------------------------------------------------
+
+describe('groupByFrequency', () => {
+  it('groups mixed templates into the correct frequency buckets', () => {
+    const daily1 = makeTemplate({ frequency: 'daily' });
+    const weekly1 = makeTemplate({ frequency: 'weekly', weeklyDays: [1] });
+    const monthly1 = makeTemplate({ frequency: 'monthly', monthlyDay: 15 });
+
+    const result = groupByFrequency([daily1, weekly1, monthly1]);
+
+    expect(result.daily).toEqual([daily1]);
+    expect(result.weekly).toEqual([weekly1]);
+    expect(result.monthly).toEqual([monthly1]);
+  });
+
+  it('returns empty arrays for frequency groups with no templates', () => {
+    const daily1 = makeTemplate({ frequency: 'daily' });
+
+    const result = groupByFrequency([daily1]);
+
+    expect(result.weekly).toEqual([]);
+    expect(result.monthly).toEqual([]);
+  });
+
+  it('returns all empty arrays for an empty input array', () => {
+    const result = groupByFrequency([]);
+
+    expect(result.daily).toEqual([]);
+    expect(result.weekly).toEqual([]);
+    expect(result.monthly).toEqual([]);
+  });
+
+  it('preserves insertion order within each group', () => {
+    const daily1 = makeTemplate({ frequency: 'daily', title: 'First' });
+    const daily2 = makeTemplate({ frequency: 'daily', title: 'Second' });
+    const daily3 = makeTemplate({ frequency: 'daily', title: 'Third' });
+
+    const result = groupByFrequency([daily1, daily2, daily3]);
+
+    expect(result.daily[0].title).toBe('First');
+    expect(result.daily[1].title).toBe('Second');
+    expect(result.daily[2].title).toBe('Third');
+  });
+
+  it('places multiple templates of the same frequency in the same bucket', () => {
+    const weekly1 = makeTemplate({ frequency: 'weekly', weeklyDays: [1] });
+    const weekly2 = makeTemplate({ frequency: 'weekly', weeklyDays: [3] });
+    const weekly3 = makeTemplate({ frequency: 'weekly', weeklyDays: [5] });
+
+    const result = groupByFrequency([weekly1, weekly2, weekly3]);
+
+    expect(result.weekly).toHaveLength(3);
+    expect(result.daily).toHaveLength(0);
+    expect(result.monthly).toHaveLength(0);
   });
 });

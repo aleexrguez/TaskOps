@@ -14,39 +14,22 @@ export function useAutoGenerate(
   const lastRunRef = useRef<string>('');
 
   useEffect(() => {
-    console.log('[useAutoGenerate] effect fired');
-    console.log('[useAutoGenerate] templates:', templates.length, templates);
-    console.log('[useAutoGenerate] tasks:', tasks.length);
-
     const pending = getPendingGenerations(templates, tasks);
-    console.log('[useAutoGenerate] pending:', pending.length, pending);
-
-    if (pending.length === 0) {
-      console.log('[useAutoGenerate] nothing pending — skipping');
-      return;
-    }
+    if (pending.length === 0) return;
 
     const key = pending
       .map((p) => `${p.templateId}:${p.dateKey}`)
       .sort()
       .join(',');
-    console.log('[useAutoGenerate] key:', key);
-    console.log('[useAutoGenerate] lastRunRef:', lastRunRef.current);
-
-    if (key === lastRunRef.current) {
-      console.log('[useAutoGenerate] key matches lastRun — skipping');
-      return;
-    }
+    if (key === lastRunRef.current) return;
     lastRunRef.current = key;
 
-    console.log('[useAutoGenerate] calling generateTasks...');
     generateTasks(pending)
       .then(() => {
-        console.log('[useAutoGenerate] generateTasks SUCCESS — invalidating');
         queryClient.invalidateQueries({ queryKey: taskKeys.lists() });
       })
       .catch((err) => {
-        console.error('[useAutoGenerate] generateTasks FAILED:', err);
+        console.error('[useAutoGenerate] generation failed:', err);
       });
   }, [templates, tasks, queryClient]);
 }
