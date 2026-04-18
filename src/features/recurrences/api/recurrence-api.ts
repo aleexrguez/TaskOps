@@ -143,9 +143,12 @@ export async function deleteRecurrence(id: string): Promise<void> {
 export async function generateTasks(
   pending: PendingGeneration[],
 ): Promise<void> {
+  console.log('[generateTasks] called with', pending.length, 'pending');
+
   if (pending.length === 0) return;
 
   const userId = await requireAuthenticatedUser();
+  console.log('[generateTasks] userId:', userId);
 
   const rows = pending.map((p) => ({
     user_id: userId,
@@ -158,6 +161,8 @@ export async function generateTasks(
     due_date: p.dateKey,
   }));
 
+  console.log('[generateTasks] rows to upsert:', JSON.stringify(rows));
+
   // ON CONFLICT DO NOTHING — handled by the unique index on
   // (user_id, recurrence_template_id, recurrence_date_key)
   const { error } = await supabase.from('tasks').upsert(rows, {
@@ -165,5 +170,10 @@ export async function generateTasks(
     ignoreDuplicates: true,
   });
 
-  if (error) throw new Error(error.message);
+  if (error) {
+    console.error('[generateTasks] Supabase error:', error);
+    throw new Error(error.message);
+  }
+
+  console.log('[generateTasks] upsert SUCCESS');
 }

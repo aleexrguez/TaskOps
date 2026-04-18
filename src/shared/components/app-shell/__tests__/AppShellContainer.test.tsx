@@ -24,6 +24,21 @@ vi.mock('@tanstack/react-query', () => ({
   useQueryClient: vi.fn(),
 }));
 
+vi.mock('@/features/task-manager/hooks/use-tasks', () => ({
+  useTasks: () => ({ data: { tasks: [], total: 0 }, isLoading: false }),
+}));
+
+vi.mock('@/features/recurrences/hooks/use-recurrences', () => ({
+  useRecurrences: () => ({
+    data: { recurrences: [], total: 0 },
+    isLoading: false,
+  }),
+}));
+
+vi.mock('@/features/recurrences/hooks/use-auto-generate', () => ({
+  useAutoGenerate: vi.fn(),
+}));
+
 const mockToggleSidebar = vi.fn();
 const mockSignOut = vi.fn();
 const mockClearQueryClient = vi.fn();

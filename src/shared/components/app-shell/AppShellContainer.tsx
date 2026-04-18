@@ -4,6 +4,9 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useAppPreferencesStore } from '@/shared/store/app-preferences.store';
 import { useSignOut } from '@/features/auth/hooks';
 import { useApplyTheme } from '@/shared/hooks/use-apply-theme';
+import { useTasks } from '@/features/task-manager/hooks/use-tasks';
+import { useRecurrences } from '@/features/recurrences/hooks/use-recurrences';
+import { useAutoGenerate } from '@/features/recurrences/hooks/use-auto-generate';
 import { AppShellLayout } from './AppShellLayout';
 import type { NavItem } from './app-shell.types';
 
@@ -15,6 +18,24 @@ const NAV_ITEMS: NavItem[] = [
 
 export function AppShellContainer() {
   useApplyTheme();
+
+  const { data: tasksData } = useTasks();
+  const { data: recurrencesData } = useRecurrences();
+
+  // DEBUG: trace data flowing into auto-generate
+  console.log('[AppShell] mounted');
+  console.log('[AppShell] tasksData:', tasksData);
+  console.log('[AppShell] recurrencesData:', recurrencesData);
+  console.log(
+    '[AppShell] recurrences count:',
+    recurrencesData?.recurrences?.length ?? 'undefined',
+  );
+  console.log(
+    '[AppShell] tasks count:',
+    tasksData?.tasks?.length ?? 'undefined',
+  );
+
+  useAutoGenerate(recurrencesData?.recurrences ?? [], tasksData?.tasks ?? []);
 
   const isSidebarCollapsed = useAppPreferencesStore(
     (s) => s.isSidebarCollapsed,
