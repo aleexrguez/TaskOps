@@ -1,5 +1,5 @@
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { render, screen, within, fireEvent } from '@testing-library/react';
+import { DndContext } from '@dnd-kit/core';
 import { vi } from 'vitest';
 import type { Task } from '../../types';
 import { BoardColumn } from '../BoardColumn';
@@ -17,9 +17,13 @@ function makeTask(overrides: Partial<Task> = {}): Task {
   };
 }
 
+function renderWithDndContext(ui: React.ReactElement) {
+  return render(<DndContext>{ui}</DndContext>);
+}
+
 describe('BoardColumn', () => {
   it('renders the column title', () => {
-    render(<BoardColumn title="Todo" tasks={[]} />);
+    renderWithDndContext(<BoardColumn title="Todo" tasks={[]} status="todo" />);
 
     expect(screen.getByRole('heading', { name: 'Todo' })).toBeInTheDocument();
   });
@@ -31,7 +35,9 @@ describe('BoardColumn', () => {
       makeTask({ id: 'id-3', title: 'Task 3' }),
     ];
 
-    render(<BoardColumn title="Todo" tasks={tasks} />);
+    renderWithDndContext(
+      <BoardColumn title="Todo" tasks={tasks} status="todo" />,
+    );
 
     expect(screen.getByText('3')).toBeInTheDocument();
   });
@@ -42,41 +48,77 @@ describe('BoardColumn', () => {
       makeTask({ id: 'id-2', title: 'Second Task' }),
     ];
 
-    render(<BoardColumn title="Todo" tasks={tasks} />);
+    renderWithDndContext(
+      <BoardColumn title="Todo" tasks={tasks} status="todo" />,
+    );
 
     expect(screen.getByText('First Task')).toBeInTheDocument();
     expect(screen.getByText('Second Task')).toBeInTheDocument();
   });
 
   it('renders an empty state message when tasks array is empty', () => {
-    render(<BoardColumn title="Done" tasks={[]} />);
+    renderWithDndContext(<BoardColumn title="Done" tasks={[]} status="done" />);
 
     expect(screen.getByText(/no tasks/i)).toBeInTheDocument();
   });
 
-  it('passes onEdit callback through to TaskCard components', async () => {
-    const user = userEvent.setup();
+  it('passes onEdit callback through to TaskCard components', () => {
     const onEdit = vi.fn();
     const tasks = [makeTask({ id: 'task-abc', title: 'Editable Task' })];
 
-    render(<BoardColumn title="Todo" tasks={tasks} onEdit={onEdit} />);
+    renderWithDndContext(
+      <BoardColumn title="Todo" tasks={tasks} onEdit={onEdit} status="todo" />,
+    );
 
-    await user.click(screen.getByRole('button', { name: /edit/i }));
+    // Use fireEvent.click to bypass dnd-kit's onPointerDown interception in jsdom
+    const article = screen.getByRole('article');
+    fireEvent.click(within(article).getByRole('button', { name: /edit/i }));
 
     expect(onEdit).toHaveBeenCalledOnce();
     expect(onEdit).toHaveBeenCalledWith('task-abc');
   });
 
-  it('passes onDelete callback through to TaskCard components', async () => {
-    const user = userEvent.setup();
+  it('passes onDelete callback through to TaskCard components', () => {
     const onDelete = vi.fn();
     const tasks = [makeTask({ id: 'task-abc', title: 'Deletable Task' })];
 
-    render(<BoardColumn title="Todo" tasks={tasks} onDelete={onDelete} />);
+    renderWithDndContext(
+      <BoardColumn
+        title="Todo"
+        tasks={tasks}
+        onDelete={onDelete}
+        status="todo"
+      />,
+    );
 
-    await user.click(screen.getByRole('button', { name: /delete/i }));
+    const article = screen.getByRole('article');
+    fireEvent.click(within(article).getByRole('button', { name: /delete/i }));
 
     expect(onDelete).toHaveBeenCalledOnce();
     expect(onDelete).toHaveBeenCalledWith('task-abc');
+  });
+
+  it('renders task cards with draggable accessibility attributes (DraggableTaskCard)', () => {
+    const tasks = [makeTask({ id: 'drag-task-1', title: 'Draggable Task' })];
+
+    const { container } = renderWithDndContext(
+      <BoardColumn title="Todo" tasks={tasks} status="todo" />,
+    );
+
+    // DraggableTaskCard wraps each task in a div with role="button" aria-roledescription="draggable"
+    // This distinguishes DraggableTaskCard from a plain TaskCard render
+    const draggableWrapper = container.querySelector(
+      '[aria-roledescription="draggable"]',
+    );
+    expect(draggableWrapper).toBeInTheDocument();
+  });
+
+  it('does not apply over-indicator ring in normal (non-dragging) state', () => {
+    const { container } = renderWithDndContext(
+      <BoardColumn title="Todo" tasks={[]} status="todo" />,
+    );
+
+    const columnRoot = container.firstElementChild;
+    expect(columnRoot).not.toHaveClass('ring-2');
   });
 });

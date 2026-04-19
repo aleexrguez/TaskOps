@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useTasks, useDeleteTask } from '../hooks/use-tasks';
+import { useQueryClient } from '@tanstack/react-query';
+import { useTasks, useDeleteTask, useUpdateTask } from '../hooks/use-tasks';
 import { useArchiveTask } from '../hooks/use-archive-task';
 import { useTaskUIStore } from '../store/task-ui.store';
 import {
@@ -9,10 +10,14 @@ import {
   sortTasks,
   groupTasksByStatus,
 } from '../utils/task.utils';
+import type { TaskStatus } from '../types';
+import type { TaskListResponse } from '../api';
+import { taskKeys } from '../hooks/task.keys';
 import { TaskFilters, TaskList, ConfirmDialog, BoardView } from '../components';
 
 export function TaskListContainer() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { data, isLoading, isError, error, refetch } = useTasks();
   const {
     mutate: deleteTask,
@@ -20,6 +25,7 @@ export function TaskListContainer() {
     variables: deletingId,
   } = useDeleteTask();
   const { mutate: archiveTask } = useArchiveTask();
+  const { mutate: updateTaskMutation } = useUpdateTask();
 
   const [taskToDelete, setTaskToDelete] = useState<string | null>(null);
 
@@ -80,6 +86,37 @@ export function TaskListContainer() {
     archiveTask(id);
   }
 
+  function handleTaskDrop(taskId: string, newStatus: TaskStatus): void {
+    const currentData = queryClient.getQueryData<TaskListResponse>(
+      taskKeys.lists(),
+    );
+    if (!currentData) return;
+
+    const task = currentData.tasks.find((t) => t.id === taskId);
+    if (!task || task.status === newStatus) return;
+
+    const previousData = currentData;
+
+    queryClient.setQueryData<TaskListResponse>(taskKeys.lists(), {
+      ...currentData,
+      tasks: currentData.tasks.map((t) =>
+        t.id === taskId ? { ...t, status: newStatus } : t,
+      ),
+    });
+
+    updateTaskMutation(
+      { id: taskId, input: { status: newStatus } },
+      {
+        onError: () => {
+          queryClient.setQueryData(taskKeys.lists(), previousData);
+        },
+        onSettled: () => {
+          queryClient.invalidateQueries({ queryKey: taskKeys.lists() });
+        },
+      },
+    );
+  }
+
   if (isError) {
     const message =
       error instanceof Error ? error.message : 'Something went wrong.';
@@ -132,6 +169,7 @@ export function TaskListContainer() {
             onClick={(id) => navigate(`/app/tasks/${id}`)}
             onArchive={handleArchive}
             deletingId={isDeleting ? (deletingId ?? null) : null}
+            onTaskDrop={handleTaskDrop}
           />
         ) : (
           <TaskList

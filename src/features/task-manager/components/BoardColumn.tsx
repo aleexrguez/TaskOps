@@ -1,9 +1,12 @@
+import { useDroppable } from '@dnd-kit/core';
 import type { Task } from '../types';
-import { TaskCard } from './TaskCard';
+import type { TaskStatus } from '../types';
+import { DraggableTaskCard } from './DraggableTaskCard';
 
 interface BoardColumnProps {
   title: string;
   tasks: Task[];
+  status: TaskStatus;
   onEdit?: (id: string) => void;
   onDelete?: (id: string) => void;
   onClick?: (id: string) => void;
@@ -14,14 +17,20 @@ interface BoardColumnProps {
 export function BoardColumn({
   title,
   tasks,
+  status,
   onEdit,
   onDelete,
   onClick,
   onArchive,
   deletingId = null,
 }: BoardColumnProps) {
+  const { setNodeRef, isOver } = useDroppable({ id: status });
+
   return (
-    <div className="flex flex-col rounded-lg bg-gray-50 p-4 dark:bg-gray-900">
+    <div
+      ref={setNodeRef}
+      className={`flex flex-col rounded-lg bg-gray-50 p-4 dark:bg-gray-900${isOver ? ' ring-2 ring-indigo-400 dark:ring-indigo-500' : ''}`}
+    >
       <div className="mb-3 flex items-center gap-2">
         <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-200">
           {title}
@@ -35,7 +44,7 @@ export function BoardColumn({
       ) : (
         <div className="flex flex-col gap-2">
           {tasks.map((task) => (
-            <TaskCard
+            <DraggableTaskCard
               key={task.id}
               task={task}
               onEdit={onEdit}
