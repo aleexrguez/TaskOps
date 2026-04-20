@@ -6,8 +6,8 @@ import { Sidebar } from '../Sidebar';
 import type { NavItem, SidebarProps } from '../app-shell.types';
 
 const navItems: NavItem[] = [
-  { label: 'Dashboard', to: '/dashboard', icon: 'dashboard' },
-  { label: 'Tasks', to: '/tasks', icon: 'tasks' },
+  { label: 'Dashboard', to: '/dashboard', icon: '/DashboardIcon.png' },
+  { label: 'Tasks', to: '/tasks', icon: '/TaskIcon.png' },
 ];
 
 const defaultProps: SidebarProps = {
@@ -94,17 +94,16 @@ describe('Sidebar — collapse toggle', () => {
     ).toBeInTheDocument();
   });
 
-  it('hides nav item labels when sidebar is collapsed', () => {
+  it('visually hides nav item labels when sidebar is collapsed', () => {
     renderSidebar({ isCollapsed: true });
 
-    // Labels must exist but be visually hidden — we check for sr-only or hidden class
-    // The desktop nav wraps labels in a span; when collapsed, labels are not rendered
     const desktopNav = screen.getByRole('navigation', {
       name: 'Main navigation',
     });
 
-    expect(desktopNav).not.toHaveTextContent('Dashboard');
-    expect(desktopNav).not.toHaveTextContent('Tasks');
+    // Labels are in DOM but hidden via CSS (w-0 opacity-0 overflow-hidden)
+    const labelSpans = desktopNav.querySelectorAll('span.opacity-0');
+    expect(labelSpans.length).toBeGreaterThanOrEqual(2);
   });
 });
 

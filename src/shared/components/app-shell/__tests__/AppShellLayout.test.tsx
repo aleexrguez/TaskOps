@@ -5,14 +5,15 @@ import { AppShellLayout } from '../AppShellLayout';
 import type { AppShellLayoutProps } from '../app-shell.types';
 
 const defaultNavItems = [
-  { label: 'Tasks', to: '/app/tasks', icon: '📋' },
-  { label: 'Recurrences', to: '/app/recurrences', icon: '🔄' },
-  { label: 'Settings', to: '/app/settings', icon: '⚙️' },
+  { label: 'Tasks', to: '/app/tasks', icon: '/TaskIcon.png' },
+  { label: 'Recurrences', to: '/app/recurrences', icon: '/RecurrenceIcon.png' },
+  { label: 'Settings', to: '/app/settings', icon: '/SettingsIcon.png' },
 ];
 
 const defaultProps: AppShellLayoutProps = {
   headerProps: {
-    appName: 'Task Manager',
+    appName: 'TaskOps',
+    isCollapsed: false,
     onToggleMobileSidebar: vi.fn(),
   },
   sidebarProps: {
@@ -42,7 +43,7 @@ describe('AppShellLayout — Header', () => {
   it('renders the Header component with the app name', () => {
     renderWithRouter(defaultProps);
 
-    expect(screen.getByText('Task Manager')).toBeInTheDocument();
+    expect(screen.getByText('TaskOps')).toBeInTheDocument();
   });
 });
 
@@ -74,6 +75,7 @@ describe('AppShellLayout — main element margin', () => {
   it('applies md:ml-16 to main when sidebar is collapsed', () => {
     renderWithRouter({
       ...defaultProps,
+      headerProps: { ...defaultProps.headerProps, isCollapsed: true },
       sidebarProps: { ...defaultProps.sidebarProps, isCollapsed: true },
     });
 

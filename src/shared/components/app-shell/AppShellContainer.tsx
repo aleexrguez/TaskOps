@@ -11,9 +11,9 @@ import { AppShellLayout } from './AppShellLayout';
 import type { NavItem } from './app-shell.types';
 
 const NAV_ITEMS: NavItem[] = [
-  { label: 'Tasks', to: '/app/tasks', icon: '📋' },
-  { label: 'Recurrences', to: '/app/recurrences', icon: '🔄' },
-  { label: 'Settings', to: '/app/settings', icon: '⚙️' },
+  { label: 'Tasks', to: '/app/tasks', icon: '/TaskIcon.png' },
+  { label: 'Recurrences', to: '/app/recurrences', icon: '/RecurrenceIcon.png' },
+  { label: 'Settings', to: '/app/settings', icon: '/SettingsIcon.png' },
 ];
 
 export function AppShellContainer() {
@@ -44,7 +44,8 @@ export function AppShellContainer() {
   return (
     <AppShellLayout
       headerProps={{
-        appName: 'Task Manager',
+        appName: 'TaskOps',
+        isCollapsed: isSidebarCollapsed,
         onToggleMobileSidebar: () => setIsMobileSidebarOpen(true),
       }}
       sidebarProps={{

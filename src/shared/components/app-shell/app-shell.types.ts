@@ -6,6 +6,7 @@ export interface NavItem {
 
 export interface HeaderProps {
   appName: string;
+  isCollapsed: boolean;
   onToggleMobileSidebar: () => void;
 }
 
