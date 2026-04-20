@@ -1,5 +1,6 @@
-import { render, screen, within, fireEvent } from '@testing-library/react';
-import { DndContext } from '@dnd-kit/core';
+import { render, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { DndContext, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { vi } from 'vitest';
 import type { Task } from '../../types';
 import { BoardColumn } from '../BoardColumn';
@@ -17,13 +18,22 @@ function makeTask(overrides: Partial<Task> = {}): Task {
   };
 }
 
-function renderWithDndContext(ui: React.ReactElement) {
-  return render(<DndContext>{ui}</DndContext>);
+function DndWrapper({ children }: { children: React.ReactNode }) {
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: { distance: 8 },
+    }),
+  );
+  return <DndContext sensors={sensors}>{children}</DndContext>;
+}
+
+function renderWithDnd(ui: React.ReactElement) {
+  return render(<DndWrapper>{ui}</DndWrapper>);
 }
 
 describe('BoardColumn', () => {
   it('renders the column title', () => {
-    renderWithDndContext(<BoardColumn title="Todo" tasks={[]} status="todo" />);
+    renderWithDnd(<BoardColumn title="Todo" tasks={[]} status="todo" />);
 
     expect(screen.getByRole('heading', { name: 'Todo' })).toBeInTheDocument();
   });
@@ -35,7 +45,7 @@ describe('BoardColumn', () => {
       makeTask({ id: 'id-3', title: 'Task 3' }),
     ];
 
-    renderWithDndContext(
+    renderWithDnd(
       <BoardColumn title="Todo" tasks={tasks} status="todo" />,
     );
 
@@ -48,7 +58,7 @@ describe('BoardColumn', () => {
       makeTask({ id: 'id-2', title: 'Second Task' }),
     ];
 
-    renderWithDndContext(
+    renderWithDnd(
       <BoardColumn title="Todo" tasks={tasks} status="todo" />,
     );
 
@@ -57,32 +67,33 @@ describe('BoardColumn', () => {
   });
 
   it('renders an empty state message when tasks array is empty', () => {
-    renderWithDndContext(<BoardColumn title="Done" tasks={[]} status="done" />);
+    renderWithDnd(<BoardColumn title="Done" tasks={[]} status="done" />);
 
     expect(screen.getByText(/no tasks/i)).toBeInTheDocument();
   });
 
-  it('passes onEdit callback through to TaskCard components', () => {
+  it('passes onEdit callback through to TaskCard components', async () => {
+    const user = userEvent.setup();
     const onEdit = vi.fn();
     const tasks = [makeTask({ id: 'task-abc', title: 'Editable Task' })];
 
-    renderWithDndContext(
+    renderWithDnd(
       <BoardColumn title="Todo" tasks={tasks} onEdit={onEdit} status="todo" />,
     );
 
-    // Use fireEvent.click to bypass dnd-kit's onPointerDown interception in jsdom
     const article = screen.getByRole('article');
-    fireEvent.click(within(article).getByRole('button', { name: /edit/i }));
+    await user.click(within(article).getByRole('button', { name: /edit/i }));
 
     expect(onEdit).toHaveBeenCalledOnce();
     expect(onEdit).toHaveBeenCalledWith('task-abc');
   });
 
-  it('passes onDelete callback through to TaskCard components', () => {
+  it('passes onDelete callback through to TaskCard components', async () => {
+    const user = userEvent.setup();
     const onDelete = vi.fn();
     const tasks = [makeTask({ id: 'task-abc', title: 'Deletable Task' })];
 
-    renderWithDndContext(
+    renderWithDnd(
       <BoardColumn
         title="Todo"
         tasks={tasks}
@@ -92,33 +103,32 @@ describe('BoardColumn', () => {
     );
 
     const article = screen.getByRole('article');
-    fireEvent.click(within(article).getByRole('button', { name: /delete/i }));
+    await user.click(
+      within(article).getByRole('button', { name: /delete/i }),
+    );
 
     expect(onDelete).toHaveBeenCalledOnce();
     expect(onDelete).toHaveBeenCalledWith('task-abc');
   });
 
-  it('renders task cards with draggable accessibility attributes (DraggableTaskCard)', () => {
-    const tasks = [makeTask({ id: 'drag-task-1', title: 'Draggable Task' })];
+  it('renders task cards with sortable attributes', () => {
+    const tasks = [makeTask({ id: 'sort-task-1', title: 'Sortable Task' })];
 
-    const { container } = renderWithDndContext(
+    const { container } = renderWithDnd(
       <BoardColumn title="Todo" tasks={tasks} status="todo" />,
     );
 
-    // DraggableTaskCard wraps each task in a div with role="button" aria-roledescription="draggable"
-    // This distinguishes DraggableTaskCard from a plain TaskCard render
-    const draggableWrapper = container.querySelector(
-      '[aria-roledescription="draggable"]',
-    );
-    expect(draggableWrapper).toBeInTheDocument();
+    // useSortable applies role="button" on the sortable wrapper
+    const sortableWrapper = container.querySelector('[role="button"]');
+    expect(sortableWrapper).toBeInTheDocument();
   });
 
   it('does not apply over-indicator ring in normal (non-dragging) state', () => {
-    const { container } = renderWithDndContext(
+    const { container } = renderWithDnd(
       <BoardColumn title="Todo" tasks={[]} status="todo" />,
     );
 
-    const columnRoot = container.firstElementChild;
+    const columnRoot = container.querySelector('.flex.flex-col.rounded-lg');
     expect(columnRoot).not.toHaveClass('ring-2');
   });
 });

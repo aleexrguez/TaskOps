@@ -1,4 +1,5 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
 import type { Task } from '../../types';
 import type { TaskBoard } from '../../utils';
@@ -81,7 +82,8 @@ describe('BoardView', () => {
     expect(screen.getByText('Only Todo Task')).toBeInTheDocument();
   });
 
-  it('passes event handlers through to columns', () => {
+  it('passes event handlers through to columns', async () => {
+    const user = userEvent.setup();
     const onEdit = vi.fn();
     const board: TaskBoard = {
       todo: [
@@ -97,11 +99,8 @@ describe('BoardView', () => {
 
     render(<BoardView board={board} onEdit={onEdit} />);
 
-    // Use fireEvent to bypass dnd-kit pointer interception in jsdom
     const article = screen.getByRole('article');
-    fireEvent.click(
-      article.querySelector('button[class*="indigo"]') as HTMLElement,
-    );
+    await user.click(within(article).getByRole('button', { name: /edit/i }));
 
     expect(onEdit).toHaveBeenCalledOnce();
     expect(onEdit).toHaveBeenCalledWith('task-xyz');
@@ -110,7 +109,8 @@ describe('BoardView', () => {
   it('uses responsive grid classes that stack on mobile and show 3 columns on md+', () => {
     const { container } = render(<BoardView board={emptyBoard} />);
 
-    const grid = container.firstElementChild;
+    // The grid is inside DndContext, so it's not the first child
+    const grid = container.querySelector('.grid');
     expect(grid).toHaveClass('grid-cols-1');
     expect(grid).toHaveClass('md:grid-cols-3');
   });
@@ -143,7 +143,7 @@ describe('BoardView', () => {
     expect(deleteButtons).toHaveLength(1);
   });
 
-  it('calls onTaskDrop with taskId and new status when a drag ends over a column', () => {
+  it('accepts onTaskDrop prop without error', () => {
     const onTaskDrop = vi.fn();
     const board: TaskBoard = {
       todo: [makeTask({ id: 'task-drop-1', title: 'Drop Me', status: 'todo' })],
@@ -153,10 +153,7 @@ describe('BoardView', () => {
 
     render(<BoardView board={board} onTaskDrop={onTaskDrop} />);
 
-    // BoardView renders a DndContext — we verify onTaskDrop is wired correctly
-    // by checking the prop is accepted without error and the component renders
     expect(screen.getByRole('heading', { name: 'Todo' })).toBeInTheDocument();
-    // onTaskDrop is not called until an actual drag-end event — verified at container level
     expect(onTaskDrop).not.toHaveBeenCalled();
   });
 });

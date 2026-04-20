@@ -15,4 +15,4 @@ export { DueDateDisplay } from './DueDateDisplay';
 export { ViewToggle } from './ViewToggle';
 export { BoardColumn } from './BoardColumn';
 export { BoardView } from './BoardView';
-export { DraggableTaskCard } from './DraggableTaskCard';
+export { SortableTaskCard } from './SortableTaskCard';

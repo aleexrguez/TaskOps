@@ -1,7 +1,10 @@
 import { useDroppable } from '@dnd-kit/core';
-import type { Task } from '../types';
-import type { TaskStatus } from '../types';
-import { DraggableTaskCard } from './DraggableTaskCard';
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import type { Task, TaskStatus } from '../types';
+import { SortableTaskCard } from './SortableTaskCard';
 
 interface BoardColumnProps {
   title: string;
@@ -25,6 +28,7 @@ export function BoardColumn({
   deletingId = null,
 }: BoardColumnProps) {
   const { setNodeRef, isOver } = useDroppable({ id: status });
+  const taskIds = tasks.map((t) => t.id);
 
   return (
     <div
@@ -42,19 +46,25 @@ export function BoardColumn({
       {tasks.length === 0 ? (
         <p className="text-xs text-gray-400 dark:text-gray-500">No tasks</p>
       ) : (
-        <div className="flex flex-col gap-2">
-          {tasks.map((task) => (
-            <DraggableTaskCard
-              key={task.id}
-              task={task}
-              onEdit={onEdit}
-              onDelete={onDelete}
-              onClick={onClick}
-              onArchive={onArchive}
-              isDeleting={deletingId === task.id}
-            />
-          ))}
-        </div>
+        <SortableContext
+          id={status}
+          items={taskIds}
+          strategy={verticalListSortingStrategy}
+        >
+          <div className="flex flex-col gap-2">
+            {tasks.map((task) => (
+              <SortableTaskCard
+                key={task.id}
+                task={task}
+                onEdit={onEdit}
+                onDelete={onDelete}
+                onClick={onClick}
+                onArchive={onArchive}
+                isDeleting={deletingId === task.id}
+              />
+            ))}
+          </div>
+        </SortableContext>
       )}
     </div>
   );
