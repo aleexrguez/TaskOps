@@ -35,7 +35,7 @@ export function ReminderToast({
   return (
     <div
       role={role}
-      className={`flex items-start gap-3 rounded-md border-l-4 p-4 shadow-md ${colorClasses[tier]}`}
+      className={`flex w-80 items-start gap-3 rounded-md border-l-4 p-4 shadow-md ${colorClasses[tier]}`}
     >
       <div className="flex flex-1 flex-col gap-1 overflow-hidden">
         <span className="text-xs font-semibold uppercase tracking-wide opacity-75">

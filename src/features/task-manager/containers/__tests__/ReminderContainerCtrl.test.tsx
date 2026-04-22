@@ -189,4 +189,34 @@ describe('ReminderContainerCtrl — auto-dismiss timers', () => {
 
     expect(mockDismiss).not.toHaveBeenCalled();
   });
+
+  it('does not reset existing timer when reminders reference changes but same IDs remain', () => {
+    const reminder = buildReminder('task-urgent', 'Urgent task', 'urgent');
+    vi.mocked(useDueReminders).mockReturnValue([reminder]);
+
+    const { rerender } = renderCtrl();
+
+    // Advance 7 seconds (timer at 7/10s)
+    act(() => {
+      vi.advanceTimersByTime(7000);
+    });
+    expect(mockDismiss).not.toHaveBeenCalled();
+
+    // Rerender with same reminder (simulates React Query refetch)
+    vi.mocked(useDueReminders).mockReturnValue([
+      buildReminder('task-urgent', 'Urgent task', 'urgent'),
+    ]);
+    rerender(
+      <MemoryRouter>
+        <ReminderContainerCtrl tasks={[]} />
+      </MemoryRouter>,
+    );
+
+    // Only 3 more seconds needed (not 10 from scratch)
+    act(() => {
+      vi.advanceTimersByTime(3000);
+    });
+
+    expect(mockDismiss).toHaveBeenCalledWith('task-urgent');
+  });
 });
