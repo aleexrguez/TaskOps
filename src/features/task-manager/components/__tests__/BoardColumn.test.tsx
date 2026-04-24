@@ -1,6 +1,11 @@
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { DndContext, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import {
+  DndContext,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
 import { vi } from 'vitest';
 import type { Task } from '../../types';
 import { BoardColumn } from '../BoardColumn';
@@ -45,9 +50,7 @@ describe('BoardColumn', () => {
       makeTask({ id: 'id-3', title: 'Task 3' }),
     ];
 
-    renderWithDnd(
-      <BoardColumn title="Todo" tasks={tasks} status="todo" />,
-    );
+    renderWithDnd(<BoardColumn title="Todo" tasks={tasks} status="todo" />);
 
     expect(screen.getByText('3')).toBeInTheDocument();
   });
@@ -58,9 +61,7 @@ describe('BoardColumn', () => {
       makeTask({ id: 'id-2', title: 'Second Task' }),
     ];
 
-    renderWithDnd(
-      <BoardColumn title="Todo" tasks={tasks} status="todo" />,
-    );
+    renderWithDnd(<BoardColumn title="Todo" tasks={tasks} status="todo" />);
 
     expect(screen.getByText('First Task')).toBeInTheDocument();
     expect(screen.getByText('Second Task')).toBeInTheDocument();
@@ -103,9 +104,7 @@ describe('BoardColumn', () => {
     );
 
     const article = screen.getByRole('article');
-    await user.click(
-      within(article).getByRole('button', { name: /delete/i }),
-    );
+    await user.click(within(article).getByRole('button', { name: /delete/i }));
 
     expect(onDelete).toHaveBeenCalledOnce();
     expect(onDelete).toHaveBeenCalledWith('task-abc');

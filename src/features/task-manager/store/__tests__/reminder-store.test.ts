@@ -13,7 +13,9 @@ describe('useReminderStore', () => {
 
   it('dismiss() adds a task ID to the set', () => {
     useReminderStore.getState().dismiss('task-1');
-    expect(useReminderStore.getState().dismissedTaskIds.has('task-1')).toBe(true);
+    expect(useReminderStore.getState().dismissedTaskIds.has('task-1')).toBe(
+      true,
+    );
   });
 
   it('dismiss() called twice with the same ID results in only one entry', () => {

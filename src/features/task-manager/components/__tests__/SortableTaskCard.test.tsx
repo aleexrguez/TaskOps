@@ -1,6 +1,11 @@
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { DndContext, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import {
+  DndContext,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
 import {
   SortableContext,
   verticalListSortingStrategy,
@@ -37,23 +42,15 @@ function SortableWrapper({
 
   return (
     <DndContext sensors={sensors}>
-      <SortableContext
-        items={items}
-        strategy={verticalListSortingStrategy}
-      >
+      <SortableContext items={items} strategy={verticalListSortingStrategy}>
         {children}
       </SortableContext>
     </DndContext>
   );
 }
 
-function renderSortable(
-  ui: React.ReactElement,
-  items?: string[],
-) {
-  return render(
-    <SortableWrapper items={items}>{ui}</SortableWrapper>,
-  );
+function renderSortable(ui: React.ReactElement, items?: string[]) {
+  return render(<SortableWrapper items={items}>{ui}</SortableWrapper>);
 }
 
 describe('SortableTaskCard', () => {
@@ -85,10 +82,7 @@ describe('SortableTaskCard', () => {
       status: 'in-progress',
     });
 
-    renderSortable(
-      <SortableTaskCard task={inProgressTask} />,
-      ['task-ip-1'],
-    );
+    renderSortable(<SortableTaskCard task={inProgressTask} />, ['task-ip-1']);
 
     expect(screen.getByText('In Progress Task')).toBeInTheDocument();
   });
@@ -111,14 +105,10 @@ describe('SortableTaskCard', () => {
     const user = userEvent.setup();
     const onDelete = vi.fn();
 
-    renderSortable(
-      <SortableTaskCard task={makeTask()} onDelete={onDelete} />,
-    );
+    renderSortable(<SortableTaskCard task={makeTask()} onDelete={onDelete} />);
 
     const article = screen.getByRole('article');
-    await user.click(
-      within(article).getByRole('button', { name: /delete/i }),
-    );
+    await user.click(within(article).getByRole('button', { name: /delete/i }));
 
     expect(onDelete).toHaveBeenCalledOnce();
     expect(onDelete).toHaveBeenCalledWith('task-sort-1');
@@ -133,15 +123,12 @@ describe('SortableTaskCard', () => {
       isArchived: false,
     });
 
-    renderSortable(
-      <SortableTaskCard task={doneTask} onArchive={onArchive} />,
-      ['task-done-1'],
-    );
+    renderSortable(<SortableTaskCard task={doneTask} onArchive={onArchive} />, [
+      'task-done-1',
+    ]);
 
     const article = screen.getByRole('article');
-    await user.click(
-      within(article).getByRole('button', { name: /archive/i }),
-    );
+    await user.click(within(article).getByRole('button', { name: /archive/i }));
 
     expect(onArchive).toHaveBeenCalledOnce();
     expect(onArchive).toHaveBeenCalledWith('task-done-1');

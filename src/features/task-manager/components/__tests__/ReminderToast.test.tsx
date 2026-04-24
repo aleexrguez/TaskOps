@@ -4,10 +4,16 @@ import { vi } from 'vitest';
 import type { GroupedReminder } from '../../types/reminder.types';
 import { ReminderToast } from '../ReminderToast';
 
-function buildReminder(overrides: Partial<GroupedReminder> = {}): GroupedReminder {
+function buildReminder(
+  overrides: Partial<GroupedReminder> = {},
+): GroupedReminder {
   return {
     tier: 'urgent',
-    topTask: { taskId: 'task-1', taskTitle: 'Write unit tests', daysRemaining: 0 },
+    topTask: {
+      taskId: 'task-1',
+      taskTitle: 'Write unit tests',
+      daysRemaining: 0,
+    },
     extraCount: 0,
     ...overrides,
   };
@@ -29,7 +35,14 @@ describe('ReminderToast', () => {
   it('renders "Overdue" label for critical tier with daysRemaining = -2', () => {
     render(
       <ReminderToast
-        reminder={buildReminder({ tier: 'critical', topTask: { taskId: 'task-1', taskTitle: 'Fix bug', daysRemaining: -2 } })}
+        reminder={buildReminder({
+          tier: 'critical',
+          topTask: {
+            taskId: 'task-1',
+            taskTitle: 'Fix bug',
+            daysRemaining: -2,
+          },
+        })}
         onDismiss={vi.fn()}
         onClick={vi.fn()}
       />,
@@ -41,7 +54,14 @@ describe('ReminderToast', () => {
   it('renders "Due today" label for urgent tier with daysRemaining = 0', () => {
     render(
       <ReminderToast
-        reminder={buildReminder({ tier: 'urgent', topTask: { taskId: 'task-1', taskTitle: 'Submit report', daysRemaining: 0 } })}
+        reminder={buildReminder({
+          tier: 'urgent',
+          topTask: {
+            taskId: 'task-1',
+            taskTitle: 'Submit report',
+            daysRemaining: 0,
+          },
+        })}
         onDismiss={vi.fn()}
         onClick={vi.fn()}
       />,
@@ -53,7 +73,14 @@ describe('ReminderToast', () => {
   it('renders "Tomorrow" label for warning tier with daysRemaining = 1', () => {
     render(
       <ReminderToast
-        reminder={buildReminder({ tier: 'warning', topTask: { taskId: 'task-1', taskTitle: 'Prepare slides', daysRemaining: 1 } })}
+        reminder={buildReminder({
+          tier: 'warning',
+          topTask: {
+            taskId: 'task-1',
+            taskTitle: 'Prepare slides',
+            daysRemaining: 1,
+          },
+        })}
         onDismiss={vi.fn()}
         onClick={vi.fn()}
       />,
@@ -92,7 +119,13 @@ describe('ReminderToast', () => {
 
     render(
       <ReminderToast
-        reminder={buildReminder({ topTask: { taskId: 'task-99', taskTitle: 'Test task', daysRemaining: 0 } })}
+        reminder={buildReminder({
+          topTask: {
+            taskId: 'task-99',
+            taskTitle: 'Test task',
+            daysRemaining: 0,
+          },
+        })}
         onDismiss={onDismiss}
         onClick={vi.fn()}
       />,
@@ -104,13 +137,19 @@ describe('ReminderToast', () => {
     expect(onDismiss).toHaveBeenCalledWith('task-99');
   });
 
-  it('calls onClick with taskId when task title area is clicked', async () => {
+  it('calls onClick with taskId when card area is clicked', async () => {
     const onClick = vi.fn();
     const user = userEvent.setup();
 
     render(
       <ReminderToast
-        reminder={buildReminder({ topTask: { taskId: 'task-42', taskTitle: 'Clickable task', daysRemaining: 0 } })}
+        reminder={buildReminder({
+          topTask: {
+            taskId: 'task-42',
+            taskTitle: 'Clickable task',
+            daysRemaining: 0,
+          },
+        })}
         onDismiss={vi.fn()}
         onClick={onClick}
       />,
@@ -120,6 +159,27 @@ describe('ReminderToast', () => {
 
     expect(onClick).toHaveBeenCalledOnce();
     expect(onClick).toHaveBeenCalledWith('task-42');
+  });
+
+  it('does not call onClick when dismiss button is clicked', async () => {
+    const onClick = vi.fn();
+    const onDismiss = vi.fn();
+    const user = userEvent.setup();
+
+    render(
+      <ReminderToast
+        reminder={buildReminder({
+          topTask: { taskId: 'task-1', taskTitle: 'Test', daysRemaining: 0 },
+        })}
+        onDismiss={onDismiss}
+        onClick={onClick}
+      />,
+    );
+
+    await user.click(screen.getByRole('button', { name: /dismiss/i }));
+
+    expect(onDismiss).toHaveBeenCalledOnce();
+    expect(onClick).not.toHaveBeenCalled();
   });
 
   it('calls onClickMore when "+N more" is clicked', async () => {
@@ -143,7 +203,14 @@ describe('ReminderToast', () => {
   it('has role="alert" for critical tier', () => {
     render(
       <ReminderToast
-        reminder={buildReminder({ tier: 'critical', topTask: { taskId: 'task-1', taskTitle: 'Critical task', daysRemaining: -1 } })}
+        reminder={buildReminder({
+          tier: 'critical',
+          topTask: {
+            taskId: 'task-1',
+            taskTitle: 'Critical task',
+            daysRemaining: -1,
+          },
+        })}
         onDismiss={vi.fn()}
         onClick={vi.fn()}
       />,
@@ -167,7 +234,14 @@ describe('ReminderToast', () => {
   it('has role="status" for warning tier', () => {
     render(
       <ReminderToast
-        reminder={buildReminder({ tier: 'warning', topTask: { taskId: 'task-1', taskTitle: 'Warning task', daysRemaining: 1 } })}
+        reminder={buildReminder({
+          tier: 'warning',
+          topTask: {
+            taskId: 'task-1',
+            taskTitle: 'Warning task',
+            daysRemaining: 1,
+          },
+        })}
         onDismiss={vi.fn()}
         onClick={vi.fn()}
       />,
@@ -179,7 +253,14 @@ describe('ReminderToast', () => {
   it('applies red styling for critical tier', () => {
     render(
       <ReminderToast
-        reminder={buildReminder({ tier: 'critical', topTask: { taskId: 'task-1', taskTitle: 'Critical task', daysRemaining: -1 } })}
+        reminder={buildReminder({
+          tier: 'critical',
+          topTask: {
+            taskId: 'task-1',
+            taskTitle: 'Critical task',
+            daysRemaining: -1,
+          },
+        })}
         onDismiss={vi.fn()}
         onClick={vi.fn()}
       />,
@@ -203,7 +284,14 @@ describe('ReminderToast', () => {
   it('applies blue styling for warning tier', () => {
     render(
       <ReminderToast
-        reminder={buildReminder({ tier: 'warning', topTask: { taskId: 'task-1', taskTitle: 'Warning task', daysRemaining: 1 } })}
+        reminder={buildReminder({
+          tier: 'warning',
+          topTask: {
+            taskId: 'task-1',
+            taskTitle: 'Warning task',
+            daysRemaining: 1,
+          },
+        })}
         onDismiss={vi.fn()}
         onClick={vi.fn()}
       />,

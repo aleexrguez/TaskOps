@@ -3,6 +3,7 @@ import type {
   TaskStatus,
   CreateTaskInput,
   RetentionPolicy,
+  ReorderUpdate,
 } from '../types';
 
 const PRIORITY_ORDER = { high: 0, medium: 1, low: 2 } as const;
@@ -17,6 +18,7 @@ export function createLocalTask(input: CreateTaskInput): Task {
     priority: input.priority ?? 'medium',
     createdAt: now,
     updatedAt: now,
+    position: 0,
   };
 }
 
@@ -69,6 +71,19 @@ export function groupTasksByStatus(tasks: Task[]): TaskBoard {
     todo: sortTasks(tasks.filter((t) => t.status === 'todo')),
     'in-progress': sortTasks(tasks.filter((t) => t.status === 'in-progress')),
     done: sortTasks(tasks.filter((t) => t.status === 'done')),
+  };
+}
+
+export function groupTasksByPosition(tasks: Task[]): TaskBoard {
+  const byPosition = (a: Task, b: Task): number =>
+    a.position - b.position || a.createdAt.localeCompare(b.createdAt);
+
+  return {
+    todo: tasks.filter((t) => t.status === 'todo').sort(byPosition),
+    'in-progress': tasks
+      .filter((t) => t.status === 'in-progress')
+      .sort(byPosition),
+    done: tasks.filter((t) => t.status === 'done').sort(byPosition),
   };
 }
 
@@ -127,6 +142,32 @@ function parseDateComponents(dateStr: string): [number, number, number] {
  * Positive = future, 0 = today, negative = overdue.
  * Uses date-only arithmetic (YYYY-MM-DD) to avoid timezone issues.
  */
+export function extractReorderUpdates(
+  board: TaskBoard,
+  currentTasks: Task[],
+): ReorderUpdate[] {
+  const byId = new Map(currentTasks.map((t) => [t.id, t]));
+  const updates: ReorderUpdate[] = [];
+
+  for (const status of ['todo', 'in-progress', 'done'] as const) {
+    board[status].forEach((task, index) => {
+      const original = byId.get(task.id);
+      const positionChanged = !original || original.position !== index;
+      const statusChanged = !original || original.status !== status;
+
+      if (positionChanged || statusChanged) {
+        const update: ReorderUpdate = { id: task.id, position: index };
+        if (statusChanged) {
+          update.status = status;
+        }
+        updates.push(update);
+      }
+    });
+  }
+
+  return updates;
+}
+
 export function getDueDateDaysRemaining(
   dueDate: string,
   today: string = new Date().toLocaleDateString('en-CA'),

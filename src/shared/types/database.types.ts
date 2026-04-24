@@ -16,6 +16,7 @@ export interface Database {
           updated_at: string;
           recurrence_template_id: string | null;
           recurrence_date_key: string | null;
+          position: number;
         };
         Insert: {
           id?: string;
@@ -31,6 +32,7 @@ export interface Database {
           updated_at?: string;
           recurrence_template_id?: string | null;
           recurrence_date_key?: string | null;
+          position?: number;
         };
         Update: {
           id?: string;
@@ -46,6 +48,7 @@ export interface Database {
           updated_at?: string;
           recurrence_template_id?: string | null;
           recurrence_date_key?: string | null;
+          position?: number;
         };
       };
       recurrence_templates: {

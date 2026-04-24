@@ -7,4 +7,5 @@ export {
   archiveTask,
   unarchiveTask,
   purgeTasks,
+  reorderTasks,
 } from './supabase-api';

@@ -26,23 +26,23 @@ vi.mock('../../api', () => ({
   archiveTask: vi.fn(),
   unarchiveTask: vi.fn(),
   purgeTasks: vi.fn(),
+  reorderTasks: vi.fn(),
 }));
 
-import { fetchTasks, updateTask } from '../../api';
+import { fetchTasks, reorderTasks } from '../../api';
+import type { TaskBoard } from '../../utils';
 
-// Capture onTaskDrop prop passed to BoardView for direct invocation in tests
-let capturedOnTaskDrop:
-  | ((taskId: string, newStatus: string) => void)
-  | undefined;
+// Capture onBoardChange prop passed to BoardView for direct invocation in tests
+let capturedOnBoardChange: ((board: TaskBoard) => void) | undefined;
 vi.mock('../../components', async (importOriginal) => {
   const actual = await importOriginal<typeof import('../../components')>();
   return {
     ...actual,
     BoardView: (props: {
-      onTaskDrop?: (taskId: string, newStatus: string) => void;
+      onBoardChange?: (board: TaskBoard) => void;
       [key: string]: unknown;
     }) => {
-      capturedOnTaskDrop = props.onTaskDrop;
+      capturedOnBoardChange = props.onBoardChange;
       return actual.BoardView(props as Parameters<typeof actual.BoardView>[0]);
     },
   };
@@ -77,7 +77,7 @@ function makeTask(overrides: Partial<Task> = {}): Task {
 describe('TaskListContainer — Block 1 features', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    capturedOnTaskDrop = undefined;
+    capturedOnBoardChange = undefined;
     useTaskUIStore.setState({
       statusFilter: 'all',
       priorityFilter: 'all',
@@ -92,18 +92,21 @@ describe('TaskListContainer — Block 1 features', () => {
         title: 'High priority',
         priority: 'high',
         status: 'todo',
+        position: 0,
       }),
       makeTask({
         id: 'task-2',
         title: 'Low priority',
         priority: 'low',
         status: 'in-progress',
+        position: 0,
       }),
       makeTask({
         id: 'task-3',
         title: 'Done task',
         status: 'done',
         priority: 'medium',
+        position: 0,
         completedAt: '2026-01-09T10:00:00.000Z',
       }),
       makeTask({
@@ -112,6 +115,7 @@ describe('TaskListContainer — Block 1 features', () => {
         status: 'done',
         priority: 'low',
         isArchived: true,
+        position: 1,
         completedAt: '2026-01-08T10:00:00.000Z',
       }),
     ];
@@ -244,9 +248,9 @@ describe('TaskListContainer — Block 1 features', () => {
     expect(archiveButton).toBeInTheDocument();
   });
 
-  it('optimistically moves a task to the new column when onTaskDrop is called', async () => {
+  it('calls reorderTasks when onBoardChange is invoked with a board that differs from current state', async () => {
     useTaskUIStore.setState({ viewMode: 'board' });
-    (updateTask as ReturnType<typeof vi.fn>).mockResolvedValue({});
+    (reorderTasks as ReturnType<typeof vi.fn>).mockResolvedValue(undefined);
 
     const Wrapper = createWrapper();
     render(<TaskListContainer />, { wrapper: Wrapper });
@@ -257,21 +261,54 @@ describe('TaskListContainer — Block 1 features', () => {
       expect(screen.getByText('High priority')).toBeInTheDocument();
     });
 
-    // Invoke the captured onTaskDrop — simulates a drag-end from board
+    // Simulate drag-end: task-1 moved from 'todo' to 'done'
     await act(async () => {
-      capturedOnTaskDrop?.('task-1', 'done');
+      capturedOnBoardChange?.({
+        todo: [],
+        'in-progress': [
+          {
+            id: 'task-2',
+            title: 'Low priority',
+            status: 'in-progress',
+            priority: 'low',
+            position: 0,
+            isArchived: false,
+            createdAt: '2026-01-10T10:00:00.000Z',
+            updatedAt: '2026-01-10T10:00:00.000Z',
+          },
+        ],
+        done: [
+          {
+            id: 'task-1',
+            title: 'High priority',
+            status: 'done',
+            priority: 'high',
+            position: 0,
+            isArchived: false,
+            createdAt: '2026-01-10T10:00:00.000Z',
+            updatedAt: '2026-01-10T10:00:00.000Z',
+          },
+        ],
+      });
     });
 
-    // After optimistic update, 'High priority' (originally 'todo') should appear in Done column
-    // The done column heading is rendered — tasks are grouped by status in the board
     await waitFor(() => {
-      expect(updateTask).toHaveBeenCalledWith('task-1', { status: 'done' });
+      expect(reorderTasks).toHaveBeenCalled();
     });
+
+    const callArgs = (reorderTasks as ReturnType<typeof vi.fn>).mock
+      .calls[0][0];
+    // task-1 moved to done column — must have status: 'done'
+    expect(callArgs).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ id: 'task-1', status: 'done' }),
+      ]),
+    );
   });
 
-  it('does not call updateTask when task is dropped on its current column', async () => {
+  it('does not call reorderTasks when onBoardChange is invoked but nothing changed', async () => {
     useTaskUIStore.setState({ viewMode: 'board' });
-    (updateTask as ReturnType<typeof vi.fn>).mockResolvedValue({});
+    (reorderTasks as ReturnType<typeof vi.fn>).mockResolvedValue(undefined);
 
     const Wrapper = createWrapper();
     render(<TaskListContainer />, { wrapper: Wrapper });
@@ -280,11 +317,48 @@ describe('TaskListContainer — Block 1 features', () => {
       expect(screen.getByText('High priority')).toBeInTheDocument();
     });
 
+    // Simulate drag-end with a board that exactly matches current cache
     await act(async () => {
-      // task-1 is already 'todo' — dropping on 'todo' should be a no-op
-      capturedOnTaskDrop?.('task-1', 'todo');
+      capturedOnBoardChange?.({
+        todo: [
+          {
+            id: 'task-1',
+            title: 'High priority',
+            status: 'todo',
+            priority: 'high',
+            position: 0,
+            isArchived: false,
+            createdAt: '2026-01-10T10:00:00.000Z',
+            updatedAt: '2026-01-10T10:00:00.000Z',
+          },
+        ],
+        'in-progress': [
+          {
+            id: 'task-2',
+            title: 'Low priority',
+            status: 'in-progress',
+            priority: 'low',
+            position: 0,
+            isArchived: false,
+            createdAt: '2026-01-10T10:00:00.000Z',
+            updatedAt: '2026-01-10T10:00:00.000Z',
+          },
+        ],
+        done: [
+          {
+            id: 'task-3',
+            title: 'Done task',
+            status: 'done',
+            priority: 'medium',
+            position: 0,
+            isArchived: false,
+            createdAt: '2026-01-10T10:00:00.000Z',
+            updatedAt: '2026-01-10T10:00:00.000Z',
+          },
+        ],
+      });
     });
 
-    expect(updateTask).not.toHaveBeenCalled();
+    expect(reorderTasks).not.toHaveBeenCalled();
   });
 });

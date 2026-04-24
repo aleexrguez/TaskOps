@@ -143,17 +143,17 @@ describe('BoardView', () => {
     expect(deleteButtons).toHaveLength(1);
   });
 
-  it('accepts onTaskDrop prop without error', () => {
-    const onTaskDrop = vi.fn();
+  it('accepts onBoardChange prop without error and does not call it on initial render', () => {
+    const onBoardChange = vi.fn();
     const board: TaskBoard = {
       todo: [makeTask({ id: 'task-drop-1', title: 'Drop Me', status: 'todo' })],
       'in-progress': [],
       done: [],
     };
 
-    render(<BoardView board={board} onTaskDrop={onTaskDrop} />);
+    render(<BoardView board={board} onBoardChange={onBoardChange} />);
 
     expect(screen.getByRole('heading', { name: 'Todo' })).toBeInTheDocument();
-    expect(onTaskDrop).not.toHaveBeenCalled();
+    expect(onBoardChange).not.toHaveBeenCalled();
   });
 });

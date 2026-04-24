@@ -8,13 +8,9 @@ import {
   useSensors,
   closestCorners,
 } from '@dnd-kit/core';
-import type {
-  DragOverEvent,
-  DragStartEvent,
-  DragEndEvent,
-} from '@dnd-kit/core';
+import type { DragOverEvent, DragStartEvent } from '@dnd-kit/core';
 import { arrayMove, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
-import type { Task, TaskStatus } from '../types';
+import type { Task } from '../types';
 import type { TaskBoard } from '../utils';
 import { BoardColumn } from './BoardColumn';
 import { TaskCard } from './TaskCard';
@@ -26,7 +22,7 @@ interface BoardViewProps {
   onClick?: (id: string) => void;
   onArchive?: (id: string) => void;
   deletingId?: string | null;
-  onTaskDrop?: (taskId: string, newStatus: TaskStatus) => void;
+  onBoardChange?: (board: TaskBoard) => void;
 }
 
 const STATUSES: TaskStatus[] = ['todo', 'in-progress', 'done'];
@@ -76,7 +72,7 @@ export function BoardView({
   onClick,
   onArchive,
   deletingId,
-  onTaskDrop,
+  onBoardChange,
 }: BoardViewProps) {
   const [localBoard, setLocalBoard] = useState<TaskBoard>(board);
   const [activeTask, setActiveTask] = useState<Task | null>(null);
@@ -191,26 +187,10 @@ export function BoardView({
     }
   }
 
-  function handleDragEnd(event: DragEndEvent): void {
+  function handleDragEnd(): void {
     isDraggingRef.current = false;
-    const taskId = String(event.active.id);
-
-    // Find where the task ended up in localBoard
-    const finalStatus = findContainer(localBoard, taskId);
-    const originalStatus = activeTask?.status ?? null;
-
     setActiveTask(null);
-
-    // Persist status change if it changed column
-    if (
-      finalStatus &&
-      originalStatus &&
-      finalStatus !== originalStatus &&
-      onTaskDrop
-    ) {
-      onTaskDrop(taskId, finalStatus);
-    }
-    // localBoard already has the correct order from onDragOver — no reset needed
+    onBoardChange?.(localBoard);
   }
 
   function handleDragCancel(): void {

@@ -19,6 +19,7 @@ export const taskSchema = z.object({
   updatedAt: z.iso.datetime(),
   recurrenceTemplateId: z.string().uuid().optional(),
   recurrenceDateKey: z.string().optional(), // YYYY-MM-DD
+  position: z.number().int().default(0),
 });
 export type Task = z.infer<typeof taskSchema>;
 
@@ -33,6 +34,13 @@ export type CreateTaskInput = z.infer<typeof createTaskInputSchema>;
 
 export const updateTaskInputSchema = createTaskInputSchema.partial();
 export type UpdateTaskInput = z.infer<typeof updateTaskInputSchema>;
+
+export const reorderUpdateSchema = z.object({
+  id: z.string().uuid(),
+  position: z.number().int().min(0),
+  status: taskStatusSchema.optional(),
+});
+export type ReorderUpdate = z.infer<typeof reorderUpdateSchema>;
 
 export {
   retentionPolicySchema,

@@ -2,11 +2,14 @@ import type { Task, RetentionPolicy } from '../../types';
 import {
   sortTasks,
   groupTasksByStatus,
+  groupTasksByPosition,
   getExpiredTaskIds,
   filterVisibleTasks,
   isDueDateOverdue,
   getDueDateDaysRemaining,
+  extractReorderUpdates,
 } from '../../utils';
+import type { TaskBoard } from '../../utils';
 
 // ---------------------------------------------------------------------------
 // Fixture helpers
@@ -497,5 +500,204 @@ describe('getDueDateDaysRemaining', () => {
 
   it('handles large differences', () => {
     expect(getDueDateDaysRemaining('2026-12-31', '2026-01-01')).toBe(364);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// 7. groupTasksByPosition
+// ---------------------------------------------------------------------------
+
+describe('groupTasksByPosition', () => {
+  function makePositionTask(overrides: Partial<Task> = {}): Task {
+    _idCounter += 1;
+    return {
+      id: `00000000-0000-0000-0001-${String(_idCounter).padStart(12, '0')}`,
+      title: `Position Task ${_idCounter}`,
+      status: 'todo',
+      priority: 'medium',
+      position: 0,
+      isArchived: false,
+      createdAt: '2026-01-01T00:00:00.000Z',
+      updatedAt: '2026-01-01T00:00:00.000Z',
+      ...overrides,
+    };
+  }
+
+  it('groups tasks by status into todo, in-progress, and done', () => {
+    const todo = makePositionTask({ status: 'todo' });
+    const inProgress = makePositionTask({ status: 'in-progress' });
+    const done = makePositionTask({ status: 'done' });
+
+    const board = groupTasksByPosition([todo, inProgress, done]);
+
+    expect(board.todo).toHaveLength(1);
+    expect(board['in-progress']).toHaveLength(1);
+    expect(board.done).toHaveLength(1);
+    expect(board.todo[0].id).toBe(todo.id);
+    expect(board['in-progress'][0].id).toBe(inProgress.id);
+    expect(board.done[0].id).toBe(done.id);
+  });
+
+  it('sorts tasks within each group by position ascending', () => {
+    const third = makePositionTask({ status: 'todo', position: 2 });
+    const first = makePositionTask({ status: 'todo', position: 0 });
+    const second = makePositionTask({ status: 'todo', position: 1 });
+
+    const board = groupTasksByPosition([third, first, second]);
+
+    expect(board.todo[0].id).toBe(first.id);
+    expect(board.todo[1].id).toBe(second.id);
+    expect(board.todo[2].id).toBe(third.id);
+  });
+
+  it('uses createdAt as tiebreaker when positions are equal (ascending: older first)', () => {
+    const newer = makePositionTask({
+      status: 'todo',
+      position: 0,
+      createdAt: '2026-01-02T00:00:00.000Z',
+    });
+    const older = makePositionTask({
+      status: 'todo',
+      position: 0,
+      createdAt: '2026-01-01T00:00:00.000Z',
+    });
+
+    const board = groupTasksByPosition([newer, older]);
+
+    expect(board.todo[0].id).toBe(older.id);
+    expect(board.todo[1].id).toBe(newer.id);
+  });
+
+  it('returns empty arrays for statuses with no tasks', () => {
+    const todo = makePositionTask({ status: 'todo' });
+
+    const board = groupTasksByPosition([todo]);
+
+    expect(board['in-progress']).toEqual([]);
+    expect(board.done).toEqual([]);
+  });
+
+  it('places a low-priority task with position=0 before a high-priority task with position=1', () => {
+    const lowPriorityFirst = makePositionTask({
+      status: 'todo',
+      priority: 'low',
+      position: 0,
+    });
+    const highPrioritySecond = makePositionTask({
+      status: 'todo',
+      priority: 'high',
+      position: 1,
+    });
+
+    const board = groupTasksByPosition([highPrioritySecond, lowPriorityFirst]);
+
+    expect(board.todo[0].id).toBe(lowPriorityFirst.id);
+    expect(board.todo[1].id).toBe(highPrioritySecond.id);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// 8. extractReorderUpdates
+// ---------------------------------------------------------------------------
+
+describe('extractReorderUpdates', () => {
+  const makeTask = (overrides: Partial<Task>): Task => ({
+    id: crypto.randomUUID(),
+    title: 'Test',
+    status: 'todo',
+    priority: 'medium',
+    position: 0,
+    isArchived: false,
+    createdAt: '2026-01-01T00:00:00Z',
+    updatedAt: '2026-01-01T00:00:00Z',
+    ...overrides,
+  });
+
+  it('returns empty array when board matches current tasks with no changes', () => {
+    const t1 = makeTask({ id: 'a', status: 'todo', position: 0 });
+    const t2 = makeTask({ id: 'b', status: 'todo', position: 1 });
+    const board: TaskBoard = {
+      todo: [t1, t2],
+      'in-progress': [],
+      done: [],
+    };
+
+    const result = extractReorderUpdates(board, [t1, t2]);
+
+    expect(result).toEqual([]);
+  });
+
+  it('returns position updates when tasks are reordered within same column', () => {
+    const t1 = makeTask({ id: 'a', status: 'todo', position: 0 });
+    const t2 = makeTask({ id: 'b', status: 'todo', position: 1 });
+    // After drag: t2 is now index 0, t1 is index 1
+    const board: TaskBoard = {
+      todo: [t2, t1],
+      'in-progress': [],
+      done: [],
+    };
+
+    const result = extractReorderUpdates(board, [t1, t2]);
+
+    expect(result).toHaveLength(2);
+    expect(result).toContainEqual({ id: 'b', position: 0 });
+    expect(result).toContainEqual({ id: 'a', position: 1 });
+    // No status field — same-column reorder
+    expect(result.find((u) => u.id === 'b')).not.toHaveProperty('status');
+    expect(result.find((u) => u.id === 'a')).not.toHaveProperty('status');
+  });
+
+  it('includes status field when task moved to different column', () => {
+    const t1 = makeTask({ id: 'a', status: 'todo', position: 0 });
+    // After drag: t1 is now in 'done' at index 0
+    const board: TaskBoard = {
+      todo: [],
+      'in-progress': [],
+      done: [t1],
+    };
+
+    const result = extractReorderUpdates(board, [t1]);
+
+    expect(result).toHaveLength(1);
+    expect(result[0]).toEqual({ id: 'a', position: 0, status: 'done' });
+  });
+
+  it('only includes tasks that actually changed position or status', () => {
+    const t1 = makeTask({ id: 'a', status: 'todo', position: 0 });
+    const t2 = makeTask({ id: 'b', status: 'in-progress', position: 0 });
+    // Board reflects current state — nothing changed
+    const board: TaskBoard = {
+      todo: [t1],
+      'in-progress': [t2],
+      done: [],
+    };
+
+    const result = extractReorderUpdates(board, [t1, t2]);
+
+    expect(result).toEqual([]);
+  });
+
+  it('handles cross-column move: moved task gets both position and status, remaining tasks get position-only updates', () => {
+    const moved = makeTask({ id: 'moved', status: 'todo', position: 0 });
+    const stayed = makeTask({ id: 'stayed', status: 'todo', position: 1 });
+    // After drag: 'moved' goes to 'in-progress', 'stayed' shifts to position 0
+    const board: TaskBoard = {
+      todo: [stayed], // stayed is now at index 0 (was 1)
+      'in-progress': [moved], // moved is now at index 0, new status
+      done: [],
+    };
+
+    const result = extractReorderUpdates(board, [moved, stayed]);
+
+    expect(result).toHaveLength(2);
+    const movedUpdate = result.find((u) => u.id === 'moved');
+    const stayedUpdate = result.find((u) => u.id === 'stayed');
+    expect(movedUpdate).toEqual({
+      id: 'moved',
+      position: 0,
+      status: 'in-progress',
+    });
+    expect(stayedUpdate).toEqual({ id: 'stayed', position: 0 });
+    expect(stayedUpdate).not.toHaveProperty('status');
   });
 });

@@ -470,4 +470,137 @@ describe('mock-api', () => {
       expect(totalAfter).toBe(totalBefore);
     });
   });
+
+  // ---------------------------------------------------------------------------
+  // Group: reorderTasks
+  // ---------------------------------------------------------------------------
+
+  describe('reorderTasks', () => {
+    it('updates positions for the given task IDs', async () => {
+      // Arrange: create two tasks
+      const createA = mockApi.createTask({
+        title: 'Task A',
+        status: 'todo',
+        priority: 'medium',
+      });
+      vi.runAllTimers();
+      const taskA = await createA;
+
+      const createB = mockApi.createTask({
+        title: 'Task B',
+        status: 'todo',
+        priority: 'medium',
+      });
+      vi.runAllTimers();
+      const taskB = await createB;
+
+      // Act: swap their positions
+      const reorderPromise = mockApi.reorderTasks([
+        { id: taskA.id, position: 1 },
+        { id: taskB.id, position: 0 },
+      ]);
+      vi.runAllTimers();
+      await reorderPromise;
+
+      // Assert
+      const fetchPromise = mockApi.fetchTasks();
+      vi.runAllTimers();
+      const { tasks } = await fetchPromise;
+
+      const updatedA = tasks.find((t) => t.id === taskA.id);
+      const updatedB = tasks.find((t) => t.id === taskB.id);
+      expect(updatedA?.position).toBe(1);
+      expect(updatedB?.position).toBe(0);
+    });
+
+    it('updates status when provided alongside position', async () => {
+      // Arrange: create a todo task
+      const createPromise = mockApi.createTask({
+        title: 'Task C',
+        status: 'todo',
+        priority: 'low',
+      });
+      vi.runAllTimers();
+      const task = await createPromise;
+
+      // Act: reorder + change status to done
+      const reorderPromise = mockApi.reorderTasks([
+        { id: task.id, position: 0, status: 'done' },
+      ]);
+      vi.runAllTimers();
+      await reorderPromise;
+
+      // Assert: completedAt is set
+      const fetchPromise = mockApi.fetchTasks();
+      vi.runAllTimers();
+      const { tasks } = await fetchPromise;
+
+      const updated = tasks.find((t) => t.id === task.id);
+      expect(updated?.status).toBe('done');
+      expect(updated?.completedAt).toBeDefined();
+    });
+
+    it('clears completedAt and isArchived when status moves from done to another', async () => {
+      // Arrange: create and archive a done task manually
+      const createPromise = mockApi.createTask({
+        title: 'Task D',
+        status: 'todo',
+        priority: 'high',
+      });
+      vi.runAllTimers();
+      const task = await createPromise;
+
+      // Move to done
+      const donePromise = mockApi.updateTask(task.id, { status: 'done' });
+      vi.runAllTimers();
+      await donePromise;
+
+      // Archive
+      const archivePromise = mockApi.archiveTask(task.id);
+      vi.runAllTimers();
+      await archivePromise;
+
+      // Act: reorder + move back to todo
+      const reorderPromise = mockApi.reorderTasks([
+        { id: task.id, position: 2, status: 'todo' },
+      ]);
+      vi.runAllTimers();
+      await reorderPromise;
+
+      // Assert
+      const fetchPromise = mockApi.fetchTasks();
+      vi.runAllTimers();
+      const { tasks } = await fetchPromise;
+
+      const updated = tasks.find((t) => t.id === task.id);
+      expect(updated?.status).toBe('todo');
+      expect(updated?.completedAt).toBeUndefined();
+      expect(updated?.isArchived).toBe(false);
+    });
+
+    it('is a no-op when called with an empty array', async () => {
+      const fetchBefore = mockApi.fetchTasks();
+      vi.runAllTimers();
+      const { tasks: tasksBefore } = await fetchBefore;
+
+      const reorderPromise = mockApi.reorderTasks([]);
+      vi.runAllTimers();
+      await reorderPromise;
+
+      const fetchAfter = mockApi.fetchTasks();
+      vi.runAllTimers();
+      const { tasks: tasksAfter } = await fetchAfter;
+
+      expect(tasksAfter.length).toBe(tasksBefore.length);
+    });
+
+    it('skips updates for unknown task IDs gracefully', async () => {
+      const reorderPromise = mockApi.reorderTasks([
+        { id: '00000000-0000-0000-0000-000000000000', position: 99 },
+      ]);
+      vi.runAllTimers();
+      // Should resolve without throwing
+      await expect(reorderPromise).resolves.toBeUndefined();
+    });
+  });
 });

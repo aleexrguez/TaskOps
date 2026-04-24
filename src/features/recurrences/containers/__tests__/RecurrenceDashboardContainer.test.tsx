@@ -191,7 +191,11 @@ describe('RecurrenceDashboardContainer', () => {
     (useRecurrences as ReturnType<typeof vi.fn>).mockReturnValue({
       data: {
         recurrences: [
-          makeTemplate({ id: 'tmpl-1', title: 'Morning run', frequency: 'daily' }),
+          makeTemplate({
+            id: 'tmpl-1',
+            title: 'Morning run',
+            frequency: 'daily',
+          }),
         ],
         total: 1,
       },
@@ -212,8 +216,18 @@ describe('RecurrenceDashboardContainer', () => {
     (useRecurrences as ReturnType<typeof vi.fn>).mockReturnValue({
       data: {
         recurrences: [
-          makeTemplate({ id: 'tmpl-1', title: 'Weekly review', frequency: 'weekly', weeklyDays: [1] }),
-          makeTemplate({ id: 'tmpl-2', title: 'Pay bills', frequency: 'monthly', monthlyDay: 1 }),
+          makeTemplate({
+            id: 'tmpl-1',
+            title: 'Weekly review',
+            frequency: 'weekly',
+            weeklyDays: [1],
+          }),
+          makeTemplate({
+            id: 'tmpl-2',
+            title: 'Pay bills',
+            frequency: 'monthly',
+            monthlyDay: 1,
+          }),
         ],
         total: 2,
       },

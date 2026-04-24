@@ -12,6 +12,7 @@ export const SEED_TASKS: Task[] = [
     isArchived: false,
     createdAt: '2026-03-10T09:00:00.000Z',
     updatedAt: '2026-03-28T14:30:00.000Z',
+    position: 0,
   },
   {
     id: '22222222-2222-4222-a222-222222222222',
@@ -24,6 +25,7 @@ export const SEED_TASKS: Task[] = [
     isArchived: false,
     createdAt: '2026-03-12T10:15:00.000Z',
     updatedAt: '2026-03-12T10:15:00.000Z',
+    position: 0,
   },
   {
     id: '33333333-3333-4333-a333-333333333333',
@@ -36,6 +38,7 @@ export const SEED_TASKS: Task[] = [
     isArchived: false,
     createdAt: '2026-03-05T08:00:00.000Z',
     updatedAt: '2026-03-20T16:45:00.000Z',
+    position: 0,
   },
   {
     id: '44444444-4444-4444-a444-444444444444',
@@ -47,6 +50,7 @@ export const SEED_TASKS: Task[] = [
     isArchived: false,
     createdAt: '2026-03-15T11:00:00.000Z',
     updatedAt: '2026-03-15T11:00:00.000Z',
+    position: 0,
   },
   {
     id: '55555555-5555-4555-a555-555555555555',
@@ -59,6 +63,7 @@ export const SEED_TASKS: Task[] = [
     isArchived: false,
     createdAt: '2026-03-18T13:30:00.000Z',
     updatedAt: '2026-03-31T09:00:00.000Z',
+    position: 0,
   },
   {
     id: '66666666-6666-4666-a666-666666666666',
@@ -71,6 +76,7 @@ export const SEED_TASKS: Task[] = [
     isArchived: false,
     createdAt: '2026-03-22T14:00:00.000Z',
     updatedAt: '2026-03-22T14:00:00.000Z',
+    position: 0,
   },
   {
     id: '77777777-7777-4777-a777-777777777777',
@@ -82,6 +88,7 @@ export const SEED_TASKS: Task[] = [
     isArchived: false,
     createdAt: '2026-03-25T10:00:00.000Z',
     updatedAt: '2026-03-25T10:00:00.000Z',
+    position: 0,
   },
   {
     id: '88888888-8888-4888-a888-888888888888',
@@ -94,5 +101,6 @@ export const SEED_TASKS: Task[] = [
     isArchived: false,
     createdAt: '2026-03-27T08:30:00.000Z',
     updatedAt: '2026-04-01T11:20:00.000Z',
+    position: 0,
   },
 ];

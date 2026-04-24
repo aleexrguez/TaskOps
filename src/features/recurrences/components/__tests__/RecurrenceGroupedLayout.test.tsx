@@ -141,9 +141,7 @@ describe('RecurrenceGroupedLayout — empty state', () => {
   it('does not render any section headings when all groups are empty', () => {
     render(<RecurrenceGroupedLayout groups={emptyGroups} />);
 
-    expect(
-      screen.queryByRole('heading', { level: 2 }),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByRole('heading', { level: 2 })).not.toBeInTheDocument();
   });
 });
 

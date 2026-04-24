@@ -15,7 +15,7 @@ vi.mock('@/shared/services/auth.guard', () => ({
 }));
 
 import { supabase } from '@/shared/services/supabase';
-import { deleteTask, fetchTasks } from '../supabase-api';
+import { deleteTask, fetchTasks, reorderTasks } from '../supabase-api';
 
 // Convenience alias — casts partial builder mocks to the full Supabase type
 // without resorting to `as any` in individual tests.
@@ -174,5 +174,83 @@ describe('fetchTasks — recurrence field mapping', () => {
     // Assert
     expect(tasks[0].recurrenceTemplateId).toBeUndefined();
     expect(tasks[0].recurrenceDateKey).toBeUndefined();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Group: reorderTasks — supabase API
+// ---------------------------------------------------------------------------
+
+describe('reorderTasks — supabase API', () => {
+  beforeEach(() => {
+    vi.mocked(supabase.from).mockReset();
+  });
+
+  it('is a no-op and resolves when given an empty array', async () => {
+    await expect(reorderTasks([])).resolves.toBeUndefined();
+    expect(supabase.from).not.toHaveBeenCalled();
+  });
+
+  it('updates position for a single task without status change', async () => {
+    // Arrange: no status change so the select for existing tasks is skipped
+    const mockEq = vi.fn().mockResolvedValue({ error: null });
+    const mockUpdate = vi.fn().mockReturnValue({ eq: mockEq });
+
+    vi.mocked(supabase.from).mockReturnValue(
+      asFromReturn({ update: mockUpdate }),
+    );
+
+    // Act
+    await reorderTasks([{ id: 'task-abc', position: 3 }]);
+
+    // Assert
+    expect(mockUpdate).toHaveBeenCalledWith(
+      expect.objectContaining({ position: 3 }),
+    );
+    expect(mockEq).toHaveBeenCalledWith('id', 'task-abc');
+  });
+
+  it('sets completed_at when status changes from non-done to done', async () => {
+    // Arrange: fetch existing task (status: todo), then update succeeds
+    const mockIn = vi.fn().mockResolvedValue({
+      data: [makeDbRow({ id: 'task-abc', status: 'todo' })],
+      error: null,
+    });
+    const mockSelectExisting = vi.fn().mockReturnValue({ in: mockIn });
+
+    const mockEqUpdate = vi.fn().mockResolvedValue({ error: null });
+    const mockUpdate = vi.fn().mockReturnValue({ eq: mockEqUpdate });
+
+    vi.mocked(supabase.from)
+      .mockReturnValueOnce(asFromReturn({ select: mockSelectExisting }))
+      .mockReturnValueOnce(asFromReturn({ update: mockUpdate }));
+
+    // Act
+    await reorderTasks([{ id: 'task-abc', position: 0, status: 'done' }]);
+
+    // Assert: completed_at must be set in the update payload
+    expect(mockUpdate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        status: 'done',
+        completed_at: expect.any(String),
+      }),
+    );
+  });
+
+  it('throws when any individual update fails', async () => {
+    // Arrange: no status change, update returns an error
+    const mockEq = vi
+      .fn()
+      .mockResolvedValue({ error: { message: 'DB error' } });
+    const mockUpdate = vi.fn().mockReturnValue({ eq: mockEq });
+
+    vi.mocked(supabase.from).mockReturnValue(
+      asFromReturn({ update: mockUpdate }),
+    );
+
+    // Act & Assert
+    await expect(
+      reorderTasks([{ id: 'task-abc', position: 1 }]),
+    ).rejects.toThrow('DB error');
   });
 });

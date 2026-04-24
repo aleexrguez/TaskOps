@@ -1,7 +1,12 @@
 import { supabase } from '../../../shared/services/supabase';
 import { requireAuthenticatedUser } from '../../../shared/services/auth.guard';
 import type { Database } from '../../../shared/types/database.types';
-import type { Task, CreateTaskInput, UpdateTaskInput } from '../types';
+import type {
+  Task,
+  CreateTaskInput,
+  UpdateTaskInput,
+  ReorderUpdate,
+} from '../types';
 import type { TaskListResponse } from './task.dto';
 
 // ---------------------------------------------------------------------------
@@ -25,6 +30,7 @@ function fromDbRow(row: DbTaskRow): Task {
     updatedAt: row.updated_at,
     recurrenceTemplateId: row.recurrence_template_id ?? undefined,
     recurrenceDateKey: row.recurrence_date_key ?? undefined,
+    position: row.position,
   };
 }
 
@@ -198,4 +204,48 @@ export async function purgeTasks(taskIds: string[]): Promise<void> {
   const { error } = await supabase.from('tasks').delete().in('id', taskIds);
 
   if (error) throw new Error(error.message);
+}
+
+export async function reorderTasks(updates: ReorderUpdate[]): Promise<void> {
+  if (updates.length === 0) return;
+  await requireAuthenticatedUser();
+
+  // Fetch current tasks to apply domain transition logic for status changes
+  const ids = updates.filter((u) => u.status !== undefined).map((u) => u.id);
+  let existingTasks: Map<string, DbTaskRow> = new Map();
+
+  if (ids.length > 0) {
+    const { data, error } = await supabase
+      .from('tasks')
+      .select('*')
+      .in('id', ids);
+    if (error) throw new Error(error.message);
+    existingTasks = new Map((data ?? []).map((row) => [row.id, row]));
+  }
+
+  const promises = updates.map((update) => {
+    const fields: Database['public']['Tables']['tasks']['Update'] = {
+      position: update.position,
+    };
+
+    if (update.status !== undefined) {
+      fields.status = update.status;
+      const existing = existingTasks.get(update.id);
+      if (existing) {
+        if (update.status === 'done' && existing.status !== 'done') {
+          fields.completed_at = new Date().toISOString();
+        }
+        if (update.status !== 'done' && existing.status === 'done') {
+          fields.completed_at = null;
+          fields.is_archived = false;
+        }
+      }
+    }
+
+    return supabase.from('tasks').update(fields).eq('id', update.id);
+  });
+
+  const results = await Promise.all(promises);
+  const failed = results.find((r) => r.error);
+  if (failed?.error) throw new Error(failed.error.message);
 }

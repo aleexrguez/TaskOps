@@ -37,7 +37,10 @@ describe('computeReminders', () => {
   });
 
   it('returns empty array when no tasks have a dueDate', () => {
-    const tasks = [makeTask({ status: 'todo' }), makeTask({ status: 'in-progress' })];
+    const tasks = [
+      makeTask({ status: 'todo' }),
+      makeTask({ status: 'in-progress' }),
+    ];
     expect(computeReminders(tasks, new Set(), TODAY)).toEqual([]);
   });
 
@@ -50,7 +53,11 @@ describe('computeReminders', () => {
   });
 
   it('returns a critical reminder for an overdue task (days < 0)', () => {
-    const task = makeTask({ id: 'task-1', title: 'Overdue', dueDate: '2026-04-19' });
+    const task = makeTask({
+      id: 'task-1',
+      title: 'Overdue',
+      dueDate: '2026-04-19',
+    });
     const result = computeReminders([task], new Set(), TODAY);
 
     expect(result).toHaveLength(1);
@@ -73,7 +80,11 @@ describe('computeReminders', () => {
   });
 
   it('returns a warning reminder for a task due tomorrow (days === 1)', () => {
-    const task = makeTask({ id: 'task-3', title: 'Due Tomorrow', dueDate: '2026-04-22' });
+    const task = makeTask({
+      id: 'task-3',
+      title: 'Due Tomorrow',
+      dueDate: '2026-04-22',
+    });
     const result = computeReminders([task], new Set(), TODAY);
 
     expect(result).toHaveLength(1);
@@ -96,9 +107,9 @@ describe('computeReminders', () => {
 
   it('orders results: critical before urgent before warning', () => {
     const tasks = [
-      makeTask({ dueDate: '2026-04-22' }),   // warning (tomorrow)
-      makeTask({ dueDate: TODAY }),           // urgent (today)
-      makeTask({ dueDate: '2026-04-19' }),   // critical (overdue)
+      makeTask({ dueDate: '2026-04-22' }), // warning (tomorrow)
+      makeTask({ dueDate: TODAY }), // urgent (today)
+      makeTask({ dueDate: '2026-04-19' }), // critical (overdue)
     ];
     const result = computeReminders(tasks, new Set(), TODAY);
 
@@ -133,13 +144,15 @@ describe('computeReminders', () => {
 
     expect(result).toHaveLength(2);
     result.forEach((r) => expect(r.tier).toBe('critical'));
-    expect(result[0].topTask.daysRemaining).toBeLessThanOrEqual(result[1].topTask.daysRemaining);
+    expect(result[0].topTask.daysRemaining).toBeLessThanOrEqual(
+      result[1].topTask.daysRemaining,
+    );
   });
 
   it('shows both critical and urgent when each has 1 task (max 2)', () => {
     const tasks = [
       makeTask({ id: 'overdue', dueDate: '2026-04-20' }), // critical -1
-      makeTask({ id: 'today',   dueDate: TODAY }),          // urgent 0
+      makeTask({ id: 'today', dueDate: TODAY }), // urgent 0
     ];
     const result = computeReminders(tasks, new Set(), TODAY);
 
@@ -151,7 +164,7 @@ describe('computeReminders', () => {
   it('omits warning when critical + urgent already fill the 2-entry limit', () => {
     const tasks = [
       makeTask({ dueDate: '2026-04-20' }), // critical -1
-      makeTask({ dueDate: TODAY }),          // urgent 0
+      makeTask({ dueDate: TODAY }), // urgent 0
       makeTask({ dueDate: '2026-04-22' }), // warning +1
     ];
     const result = computeReminders(tasks, new Set(), TODAY);
@@ -164,8 +177,8 @@ describe('computeReminders', () => {
     const tasks = [
       makeTask({ id: 'less-overdue', dueDate: '2026-04-20' }), // -1
       makeTask({ id: 'more-overdue', dueDate: '2026-04-15' }), // -6
-      makeTask({ id: 'mid-overdue',  dueDate: '2026-04-18' }), // -3
-      makeTask({ id: 'least',        dueDate: '2026-04-19' }), // -2
+      makeTask({ id: 'mid-overdue', dueDate: '2026-04-18' }), // -3
+      makeTask({ id: 'least', dueDate: '2026-04-19' }), // -2
     ];
     const result = computeReminders(tasks, new Set(), TODAY);
 

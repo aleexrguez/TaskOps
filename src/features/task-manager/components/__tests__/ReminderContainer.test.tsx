@@ -4,7 +4,11 @@ import { vi } from 'vitest';
 import type { GroupedReminder } from '../../types/reminder.types';
 import { ReminderContainer } from '../ReminderContainer';
 
-function buildReminder(taskId: string, taskTitle: string, tier: GroupedReminder['tier'] = 'urgent'): GroupedReminder {
+function buildReminder(
+  taskId: string,
+  taskTitle: string,
+  tier: GroupedReminder['tier'] = 'urgent',
+): GroupedReminder {
   return {
     tier,
     topTask: { taskId, taskTitle, daysRemaining: 0 },
@@ -62,7 +66,9 @@ describe('ReminderContainer', () => {
       />,
     );
 
-    expect(screen.getByRole('region', { name: 'Due date reminders' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('region', { name: 'Due date reminders' }),
+    ).toBeInTheDocument();
   });
 
   it('has aria-live="assertive"', () => {

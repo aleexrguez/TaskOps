@@ -1,17 +1,18 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
-import { useTasks, useDeleteTask, useUpdateTask } from '../hooks/use-tasks';
+import { useTasks, useDeleteTask, useReorderTasks } from '../hooks/use-tasks';
 import { useArchiveTask } from '../hooks/use-archive-task';
 import { useTaskUIStore } from '../store/task-ui.store';
 import {
   filterTasksByStatus,
   filterVisibleTasks,
   sortTasks,
-  groupTasksByStatus,
+  groupTasksByPosition,
+  extractReorderUpdates,
 } from '../utils/task.utils';
-import type { TaskStatus } from '../types';
 import type { TaskListResponse } from '../api';
+import type { TaskBoard } from '../utils/task.utils';
 import { taskKeys } from '../hooks/task.keys';
 import { TaskFilters, TaskList, ConfirmDialog, BoardView } from '../components';
 
@@ -30,7 +31,7 @@ export function TaskListContainer() {
     variables: deletingId,
   } = useDeleteTask();
   const { mutate: archiveTask } = useArchiveTask();
-  const { mutate: updateTaskMutation } = useUpdateTask();
+  const { mutate: reorderMutation } = useReorderTasks();
 
   const [taskToDelete, setTaskToDelete] = useState<string | null>(null);
 
@@ -124,35 +125,42 @@ export function TaskListContainer() {
     archiveTask(id);
   }
 
-  function handleTaskDrop(taskId: string, newStatus: TaskStatus): void {
+  function handleBoardChange(newBoard: TaskBoard): void {
     const currentData = queryClient.getQueryData<TaskListResponse>(
       taskKeys.lists(),
     );
     if (!currentData) return;
 
-    const task = currentData.tasks.find((t) => t.id === taskId);
-    if (!task || task.status === newStatus) return;
+    const updates = extractReorderUpdates(newBoard, currentData.tasks);
+    if (updates.length === 0) return;
 
     const previousData = currentData;
 
-    queryClient.setQueryData<TaskListResponse>(taskKeys.lists(), {
-      ...currentData,
-      tasks: currentData.tasks.map((t) =>
-        t.id === taskId ? { ...t, status: newStatus } : t,
-      ),
+    // Optimistic update: apply positions + status changes to cache
+    const updateMap = new Map(updates.map((u) => [u.id, u]));
+    const optimisticTasks = currentData.tasks.map((t) => {
+      const update = updateMap.get(t.id);
+      if (!update) return t;
+      return {
+        ...t,
+        position: update.position,
+        ...(update.status !== undefined ? { status: update.status } : {}),
+      };
     });
 
-    updateTaskMutation(
-      { id: taskId, input: { status: newStatus } },
-      {
-        onError: () => {
-          queryClient.setQueryData(taskKeys.lists(), previousData);
-        },
-        onSettled: () => {
-          queryClient.invalidateQueries({ queryKey: taskKeys.lists() });
-        },
+    queryClient.setQueryData<TaskListResponse>(taskKeys.lists(), {
+      ...currentData,
+      tasks: optimisticTasks,
+    });
+
+    reorderMutation(updates, {
+      onError: () => {
+        queryClient.setQueryData(taskKeys.lists(), previousData);
       },
-    );
+      onSettled: () => {
+        queryClient.invalidateQueries({ queryKey: taskKeys.lists() });
+      },
+    });
   }
 
   if (isError) {
@@ -187,7 +195,7 @@ export function TaskListContainer() {
     );
   }
 
-  const board = groupTasksByStatus(filteredTasks);
+  const board = groupTasksByPosition(filteredTasks);
 
   return (
     <>
@@ -211,7 +219,7 @@ export function TaskListContainer() {
             onClick={(id) => navigate(`/app/tasks/${id}`)}
             onArchive={handleArchive}
             deletingId={isDeleting ? (deletingId ?? null) : null}
-            onTaskDrop={handleTaskDrop}
+            onBoardChange={handleBoardChange}
           />
         ) : (
           <TaskList

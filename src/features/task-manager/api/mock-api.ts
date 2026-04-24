@@ -1,4 +1,9 @@
-import type { Task, CreateTaskInput, UpdateTaskInput } from '../types';
+import type {
+  Task,
+  CreateTaskInput,
+  UpdateTaskInput,
+  ReorderUpdate,
+} from '../types';
 import type { TaskListResponse } from './task.dto';
 import { SEED_TASKS } from './mock-data';
 
@@ -54,6 +59,7 @@ export async function createTask(input: CreateTaskInput): Promise<Task> {
     isArchived: false,
     createdAt: now,
     updatedAt: now,
+    position: 0,
   };
   store = [...store, task];
   persist(store);
@@ -144,5 +150,38 @@ export async function deleteTask(id: string): Promise<void> {
     throw new Error(`Task not found: ${id}`);
   }
   store = store.filter((t) => t.id !== id);
+  persist(store);
+}
+
+export async function reorderTasks(updates: ReorderUpdate[]): Promise<void> {
+  await delay();
+  for (const update of updates) {
+    const index = store.findIndex((t) => t.id === update.id);
+    if (index === -1) continue;
+
+    const existing = store[index];
+    const now = new Date().toISOString();
+    let completedAt = existing.completedAt;
+    let isArchived = existing.isArchived;
+
+    if (update.status !== undefined) {
+      if (update.status === 'done' && existing.status !== 'done') {
+        completedAt = now;
+      }
+      if (update.status !== 'done' && existing.status === 'done') {
+        completedAt = undefined;
+        isArchived = false;
+      }
+    }
+
+    store[index] = {
+      ...existing,
+      position: update.position,
+      status: update.status ?? existing.status,
+      completedAt,
+      isArchived,
+      updatedAt: now,
+    };
+  }
   persist(store);
 }

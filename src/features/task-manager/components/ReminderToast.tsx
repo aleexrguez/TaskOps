@@ -16,10 +16,32 @@ const colorClasses: Record<ReminderTier, string> = {
     'border-blue-500 bg-blue-50 text-blue-900 dark:bg-blue-950 dark:text-blue-100',
 };
 
+const hoverClasses: Record<ReminderTier, string> = {
+  critical: 'hover:bg-red-100 dark:hover:bg-red-900/80',
+  urgent: 'hover:bg-amber-100 dark:hover:bg-amber-900/80',
+  warning: 'hover:bg-blue-100 dark:hover:bg-blue-900/80',
+};
+
+const focusClasses: Record<ReminderTier, string> = {
+  critical:
+    'focus-visible:ring-2 focus-visible:ring-red-400/50 focus-visible:ring-offset-1 dark:focus-visible:ring-offset-gray-900',
+  urgent:
+    'focus-visible:ring-2 focus-visible:ring-amber-400/50 focus-visible:ring-offset-1 dark:focus-visible:ring-offset-gray-900',
+  warning:
+    'focus-visible:ring-2 focus-visible:ring-blue-400/50 focus-visible:ring-offset-1 dark:focus-visible:ring-offset-gray-900',
+};
+
 function getDayLabel(daysRemaining: number): string {
   if (daysRemaining < 0) return 'Overdue';
   if (daysRemaining === 0) return 'Due today';
   return 'Tomorrow';
+}
+
+function handleCardKeyDown(e: React.KeyboardEvent, callback: () => void): void {
+  if (e.key === 'Enter' || e.key === ' ') {
+    e.preventDefault();
+    callback();
+  }
 }
 
 export function ReminderToast({
@@ -35,24 +57,32 @@ export function ReminderToast({
   return (
     <div
       role={role}
-      className={`flex w-80 items-start gap-3 rounded-md border-l-4 p-4 shadow-md ${colorClasses[tier]}`}
+      tabIndex={0}
+      onClick={() => onClick(topTask.taskId)}
+      onKeyDown={(e) => handleCardKeyDown(e, () => onClick(topTask.taskId))}
+      className={[
+        'relative flex w-80 cursor-pointer items-start gap-3 rounded-md border-l-4 p-4 pr-10 shadow-md outline-none transition-all duration-150',
+        'hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 active:shadow-md',
+        colorClasses[tier],
+        hoverClasses[tier],
+        focusClasses[tier],
+      ].join(' ')}
     >
       <div className="flex flex-1 flex-col gap-1 overflow-hidden">
         <span className="text-xs font-semibold uppercase tracking-wide opacity-75">
           {dayLabel}
         </span>
-        <button
-          type="button"
-          className="truncate text-left text-sm font-medium cursor-pointer focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
-          onClick={() => onClick(topTask.taskId)}
-        >
+        <span className="truncate text-sm font-medium">
           {topTask.taskTitle}
-        </button>
+        </span>
         {extraCount > 0 && (
           <button
             type="button"
-            className="text-left text-xs opacity-70 hover:opacity-100 cursor-pointer focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
-            onClick={onClickMore}
+            className="text-left text-xs opacity-70 underline hover:opacity-100"
+            onClick={(e) => {
+              e.stopPropagation();
+              onClickMore?.();
+            }}
           >
             +{extraCount} more
           </button>
@@ -61,8 +91,11 @@ export function ReminderToast({
       <button
         type="button"
         aria-label={`Dismiss reminder: ${topTask.taskTitle}`}
-        onClick={() => onDismiss(topTask.taskId)}
-        className="shrink-0 text-sm font-medium opacity-70 hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
+        onClick={(e) => {
+          e.stopPropagation();
+          onDismiss(topTask.taskId);
+        }}
+        className="absolute right-3 top-3 shrink-0 rounded p-0.5 text-sm font-medium opacity-50 transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-current"
       >
         ✕
       </button>

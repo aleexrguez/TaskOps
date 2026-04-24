@@ -52,7 +52,9 @@ describe('useDueReminders', () => {
 
   it('excludes dismissed tasks', () => {
     const task = makeTask({ id: 'dismissed-task', dueDate: '2026-04-20' });
-    useReminderStore.setState({ dismissedTaskIds: new Set(['dismissed-task']) });
+    useReminderStore.setState({
+      dismissedTaskIds: new Set(['dismissed-task']),
+    });
     const { result } = renderHook(() => useDueReminders([task]));
     expect(result.current).toEqual([]);
   });

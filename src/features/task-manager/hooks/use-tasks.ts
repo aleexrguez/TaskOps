@@ -5,8 +5,10 @@ import {
   createTask,
   updateTask,
   deleteTask,
+  reorderTasks,
 } from '../api';
 import type { CreateTaskRequest, UpdateTaskRequest } from '../api';
+import type { ReorderUpdate } from '../types';
 import { useAuth } from '@/features/auth/hooks';
 import { taskKeys } from './task.keys';
 
@@ -54,6 +56,16 @@ export function useDeleteTask() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => deleteTask(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: taskKeys.lists() });
+    },
+  });
+}
+
+export function useReorderTasks() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (updates: ReorderUpdate[]) => reorderTasks(updates),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: taskKeys.lists() });
     },
