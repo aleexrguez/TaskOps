@@ -65,3 +65,45 @@ describe('TaskFilters', () => {
     });
   });
 });
+
+describe('TaskFilters — accessibility', () => {
+  it('search input has accessible name', () => {
+    render(<TaskFilters {...defaultProps} />);
+
+    expect(
+      screen.getByRole('textbox', { name: /search tasks/i }),
+    ).toBeInTheDocument();
+  });
+
+  it('status select has accessible name', () => {
+    render(<TaskFilters {...defaultProps} />);
+
+    expect(
+      screen.getByRole('combobox', { name: /filter by status/i }),
+    ).toBeInTheDocument();
+  });
+
+  it('priority select has accessible name', () => {
+    render(<TaskFilters {...defaultProps} />);
+
+    expect(
+      screen.getByRole('combobox', { name: /filter by priority/i }),
+    ).toBeInTheDocument();
+  });
+
+  it('archived toggle has aria-pressed="false" when not showing archived', () => {
+    render(<TaskFilters {...defaultProps} showArchived={false} />);
+
+    expect(
+      screen.getByRole('button', { name: /show archived/i }),
+    ).toHaveAttribute('aria-pressed', 'false');
+  });
+
+  it('archived toggle has aria-pressed="true" when showing archived', () => {
+    render(<TaskFilters {...defaultProps} showArchived={true} />);
+
+    expect(
+      screen.getByRole('button', { name: /hide archived/i }),
+    ).toHaveAttribute('aria-pressed', 'true');
+  });
+});

@@ -57,6 +57,7 @@ export function ReminderToast({
   return (
     <div
       role={role}
+      aria-label={`${dayLabel}: ${topTask.taskTitle}`}
       tabIndex={0}
       onClick={() => onClick(topTask.taskId)}
       onKeyDown={(e) => handleCardKeyDown(e, () => onClick(topTask.taskId))}

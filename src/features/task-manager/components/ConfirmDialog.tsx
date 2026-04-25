@@ -80,6 +80,7 @@ export function ConfirmDialog({
         role="dialog"
         aria-modal="true"
         aria-labelledby="confirm-dialog-title"
+        aria-describedby="confirm-dialog-description"
         onKeyDown={handleKeyDown}
         className="w-full max-w-md rounded-lg bg-white p-6 shadow-xl dark:bg-gray-800"
       >
@@ -99,7 +100,10 @@ export function ConfirmDialog({
             ✕
           </button>
         </div>
-        <p className="mb-6 text-sm text-gray-600 dark:text-gray-300">
+        <p
+          id="confirm-dialog-description"
+          className="mb-6 text-sm text-gray-600 dark:text-gray-300"
+        >
           {description}
         </p>
         <div className="flex justify-end gap-3">

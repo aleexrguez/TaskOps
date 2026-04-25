@@ -33,6 +33,8 @@ export function BoardColumn({
   return (
     <div
       ref={setNodeRef}
+      role="region"
+      aria-label={`${title} column`}
       className={`flex flex-col rounded-lg bg-gray-50 p-4 dark:bg-gray-900${isOver ? ' ring-2 ring-indigo-400 dark:ring-indigo-500' : ''}`}
     >
       <div className="mb-3 flex items-center gap-2">

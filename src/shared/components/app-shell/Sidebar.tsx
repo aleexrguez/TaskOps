@@ -34,6 +34,7 @@ function NavContent({
             <NavLink
               to={item.to}
               onClick={onNavItemClick}
+              title={collapsed ? item.label : undefined}
               className={({ isActive }) =>
                 [
                   'flex items-center gap-3 px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer overflow-hidden',
@@ -135,6 +136,7 @@ export function Sidebar({
             type="button"
             onClick={onToggleCollapse}
             aria-label={collapseLabel}
+            aria-expanded={!isCollapsed}
             className="flex items-center justify-center w-full py-2 rounded-md text-sm text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 transition-colors cursor-pointer"
           >
             {isCollapsed ? '→' : '←'}

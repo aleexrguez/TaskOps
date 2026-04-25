@@ -107,6 +107,38 @@ describe('Sidebar — collapse toggle', () => {
   });
 });
 
+describe('Sidebar — accessibility', () => {
+  it('collapse button has aria-expanded="true" when sidebar is expanded', () => {
+    renderSidebar({ isCollapsed: false });
+
+    expect(
+      screen.getByRole('button', { name: 'Collapse sidebar' }),
+    ).toHaveAttribute('aria-expanded', 'true');
+  });
+
+  it('collapse button has aria-expanded="false" when sidebar is collapsed', () => {
+    renderSidebar({ isCollapsed: true });
+
+    expect(
+      screen.getByRole('button', { name: 'Expand sidebar' }),
+    ).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  it('nav links have title attribute when sidebar is collapsed', () => {
+    renderSidebar({ isCollapsed: true });
+
+    const dashboardLink = screen.getByRole('link', { name: /dashboard/i });
+    expect(dashboardLink).toHaveAttribute('title', 'Dashboard');
+  });
+
+  it('nav links do not have title attribute when sidebar is expanded', () => {
+    renderSidebar({ isCollapsed: false });
+
+    const dashboardLink = screen.getByRole('link', { name: /dashboard/i });
+    expect(dashboardLink).not.toHaveAttribute('title');
+  });
+});
+
 describe('Sidebar — mobile overlay', () => {
   it('renders mobile overlay when isMobileOpen is true', () => {
     renderSidebar({ isMobileOpen: true });

@@ -16,7 +16,7 @@ export function Header({
       <button
         type="button"
         aria-label="Open menu"
-        className="md:hidden mr-3 cursor-pointer"
+        className="md:hidden mr-3 cursor-pointer rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900"
         onClick={onToggleMobileSidebar}
       >
         <span aria-hidden="true">&#9776;</span>

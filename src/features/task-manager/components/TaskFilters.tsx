@@ -46,12 +46,14 @@ export function TaskFilters({
         value={searchQuery}
         onChange={handleSearchChange}
         placeholder="Search tasks..."
+        aria-label="Search tasks"
         className={controlClass}
       />
 
       <select
         value={statusFilter}
         onChange={handleStatusChange}
+        aria-label="Filter by status"
         className={controlClass}
       >
         <option value="all">All Statuses</option>
@@ -63,6 +65,7 @@ export function TaskFilters({
       <select
         value={priorityFilter}
         onChange={handlePriorityChange}
+        aria-label="Filter by priority"
         className={controlClass}
       >
         <option value="all">All Priorities</option>
@@ -82,6 +85,7 @@ export function TaskFilters({
       <button
         type="button"
         onClick={onToggleArchived}
+        aria-pressed={showArchived}
         className={
           showArchived
             ? 'rounded-md border border-indigo-300 px-3 py-2 text-sm bg-indigo-100 text-indigo-700 dark:bg-indigo-900 dark:text-indigo-300 dark:border-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900'

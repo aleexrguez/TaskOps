@@ -299,4 +299,26 @@ describe('ReminderToast', () => {
 
     expect(screen.getByRole('status').className).toMatch(/blue/);
   });
+
+  it('has accessible aria-label combining day label and task title', () => {
+    render(
+      <ReminderToast
+        reminder={buildReminder({
+          tier: 'urgent',
+          topTask: {
+            taskId: 'task-1',
+            taskTitle: 'Submit report',
+            daysRemaining: 0,
+          },
+        })}
+        onDismiss={vi.fn()}
+        onClick={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByRole('status')).toHaveAttribute(
+      'aria-label',
+      'Due today: Submit report',
+    );
+  });
 });
