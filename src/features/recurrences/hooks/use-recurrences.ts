@@ -50,6 +50,7 @@ export function useUpdateRecurrence() {
     onSuccess: (_data, { id }) => {
       queryClient.invalidateQueries({ queryKey: recurrenceKeys.lists() });
       queryClient.invalidateQueries({ queryKey: recurrenceKeys.detail(id) });
+      queryClient.invalidateQueries({ queryKey: taskKeys.lists() });
     },
   });
 }

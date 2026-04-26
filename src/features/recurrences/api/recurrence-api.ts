@@ -122,7 +122,38 @@ export async function updateRecurrence(
     .single();
 
   if (error) throw new Error(error.message);
+
+  // Propagate relevant fields to active generated tasks
+  await propagateTemplateChanges(id, input);
+
   return fromDbRow(data);
+}
+
+// ---------------------------------------------------------------------------
+// Propagation — update active generated tasks when template fields change
+// ---------------------------------------------------------------------------
+
+async function propagateTemplateChanges(
+  templateId: string,
+  input: UpdateRecurrenceInput,
+): Promise<void> {
+  const taskUpdates: Database['public']['Tables']['tasks']['Update'] = {};
+
+  if (input.title !== undefined) taskUpdates.title = input.title;
+  if (input.description !== undefined)
+    taskUpdates.description = input.description ?? null;
+  if (input.priority !== undefined) taskUpdates.priority = input.priority;
+
+  if (Object.keys(taskUpdates).length === 0) return;
+
+  const { error } = await supabase
+    .from('tasks')
+    .update(taskUpdates)
+    .eq('recurrence_template_id', templateId)
+    .neq('status', 'done')
+    .eq('is_archived', false);
+
+  if (error) throw new Error(error.message);
 }
 
 export async function deleteRecurrence(id: string): Promise<void> {
