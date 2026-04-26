@@ -282,6 +282,12 @@ describe('useUpdateRecurrence', () => {
         ]),
       }),
     );
+    // Must also invalidate task lists (propagation may have changed generated tasks)
+    expect(queryClient.invalidateQueries).toHaveBeenCalledWith(
+      expect.objectContaining({
+        queryKey: expect.arrayContaining(['tasks', 'list']),
+      }),
+    );
   });
 });
 

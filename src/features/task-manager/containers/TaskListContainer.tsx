@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { useTasks, useDeleteTask, useReorderTasks } from '../hooks/use-tasks';
-import { useArchiveTask } from '../hooks/use-archive-task';
+import { useArchiveTask, useUnarchiveTask } from '../hooks/use-archive-task';
 import { useTaskUIStore } from '../store/task-ui.store';
 import {
   filterTasksByStatus,
@@ -31,6 +31,7 @@ export function TaskListContainer() {
     variables: deletingId,
   } = useDeleteTask();
   const { mutate: archiveTask } = useArchiveTask();
+  const { mutate: unarchiveTask } = useUnarchiveTask();
   const { mutate: reorderMutation } = useReorderTasks();
 
   const [taskToDelete, setTaskToDelete] = useState<string | null>(null);
@@ -45,7 +46,6 @@ export function TaskListContainer() {
   const setSearchQuery = useTaskUIStore((s) => s.setSearchQuery);
   const resetFilters = useTaskUIStore((s) => s.resetFilters);
   const toggleShowArchived = useTaskUIStore((s) => s.toggleShowArchived);
-  const openEditModal = useTaskUIStore((s) => s.openEditModal);
   const openCreateModal = useTaskUIStore((s) => s.openCreateModal);
 
   // Scroll to and highlight a task when navigated from a reminder
@@ -122,7 +122,12 @@ export function TaskListContainer() {
   }
 
   function handleArchive(id: string): void {
-    archiveTask(id);
+    const task = data?.tasks.find((t) => t.id === id);
+    if (task?.isArchived) {
+      unarchiveTask(id);
+    } else {
+      archiveTask(id);
+    }
   }
 
   function handleBoardChange(newBoard: TaskBoard): void {
@@ -214,7 +219,6 @@ export function TaskListContainer() {
         {viewMode === 'board' ? (
           <BoardView
             board={board}
-            onEdit={openEditModal}
             onDelete={handleDelete}
             onClick={(id) => navigate(`/app/tasks/${id}`)}
             onArchive={handleArchive}
@@ -226,7 +230,6 @@ export function TaskListContainer() {
             tasks={filteredTasks}
             isLoading={isLoading}
             deletingId={isDeleting ? (deletingId ?? null) : null}
-            onEdit={openEditModal}
             onDelete={handleDelete}
             onClick={(id) => navigate(`/app/tasks/${id}`)}
             onCreateNew={openCreateModal}

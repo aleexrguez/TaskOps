@@ -410,6 +410,7 @@ describe('CRUD operations', () => {
   it('updateRecurrence sends partial update', async () => {
     const updatedRow = makeDbRow({ title: 'Updated title', is_active: false });
 
+    // Template update chain
     const mockSingle = vi
       .fn()
       .mockResolvedValue({ data: updatedRow, error: null });
@@ -417,9 +418,15 @@ describe('CRUD operations', () => {
     const mockEq = vi.fn().mockReturnValue({ select: mockSelect });
     const mockUpdate = vi.fn().mockReturnValue({ eq: mockEq });
 
-    vi.mocked(supabase.from).mockReturnValue(
-      asFromReturn({ update: mockUpdate }),
-    );
+    // Propagation chain (tasks update)
+    const mockPropEq2 = vi.fn().mockResolvedValue({ error: null });
+    const mockPropNeq = vi.fn().mockReturnValue({ eq: mockPropEq2 });
+    const mockPropEq1 = vi.fn().mockReturnValue({ neq: mockPropNeq });
+    const mockPropUpdate = vi.fn().mockReturnValue({ eq: mockPropEq1 });
+
+    vi.mocked(supabase.from)
+      .mockReturnValueOnce(asFromReturn({ update: mockUpdate }))
+      .mockReturnValueOnce(asFromReturn({ update: mockPropUpdate }));
 
     const result = await updateRecurrence('tmpl-uuid-001', {
       title: 'Updated title',
@@ -444,6 +451,7 @@ describe('CRUD operations', () => {
     const mockEq = vi.fn().mockReturnValue({ select: mockSelect });
     const mockUpdate = vi.fn().mockReturnValue({ eq: mockEq });
 
+    // leadTimeDays only — no propagation (no title/description/priority)
     vi.mocked(supabase.from).mockReturnValue(
       asFromReturn({ update: mockUpdate }),
     );
@@ -453,6 +461,95 @@ describe('CRUD operations', () => {
     expect(mockUpdate).toHaveBeenCalledWith(
       expect.objectContaining({ lead_time_days: 7 }),
     );
+  });
+
+  it('updateRecurrence propagates title to active generated tasks', async () => {
+    const updatedRow = makeDbRow({ title: 'New Title' });
+
+    const mockSingle = vi
+      .fn()
+      .mockResolvedValue({ data: updatedRow, error: null });
+    const mockSelect = vi.fn().mockReturnValue({ single: mockSingle });
+    const mockEq = vi.fn().mockReturnValue({ select: mockSelect });
+    const mockUpdate = vi.fn().mockReturnValue({ eq: mockEq });
+
+    const mockPropEq2 = vi.fn().mockResolvedValue({ error: null });
+    const mockPropNeq = vi.fn().mockReturnValue({ eq: mockPropEq2 });
+    const mockPropEq1 = vi.fn().mockReturnValue({ neq: mockPropNeq });
+    const mockPropUpdate = vi.fn().mockReturnValue({ eq: mockPropEq1 });
+
+    vi.mocked(supabase.from)
+      .mockReturnValueOnce(asFromReturn({ update: mockUpdate }))
+      .mockReturnValueOnce(asFromReturn({ update: mockPropUpdate }));
+
+    await updateRecurrence('tmpl-uuid-001', { title: 'New Title' });
+
+    // Verify propagation query targets tasks table
+    expect(vi.mocked(supabase.from)).toHaveBeenCalledWith('tasks');
+
+    // Verify propagation update payload
+    expect(mockPropUpdate).toHaveBeenCalledWith(
+      expect.objectContaining({ title: 'New Title' }),
+    );
+
+    // Verify filters: templateId, not done, not archived
+    expect(mockPropEq1).toHaveBeenCalledWith(
+      'recurrence_template_id',
+      'tmpl-uuid-001',
+    );
+    expect(mockPropNeq).toHaveBeenCalledWith('status', 'done');
+    expect(mockPropEq2).toHaveBeenCalledWith('is_archived', false);
+  });
+
+  it('updateRecurrence does not propagate when only isActive changes', async () => {
+    const updatedRow = makeDbRow({ is_active: false });
+
+    const mockSingle = vi
+      .fn()
+      .mockResolvedValue({ data: updatedRow, error: null });
+    const mockSelect = vi.fn().mockReturnValue({ single: mockSingle });
+    const mockEq = vi.fn().mockReturnValue({ select: mockSelect });
+    const mockUpdate = vi.fn().mockReturnValue({ eq: mockEq });
+
+    vi.mocked(supabase.from).mockReturnValue(
+      asFromReturn({ update: mockUpdate }),
+    );
+
+    await updateRecurrence('tmpl-uuid-001', { isActive: false });
+
+    // Only one call to from() — the template update. No propagation.
+    expect(vi.mocked(supabase.from)).toHaveBeenCalledTimes(1);
+    expect(vi.mocked(supabase.from)).toHaveBeenCalledWith(
+      'recurrence_templates',
+    );
+  });
+
+  it('updateRecurrence propagates priority without touching done tasks', async () => {
+    const updatedRow = makeDbRow({ priority: 'high' });
+
+    const mockSingle = vi
+      .fn()
+      .mockResolvedValue({ data: updatedRow, error: null });
+    const mockSelect = vi.fn().mockReturnValue({ single: mockSingle });
+    const mockEq = vi.fn().mockReturnValue({ select: mockSelect });
+    const mockUpdate = vi.fn().mockReturnValue({ eq: mockEq });
+
+    const mockPropEq2 = vi.fn().mockResolvedValue({ error: null });
+    const mockPropNeq = vi.fn().mockReturnValue({ eq: mockPropEq2 });
+    const mockPropEq1 = vi.fn().mockReturnValue({ neq: mockPropNeq });
+    const mockPropUpdate = vi.fn().mockReturnValue({ eq: mockPropEq1 });
+
+    vi.mocked(supabase.from)
+      .mockReturnValueOnce(asFromReturn({ update: mockUpdate }))
+      .mockReturnValueOnce(asFromReturn({ update: mockPropUpdate }));
+
+    await updateRecurrence('tmpl-uuid-001', { priority: 'high' });
+
+    expect(mockPropUpdate).toHaveBeenCalledWith(
+      expect.objectContaining({ priority: 'high' }),
+    );
+    expect(mockPropNeq).toHaveBeenCalledWith('status', 'done');
+    expect(mockPropEq2).toHaveBeenCalledWith('is_archived', false);
   });
 
   it('deleteRecurrence deletes by id', async () => {
