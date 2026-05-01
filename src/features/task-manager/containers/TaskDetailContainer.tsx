@@ -40,7 +40,7 @@ export function TaskDetailContainer() {
     : undefined;
 
   function handleBack(): void {
-    navigate('/app');
+    navigate('/app/tasks');
   }
 
   function handleEdit(): void {
@@ -126,7 +126,6 @@ export function TaskDetailContainer() {
           task={task}
           onEdit={handleEdit}
           onDelete={handleDeleteRequest}
-          onBack={handleBack}
           isEditing={isEditing}
           onSave={handleSave}
           onCancel={handleCancel}
@@ -143,6 +142,12 @@ export function TaskDetailContainer() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="max-w-4xl mx-auto px-4 py-8" hidden={showConfirm}>
+        <button
+          onClick={handleBack}
+          className="mb-4 inline-flex items-center text-sm font-medium text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+        >
+          &larr; Back to tasks
+        </button>
         {renderContent()}
       </div>
       <ConfirmDialog
