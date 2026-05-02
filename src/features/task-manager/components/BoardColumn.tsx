@@ -13,6 +13,7 @@ interface BoardColumnProps {
   onDelete?: (id: string) => void;
   onClick?: (id: string) => void;
   onArchive?: (id: string) => void;
+  onDuplicate?: (id: string) => void;
   deletingId?: string | null;
 }
 
@@ -23,6 +24,7 @@ export function BoardColumn({
   onDelete,
   onClick,
   onArchive,
+  onDuplicate,
   deletingId = null,
 }: BoardColumnProps) {
   const { setNodeRef, isOver } = useDroppable({ id: status });
@@ -61,6 +63,7 @@ export function BoardColumn({
                 onDelete={onDelete}
                 onClick={onClick}
                 onArchive={onArchive}
+                onDuplicate={onDuplicate}
                 isDeleting={deletingId === task.id}
               />
             ))

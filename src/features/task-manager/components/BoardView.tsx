@@ -27,6 +27,7 @@ interface BoardViewProps {
   onDelete?: (id: string) => void;
   onClick?: (id: string) => void;
   onArchive?: (id: string) => void;
+  onDuplicate?: (id: string) => void;
   deletingId?: string | null;
   onBoardChange?: (board: TaskBoard) => void;
 }
@@ -104,6 +105,7 @@ export function BoardView({
   onDelete,
   onClick,
   onArchive,
+  onDuplicate,
   deletingId,
   onBoardChange,
 }: BoardViewProps) {
@@ -276,6 +278,7 @@ export function BoardView({
           onDelete={onDelete}
           onClick={onClick}
           onArchive={onArchive}
+          onDuplicate={onDuplicate}
           deletingId={deletingId}
         />
         <BoardColumn
@@ -285,6 +288,7 @@ export function BoardView({
           onDelete={onDelete}
           onClick={onClick}
           onArchive={onArchive}
+          onDuplicate={onDuplicate}
           deletingId={deletingId}
         />
         <BoardColumn
@@ -294,6 +298,7 @@ export function BoardView({
           onDelete={onDelete}
           onClick={onClick}
           onArchive={onArchive}
+          onDuplicate={onDuplicate}
           deletingId={deletingId}
         />
       </div>
