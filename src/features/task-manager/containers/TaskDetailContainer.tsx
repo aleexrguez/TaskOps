@@ -1,6 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTask, useDeleteTask, useUpdateTask } from '../hooks/use-tasks';
+import {
+  useChecklist,
+  useCreateChecklistItem,
+  useUpdateChecklistItem,
+  useDeleteChecklistItem,
+  useReorderChecklistItems,
+} from '../hooks/use-checklist';
 import { useToastStore } from '../store/toast.store';
 import { TaskDetailView } from '../components/TaskDetailView';
 import { TaskNotFound } from '../components/TaskNotFound';
@@ -38,6 +45,36 @@ export function TaskDetailContainer() {
   const frequencyLabel = recurrenceTemplate
     ? formatFrequencyLabel(recurrenceTemplate)
     : undefined;
+
+  // Checklist hooks
+  const { data: checklistItems, isLoading: checklistLoading } =
+    useChecklist(id);
+  const { mutate: createChecklistItemMut } = useCreateChecklistItem(id);
+  const { mutate: updateChecklistItemMut } = useUpdateChecklistItem(id);
+  const { mutate: deleteChecklistItemMut } = useDeleteChecklistItem(id);
+  const { mutate: reorderChecklistItemsMut } = useReorderChecklistItems(id);
+
+  function handleChecklistToggle(itemId: string, isCompleted: boolean): void {
+    updateChecklistItemMut({ id: itemId, input: { isCompleted } });
+  }
+
+  function handleChecklistCreate(title: string): void {
+    createChecklistItemMut({ title });
+  }
+
+  function handleChecklistDelete(itemId: string): void {
+    deleteChecklistItemMut(itemId);
+  }
+
+  function handleChecklistUpdate(itemId: string, title: string): void {
+    updateChecklistItemMut({ id: itemId, input: { title } });
+  }
+
+  function handleChecklistReorder(
+    items: { id: string; position: number }[],
+  ): void {
+    reorderChecklistItemsMut(items);
+  }
 
   function handleBack(): void {
     navigate('/app/tasks');
@@ -132,6 +169,13 @@ export function TaskDetailContainer() {
           isSubmitting={isUpdating}
           isRecurring={recurring}
           frequencyLabel={frequencyLabel}
+          checklistItems={checklistItems}
+          checklistLoading={checklistLoading}
+          onChecklistToggle={handleChecklistToggle}
+          onChecklistCreate={handleChecklistCreate}
+          onChecklistDelete={handleChecklistDelete}
+          onChecklistUpdate={handleChecklistUpdate}
+          onChecklistReorder={handleChecklistReorder}
         />
       );
     }
