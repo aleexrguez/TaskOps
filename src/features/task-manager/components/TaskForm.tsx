@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
 import type { CreateTaskInput, TaskStatus, TaskPriority } from '../types';
+import { DatePicker } from './DatePicker';
 
 interface TaskFormProps {
   onSubmit: (data: CreateTaskInput) => void;
@@ -139,16 +140,13 @@ export function TaskForm({
       </div>
 
       <div className="flex flex-col gap-1">
-        <label htmlFor="dueDate" className={labelClass}>
-          Due Date
-        </label>
-        <input
+        <DatePicker
           id="dueDate"
-          name="dueDate"
-          type="date"
-          value={fields.dueDate}
-          onChange={handleChange}
-          className={inputClass}
+          label="Due Date"
+          value={fields.dueDate || undefined}
+          onChange={(date) =>
+            setFields((prev) => ({ ...prev, dueDate: date ?? '' }))
+          }
         />
       </div>
 
