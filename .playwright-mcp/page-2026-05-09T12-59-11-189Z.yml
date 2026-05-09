@@ -1,0 +1,146 @@
+- generic [ref=e2]:
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - button "Open menu" [ref=e5] [cursor=pointer]: ☰
+      - generic [ref=e6]: TaskOps
+    - main [ref=e7]:
+      - generic [ref=e8]:
+        - generic [ref=e175]:
+          - generic [ref=e176]:
+            - heading "Tasks" [level=1] [ref=e177]
+            - paragraph [ref=e178]: 6 tasks shown
+          - generic [ref=e179]:
+            - generic [ref=e180]:
+              - button "List" [ref=e181] [cursor=pointer]
+              - button "Board" [pressed] [ref=e182] [cursor=pointer]
+            - button "New Task" [ref=e183] [cursor=pointer]:
+              - generic [ref=e184]: +
+              - text: New Task
+        - generic [ref=e185]:
+          - generic [ref=e186]:
+            - generic [ref=e187]:
+              - paragraph [ref=e188]: "6"
+              - paragraph [ref=e189]: Total
+            - generic [ref=e190]:
+              - paragraph [ref=e191]: "2"
+              - paragraph [ref=e192]: Todo
+            - generic [ref=e193]:
+              - paragraph [ref=e194]: "2"
+              - paragraph [ref=e195]: In Progress
+            - generic [ref=e196]:
+              - paragraph [ref=e197]: "2"
+              - paragraph [ref=e198]: Done
+          - generic [ref=e199]:
+            - button "Filters" [ref=e201]
+            - generic [ref=e202]:
+              - region "Todo column" [ref=e203]:
+                - generic [ref=e204]:
+                  - heading "Todo" [level=2] [ref=e205]
+                  - generic [ref=e206]: "2"
+                - generic [ref=e207]:
+                  - button "Fix critical login bug Fix critical login bug Duplicate Delete Users can't login on mobile Safari Todo High Due today 9/5/2026" [ref=e208]:
+                    - generic [ref=e209] [cursor=pointer]:
+                      - button "Fix critical login bug" [ref=e210]
+                      - generic:
+                        - generic:
+                          - heading "Fix critical login bug" [level=3]
+                          - generic [ref=e211]:
+                            - button "Duplicate" [ref=e212]
+                            - button "Delete" [ref=e213]
+                        - paragraph: Users can't login on mobile Safari
+                        - generic:
+                          - generic: Todo
+                          - generic: High
+                          - generic: Due today
+                        - generic:
+                          - generic: 9/5/2026
+                  - button "Design settings page Design settings page Duplicate Delete Create mockups for user preferences Todo Medium 6 days left 9/5/2026" [ref=e214]:
+                    - generic [ref=e215] [cursor=pointer]:
+                      - button "Design settings page" [ref=e216]
+                      - generic:
+                        - generic:
+                          - heading "Design settings page" [level=3]
+                          - generic [ref=e217]:
+                            - button "Duplicate" [ref=e218]
+                            - button "Delete" [ref=e219]
+                        - paragraph: Create mockups for user preferences
+                        - generic:
+                          - generic: Todo
+                          - generic: Medium
+                          - generic: 6 days left
+                        - generic:
+                          - generic: 9/5/2026
+              - region "In Progress column" [ref=e220]:
+                - generic [ref=e221]:
+                  - heading "In Progress" [level=2] [ref=e222]
+                  - generic [ref=e223]: "2"
+                - generic [ref=e224]:
+                  - button "Implement dark mode toggle Implement dark mode toggle Duplicate Delete Add theme switching in settings page In Progress Medium 9/5/2026" [ref=e225]:
+                    - generic [ref=e226] [cursor=pointer]:
+                      - button "Implement dark mode toggle" [ref=e227]
+                      - generic:
+                        - generic:
+                          - heading "Implement dark mode toggle" [level=3]
+                          - generic [ref=e228]:
+                            - button "Duplicate" [ref=e229]
+                            - button "Delete" [ref=e230]
+                        - paragraph: Add theme switching in settings page
+                        - generic:
+                          - generic: In Progress
+                          - generic: Medium
+                        - generic:
+                          - generic: 9/5/2026
+                  - button "API integration for notifications API integration for notifications Duplicate Delete Connect push notification service In Progress High 9/5/2026" [ref=e231]:
+                    - generic [ref=e232] [cursor=pointer]:
+                      - button "API integration for notifications" [ref=e233]
+                      - generic:
+                        - generic:
+                          - heading "API integration for notifications" [level=3]
+                          - generic [ref=e234]:
+                            - button "Duplicate" [ref=e235]
+                            - button "Delete" [ref=e236]
+                        - paragraph: Connect push notification service
+                        - generic:
+                          - generic: In Progress
+                          - generic: High
+                        - generic:
+                          - generic: 9/5/2026
+              - region "Done column" [ref=e237]:
+                - generic [ref=e238]:
+                  - heading "Done" [level=2] [ref=e239]
+                  - generic [ref=e240]: "2"
+                - generic [ref=e241]:
+                  - button "Write unit tests for auth Write unit tests for auth Duplicate Delete Archive Cover login, register, and password reset flows Done Low 9/5/2026" [ref=e242]:
+                    - generic [ref=e243] [cursor=pointer]:
+                      - button "Write unit tests for auth" [ref=e244]
+                      - generic:
+                        - generic:
+                          - heading "Write unit tests for auth" [level=3]
+                          - generic [ref=e245]:
+                            - button "Duplicate" [ref=e246]
+                            - button "Delete" [ref=e247]
+                            - button "Archive" [ref=e248]
+                        - paragraph: Cover login, register, and password reset flows
+                        - generic:
+                          - generic: Done
+                          - generic: Low
+                        - generic:
+                          - generic: 9/5/2026
+                  - button "Setup CI/CD pipeline Setup CI/CD pipeline Duplicate Delete Archive GitHub Actions for build and deploy Done High 9/5/2026" [ref=e249]:
+                    - generic [ref=e250] [cursor=pointer]:
+                      - button "Setup CI/CD pipeline" [ref=e251]
+                      - generic:
+                        - generic:
+                          - heading "Setup CI/CD pipeline" [level=3]
+                          - generic [ref=e252]:
+                            - button "Duplicate" [ref=e253]
+                            - button "Delete" [ref=e254]
+                            - button "Archive" [ref=e255]
+                        - paragraph: GitHub Actions for build and deploy
+                        - generic:
+                          - generic: Done
+                          - generic: High
+                        - generic:
+                          - generic: 9/5/2026
+            - status [ref=e256]
+  - region "Notifications"

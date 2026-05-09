@@ -1,0 +1,226 @@
+- generic [ref=e2]:
+  - generic [ref=e3]:
+    - complementary [ref=e4]:
+      - generic [ref=e5]:
+        - img "TaskOps" [ref=e6]
+        - img [ref=e7]
+      - navigation "Main navigation" [ref=e8]:
+        - list [ref=e9]:
+          - listitem [ref=e10]:
+            - link "Tasks" [ref=e11] [cursor=pointer]:
+              - /url: /app/tasks
+              - img [ref=e12]
+              - generic [ref=e13]: Tasks
+          - listitem [ref=e14]:
+            - link "Recurrences" [ref=e15] [cursor=pointer]:
+              - /url: /app/recurrences
+              - img [ref=e16]
+              - generic [ref=e17]: Recurrences
+          - listitem [ref=e18]:
+            - link "Settings" [ref=e19] [cursor=pointer]:
+              - /url: /app/settings
+              - img [ref=e20]
+              - generic [ref=e21]: Settings
+        - button "Sign out" [ref=e23] [cursor=pointer]:
+          - img [ref=e24]
+          - generic [ref=e25]: Sign out
+      - button "Collapse sidebar" [expanded] [ref=e27] [cursor=pointer]: ←
+    - banner [ref=e28]
+    - main [ref=e29]:
+      - generic [ref=e30]:
+        - generic [ref=e31]:
+          - generic [ref=e32]:
+            - heading "Tasks" [level=1] [ref=e33]
+            - paragraph [ref=e34]: 2 tasks shown
+          - generic [ref=e35]:
+            - generic [ref=e36]:
+              - button "List" [pressed] [ref=e37] [cursor=pointer]
+              - button "Board" [ref=e38] [cursor=pointer]
+            - button "New Task" [ref=e39] [cursor=pointer]:
+              - generic [ref=e40]: +
+              - text: New Task
+        - generic [ref=e41]:
+          - generic [ref=e42]:
+            - generic [ref=e43]:
+              - paragraph [ref=e44]: "2"
+              - paragraph [ref=e45]: Total
+            - generic [ref=e46]:
+              - paragraph [ref=e47]: "1"
+              - paragraph [ref=e48]: Todo
+            - generic [ref=e49]:
+              - paragraph [ref=e50]: "1"
+              - paragraph [ref=e51]: In Progress
+            - generic [ref=e52]:
+              - paragraph [ref=e53]: "0"
+              - paragraph [ref=e54]: Done
+          - generic [ref=e55]:
+            - generic [ref=e57]:
+              - textbox "Search tasks" [ref=e58]:
+                - /placeholder: Search tasks...
+              - combobox "Filter by status" [ref=e59]:
+                - option "All Statuses" [selected]
+                - option "Todo"
+                - option "In Progress"
+                - option "Done"
+              - combobox "Filter by priority" [ref=e60]:
+                - option "All Priorities" [selected]
+                - option "Low"
+                - option "Medium"
+                - option "High"
+              - button "Reset" [ref=e61] [cursor=pointer]
+              - button "Show archived" [ref=e62] [cursor=pointer]
+            - generic [ref=e63]:
+              - generic [ref=e64] [cursor=pointer]:
+                - button "Fix critical login bug" [ref=e65]
+                - generic:
+                  - generic:
+                    - heading "Fix critical login bug" [level=3]
+                    - generic [ref=e66]:
+                      - button "Duplicate" [ref=e67]
+                      - button "Delete" [ref=e68]
+                  - paragraph: Users can't login on mobile Safari
+                  - generic:
+                    - generic: Todo
+                    - generic: High
+                    - generic: Due today
+                  - generic:
+                    - generic: 9/5/2026
+              - generic [ref=e69] [cursor=pointer]:
+                - button "Implement dark mode toggle" [ref=e70]
+                - generic:
+                  - generic:
+                    - heading "Implement dark mode toggle" [level=3]
+                    - generic [ref=e71]:
+                      - button "Duplicate" [ref=e72]
+                      - button "Delete" [ref=e73]
+                  - paragraph: Add theme switching in settings page
+                  - generic:
+                    - generic: In Progress
+                    - generic: Medium
+                  - generic:
+                    - generic: 9/5/2026
+        - generic [ref=e75]:
+          - generic [ref=e76]:
+            - heading "New Task" [level=2] [ref=e77]
+            - button "Close" [ref=e78]: ✕
+          - generic [ref=e79]:
+            - generic [ref=e80]:
+              - generic [ref=e81]: Title *
+              - textbox "Title *" [ref=e82]:
+                - /placeholder: Task title
+                - text: Write unit tests for auth
+            - generic [ref=e83]:
+              - generic [ref=e84]: Description
+              - textbox "Description" [ref=e85]:
+                - /placeholder: Task description
+                - text: Cover login, register, and password reset flows
+            - generic [ref=e86]:
+              - generic [ref=e87]: Status
+              - combobox "Status" [ref=e88]:
+                - option "Todo"
+                - option "In Progress"
+                - option "Done" [selected]
+            - generic [ref=e89]:
+              - generic [ref=e90]: Priority
+              - combobox "Priority" [ref=e91]:
+                - option "Low" [selected]
+                - option "Medium"
+                - option "High"
+            - generic [ref=e93]:
+              - generic [ref=e94]: Due Date
+              - button "Due Date" [expanded] [active] [ref=e95]:
+                - generic [ref=e96]: Select date
+                - generic [ref=e97]: 📅
+              - dialog "Date picker calendar" [ref=e99]:
+                - generic [ref=e101]:
+                  - navigation "Navigation bar" [ref=e102]:
+                    - button "Go to the Previous Month" [ref=e103] [cursor=pointer]:
+                      - img [ref=e104]
+                    - button "Go to the Next Month" [ref=e106] [cursor=pointer]:
+                      - img [ref=e107]
+                  - generic [ref=e109]:
+                    - status [ref=e111]: May 2026
+                    - grid "May 2026" [ref=e112]:
+                      - rowgroup [ref=e113]:
+                        - row [ref=e114]:
+                          - columnheader [ref=e115]: Su
+                          - columnheader [ref=e116]: Mo
+                          - columnheader [ref=e117]: Tu
+                          - columnheader [ref=e118]: We
+                          - columnheader [ref=e119]: Th
+                          - columnheader [ref=e120]: Fr
+                          - columnheader [ref=e121]: Sa
+                      - rowgroup [ref=e122]:
+                        - row "Friday, May 1st, 2026 Saturday, May 2nd, 2026" [ref=e123]:
+                          - gridcell "Friday, May 1st, 2026" [ref=e124]:
+                            - button "Friday, May 1st, 2026" [ref=e125] [cursor=pointer]: "1"
+                          - gridcell "Saturday, May 2nd, 2026" [ref=e126]:
+                            - button "Saturday, May 2nd, 2026" [ref=e127] [cursor=pointer]: "2"
+                        - row "Sunday, May 3rd, 2026 Monday, May 4th, 2026 Tuesday, May 5th, 2026 Wednesday, May 6th, 2026 Thursday, May 7th, 2026 Friday, May 8th, 2026 Today, Saturday, May 9th, 2026" [ref=e128]:
+                          - gridcell "Sunday, May 3rd, 2026" [ref=e129]:
+                            - button "Sunday, May 3rd, 2026" [ref=e130] [cursor=pointer]: "3"
+                          - gridcell "Monday, May 4th, 2026" [ref=e131]:
+                            - button "Monday, May 4th, 2026" [ref=e132] [cursor=pointer]: "4"
+                          - gridcell "Tuesday, May 5th, 2026" [ref=e133]:
+                            - button "Tuesday, May 5th, 2026" [ref=e134] [cursor=pointer]: "5"
+                          - gridcell "Wednesday, May 6th, 2026" [ref=e135]:
+                            - button "Wednesday, May 6th, 2026" [ref=e136] [cursor=pointer]: "6"
+                          - gridcell "Thursday, May 7th, 2026" [ref=e137]:
+                            - button "Thursday, May 7th, 2026" [ref=e138] [cursor=pointer]: "7"
+                          - gridcell "Friday, May 8th, 2026" [ref=e139]:
+                            - button "Friday, May 8th, 2026" [ref=e140] [cursor=pointer]: "8"
+                          - gridcell "Today, Saturday, May 9th, 2026" [ref=e141]:
+                            - button "Today, Saturday, May 9th, 2026" [ref=e142] [cursor=pointer]: "9"
+                        - row "Sunday, May 10th, 2026 Monday, May 11th, 2026 Tuesday, May 12th, 2026 Wednesday, May 13th, 2026 Thursday, May 14th, 2026 Friday, May 15th, 2026 Saturday, May 16th, 2026" [ref=e143]:
+                          - gridcell "Sunday, May 10th, 2026" [ref=e144]:
+                            - button "Sunday, May 10th, 2026" [ref=e145] [cursor=pointer]: "10"
+                          - gridcell "Monday, May 11th, 2026" [ref=e146]:
+                            - button "Monday, May 11th, 2026" [ref=e147] [cursor=pointer]: "11"
+                          - gridcell "Tuesday, May 12th, 2026" [ref=e148]:
+                            - button "Tuesday, May 12th, 2026" [ref=e149] [cursor=pointer]: "12"
+                          - gridcell "Wednesday, May 13th, 2026" [ref=e150]:
+                            - button "Wednesday, May 13th, 2026" [ref=e151] [cursor=pointer]: "13"
+                          - gridcell "Thursday, May 14th, 2026" [ref=e152]:
+                            - button "Thursday, May 14th, 2026" [ref=e153] [cursor=pointer]: "14"
+                          - gridcell "Friday, May 15th, 2026" [ref=e154]:
+                            - button "Friday, May 15th, 2026" [ref=e155] [cursor=pointer]: "15"
+                          - gridcell "Saturday, May 16th, 2026" [ref=e156]:
+                            - button "Saturday, May 16th, 2026" [ref=e157] [cursor=pointer]: "16"
+                        - row "Sunday, May 17th, 2026 Monday, May 18th, 2026 Tuesday, May 19th, 2026 Wednesday, May 20th, 2026 Thursday, May 21st, 2026 Friday, May 22nd, 2026 Saturday, May 23rd, 2026" [ref=e158]:
+                          - gridcell "Sunday, May 17th, 2026" [ref=e159]:
+                            - button "Sunday, May 17th, 2026" [ref=e160] [cursor=pointer]: "17"
+                          - gridcell "Monday, May 18th, 2026" [ref=e161]:
+                            - button "Monday, May 18th, 2026" [ref=e162] [cursor=pointer]: "18"
+                          - gridcell "Tuesday, May 19th, 2026" [ref=e163]:
+                            - button "Tuesday, May 19th, 2026" [ref=e164] [cursor=pointer]: "19"
+                          - gridcell "Wednesday, May 20th, 2026" [ref=e165]:
+                            - button "Wednesday, May 20th, 2026" [ref=e166] [cursor=pointer]: "20"
+                          - gridcell "Thursday, May 21st, 2026" [ref=e167]:
+                            - button "Thursday, May 21st, 2026" [ref=e168] [cursor=pointer]: "21"
+                          - gridcell "Friday, May 22nd, 2026" [ref=e169]:
+                            - button "Friday, May 22nd, 2026" [ref=e170] [cursor=pointer]: "22"
+                          - gridcell "Saturday, May 23rd, 2026" [ref=e171]:
+                            - button "Saturday, May 23rd, 2026" [ref=e172] [cursor=pointer]: "23"
+                        - row "Sunday, May 24th, 2026 Monday, May 25th, 2026 Tuesday, May 26th, 2026 Wednesday, May 27th, 2026 Thursday, May 28th, 2026 Friday, May 29th, 2026 Saturday, May 30th, 2026" [ref=e173]:
+                          - gridcell "Sunday, May 24th, 2026" [ref=e174]:
+                            - button "Sunday, May 24th, 2026" [ref=e175] [cursor=pointer]: "24"
+                          - gridcell "Monday, May 25th, 2026" [ref=e176]:
+                            - button "Monday, May 25th, 2026" [ref=e177] [cursor=pointer]: "25"
+                          - gridcell "Tuesday, May 26th, 2026" [ref=e178]:
+                            - button "Tuesday, May 26th, 2026" [ref=e179] [cursor=pointer]: "26"
+                          - gridcell "Wednesday, May 27th, 2026" [ref=e180]:
+                            - button "Wednesday, May 27th, 2026" [ref=e181] [cursor=pointer]: "27"
+                          - gridcell "Thursday, May 28th, 2026" [ref=e182]:
+                            - button "Thursday, May 28th, 2026" [ref=e183] [cursor=pointer]: "28"
+                          - gridcell "Friday, May 29th, 2026" [ref=e184]:
+                            - button "Friday, May 29th, 2026" [ref=e185] [cursor=pointer]: "29"
+                          - gridcell "Saturday, May 30th, 2026" [ref=e186]:
+                            - button "Saturday, May 30th, 2026" [ref=e187] [cursor=pointer]: "30"
+                        - row "Sunday, May 31st, 2026" [ref=e188]:
+                          - gridcell "Sunday, May 31st, 2026" [ref=e189]:
+                            - button "Sunday, May 31st, 2026" [ref=e190] [cursor=pointer]: "31"
+                - generic [ref=e191]:
+                  - button "Today" [ref=e192]
+                  - button "Clear" [ref=e193]
+            - button "Create Task" [ref=e98] [cursor=pointer]
+  - region "Notifications"

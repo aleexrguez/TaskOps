@@ -1,0 +1,63 @@
+- generic [ref=e2]:
+  - generic [ref=e3]:
+    - complementary [ref=e4]:
+      - generic [ref=e5]:
+        - img "TaskOps" [ref=e6]
+        - img [ref=e7]
+      - navigation "Main navigation" [ref=e8]:
+        - list [ref=e9]:
+          - listitem [ref=e10]:
+            - link "Tasks" [ref=e11] [cursor=pointer]:
+              - /url: /app/tasks
+              - img [ref=e12]
+              - generic [ref=e13]: Tasks
+          - listitem [ref=e14]:
+            - link "Recurrences" [ref=e15] [cursor=pointer]:
+              - /url: /app/recurrences
+              - img [ref=e16]
+              - generic [ref=e17]: Recurrences
+          - listitem [ref=e18]:
+            - link "Settings" [ref=e19] [cursor=pointer]:
+              - /url: /app/settings
+              - img [ref=e20]
+              - generic [ref=e21]: Settings
+        - button "Sign out" [ref=e23] [cursor=pointer]:
+          - img [ref=e24]
+          - generic [ref=e25]: Sign out
+      - button "Collapse sidebar" [expanded] [ref=e27] [cursor=pointer]: ←
+    - banner [ref=e28]
+    - main [ref=e29]:
+      - generic [ref=e32]:
+        - button "← Back to tasks" [ref=e33]
+        - generic [ref=e35]:
+          - generic [ref=e86]:
+            - generic [ref=e87]:
+              - generic [ref=e88]: Title *
+              - textbox "Title *" [ref=e89]:
+                - /placeholder: Task title
+                - text: Fix critical login bug
+            - generic [ref=e90]:
+              - generic [ref=e91]: Description
+              - textbox "Description" [ref=e92]:
+                - /placeholder: Task description
+                - text: Users can't login on mobile Safari
+            - generic [ref=e93]:
+              - generic [ref=e94]: Status
+              - combobox "Status" [ref=e95]:
+                - option "Todo" [selected]
+                - option "In Progress"
+                - option "Done"
+            - generic [ref=e96]:
+              - generic [ref=e97]: Priority
+              - combobox "Priority" [ref=e98]:
+                - option "Low"
+                - option "Medium"
+                - option "High" [selected]
+            - generic [ref=e100]:
+              - generic [ref=e101]: Due Date
+              - button "Due Date" [ref=e102]:
+                - generic [ref=e103]: May 9, 2026
+                - generic [ref=e104]: 📅
+            - button "Save Changes" [ref=e105] [cursor=pointer]
+          - button "Cancel" [ref=e106] [cursor=pointer]
+  - region "Notifications"

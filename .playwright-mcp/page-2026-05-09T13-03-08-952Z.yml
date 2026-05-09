@@ -1,0 +1,146 @@
+- generic [ref=e2]:
+  - generic [ref=e3]:
+    - complementary [ref=e4]:
+      - generic [ref=e5]:
+        - img "TaskOps" [ref=e6]
+        - img [ref=e7]
+      - navigation "Main navigation" [ref=e8]:
+        - list [ref=e9]:
+          - listitem [ref=e10]:
+            - link "Tasks" [ref=e11] [cursor=pointer]:
+              - /url: /app/tasks
+              - img [ref=e12]
+              - generic [ref=e13]: Tasks
+          - listitem [ref=e14]:
+            - link "Recurrences" [ref=e15] [cursor=pointer]:
+              - /url: /app/recurrences
+              - img [ref=e16]
+              - generic [ref=e17]: Recurrences
+          - listitem [ref=e18]:
+            - link "Settings" [ref=e19] [cursor=pointer]:
+              - /url: /app/settings
+              - img [ref=e20]
+              - generic [ref=e21]: Settings
+        - button "Sign out" [ref=e23] [cursor=pointer]:
+          - img [ref=e24]
+          - generic [ref=e25]: Sign out
+      - button "Collapse sidebar" [expanded] [ref=e27] [cursor=pointer]: ←
+    - banner [ref=e28]
+    - main [ref=e29]:
+      - generic [ref=e30]:
+        - generic [ref=e277]:
+          - generic [ref=e278]:
+            - heading "Tasks" [level=1] [ref=e279]
+            - paragraph [ref=e280]: 5 tasks shown
+          - generic [ref=e281]:
+            - generic [ref=e282]:
+              - button "List" [pressed] [ref=e283] [cursor=pointer]
+              - button "Board" [ref=e284] [cursor=pointer]
+            - button "New Task" [ref=e285] [cursor=pointer]:
+              - generic [ref=e286]: +
+              - text: New Task
+        - generic [ref=e287]:
+          - generic [ref=e288]:
+            - generic [ref=e289]:
+              - paragraph [ref=e290]: "5"
+              - paragraph [ref=e291]: Total
+            - generic [ref=e292]:
+              - paragraph [ref=e293]: "2"
+              - paragraph [ref=e294]: Todo
+            - generic [ref=e295]:
+              - paragraph [ref=e296]: "2"
+              - paragraph [ref=e297]: In Progress
+            - generic [ref=e298]:
+              - paragraph [ref=e299]: "1"
+              - paragraph [ref=e300]: Done
+          - generic [ref=e301]:
+            - generic [ref=e303]:
+              - textbox "Search tasks" [ref=e304]:
+                - /placeholder: Search tasks...
+              - combobox "Filter by status" [ref=e305]:
+                - option "All Statuses" [selected]
+                - option "Todo"
+                - option "In Progress"
+                - option "Done"
+              - combobox "Filter by priority" [ref=e306]:
+                - option "All Priorities" [selected]
+                - option "Low"
+                - option "Medium"
+                - option "High"
+              - button "Reset" [ref=e307] [cursor=pointer]
+              - button "Show archived" [ref=e308] [cursor=pointer]
+            - generic [ref=e364]:
+              - generic [ref=e365] [cursor=pointer]:
+                - button "Fix critical login bug" [ref=e366]
+                - generic:
+                  - generic:
+                    - heading "Fix critical login bug" [level=3]
+                    - generic [ref=e367]:
+                      - button "Duplicate" [ref=e368]
+                      - button "Delete" [ref=e369]
+                  - paragraph: Users can't login on mobile Safari
+                  - generic:
+                    - generic: Todo
+                    - generic: High
+                    - generic: Due today
+                  - generic:
+                    - generic: 9/5/2026
+              - generic [ref=e376] [cursor=pointer]:
+                - button "API integration for notifications" [ref=e377]
+                - generic:
+                  - generic:
+                    - heading "API integration for notifications" [level=3]
+                    - generic [ref=e378]:
+                      - button "Duplicate" [ref=e379]
+                      - button "Delete" [ref=e380]
+                  - paragraph: Connect push notification service
+                  - generic:
+                    - generic: In Progress
+                    - generic: High
+                  - generic:
+                    - generic: 9/5/2026
+              - generic [ref=e381] [cursor=pointer]:
+                - button "Design settings page" [ref=e382]
+                - generic:
+                  - generic:
+                    - heading "Design settings page" [level=3]
+                    - generic [ref=e383]:
+                      - button "Duplicate" [ref=e384]
+                      - button "Delete" [ref=e385]
+                  - paragraph: Create mockups for user preferences
+                  - generic:
+                    - generic: Todo
+                    - generic: Medium
+                    - generic: 6 days left
+                  - generic:
+                    - generic: 9/5/2026
+              - generic [ref=e386] [cursor=pointer]:
+                - button "Implement dark mode toggle" [ref=e387]
+                - generic:
+                  - generic:
+                    - heading "Implement dark mode toggle" [level=3]
+                    - generic [ref=e388]:
+                      - button "Duplicate" [ref=e389]
+                      - button "Delete" [ref=e390]
+                  - paragraph: Add theme switching in settings page
+                  - generic:
+                    - generic: In Progress
+                    - generic: Medium
+                  - generic:
+                    - generic: 9/5/2026
+              - generic [ref=e391] [cursor=pointer]:
+                - button "Write unit tests for auth" [ref=e392]
+                - generic:
+                  - generic:
+                    - heading "Write unit tests for auth" [level=3]
+                    - generic [ref=e393]:
+                      - button "Duplicate" [ref=e394]
+                      - button "Delete" [ref=e395]
+                      - button "Archive" [ref=e396]
+                  - paragraph: Cover login, register, and password reset flows
+                  - generic:
+                    - generic: Done
+                    - generic: Low
+                  - generic:
+                    - generic: 9/5/2026
+  - region "Notifications"

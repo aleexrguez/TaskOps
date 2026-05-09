@@ -2,7 +2,11 @@ import { useMemo } from 'react';
 import { useTasks } from '../hooks/use-tasks';
 import { useAutoPurge } from '../hooks/use-auto-purge';
 import { useTaskUIStore } from '../store/task-ui.store';
-import { getTaskStats, filterVisibleTasks } from '../utils/task.utils';
+import {
+  getTaskStats,
+  filterVisibleTasks,
+  applyAllFilters,
+} from '../utils/task.utils';
 import { TaskStats, ViewToggle } from '../components';
 import { TaskListContainer } from './TaskListContainer';
 import { CreateTaskContainer } from './CreateTaskContainer';
@@ -14,13 +18,25 @@ export function TaskDashboardContainer() {
   const viewMode = useTaskUIStore((s) => s.viewMode);
   const setViewMode = useTaskUIStore((s) => s.setViewMode);
   const showArchived = useTaskUIStore((s) => s.showArchived);
+  const statusFilter = useTaskUIStore((s) => s.statusFilter);
+  const priorityFilter = useTaskUIStore((s) => s.priorityFilter);
+  const searchQuery = useTaskUIStore((s) => s.searchQuery);
 
-  const visibleTasks = useMemo(
+  const allVisible = useMemo(
     () => filterVisibleTasks(data?.tasks ?? [], showArchived),
     [data, showArchived],
   );
-  const stats = useMemo(() => getTaskStats(visibleTasks), [visibleTasks]);
-  const totalTasks = visibleTasks.length;
+  const stats = useMemo(() => getTaskStats(allVisible), [allVisible]);
+  const totalTasks = useMemo(
+    () =>
+      applyAllFilters(data?.tasks ?? [], {
+        showArchived,
+        statusFilter,
+        priorityFilter,
+        searchQuery,
+      }).length,
+    [data, showArchived, statusFilter, priorityFilter, searchQuery],
+  );
 
   useAutoPurge(data?.tasks ?? []);
 

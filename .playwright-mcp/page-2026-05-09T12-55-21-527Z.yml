@@ -1,0 +1,58 @@
+- generic [ref=e2]:
+  - generic [ref=e3]:
+    - complementary [ref=e4]:
+      - generic [ref=e5]:
+        - img "TaskOps" [ref=e6]
+        - img [ref=e7]
+      - navigation "Main navigation" [ref=e8]:
+        - list [ref=e9]:
+          - listitem [ref=e10]:
+            - link "Tasks" [ref=e11] [cursor=pointer]:
+              - /url: /app/tasks
+              - img [ref=e12]
+              - generic [ref=e13]: Tasks
+          - listitem [ref=e14]:
+            - link "Recurrences" [ref=e15] [cursor=pointer]:
+              - /url: /app/recurrences
+              - img [ref=e16]
+              - generic [ref=e17]: Recurrences
+          - listitem [ref=e18]:
+            - link "Settings" [ref=e19] [cursor=pointer]:
+              - /url: /app/settings
+              - img [ref=e20]
+              - generic [ref=e21]: Settings
+        - button "Sign out" [ref=e23] [cursor=pointer]:
+          - img [ref=e24]
+          - generic [ref=e25]: Sign out
+      - button "Collapse sidebar" [expanded] [ref=e27] [cursor=pointer]: ←
+    - banner [ref=e28]
+    - main [ref=e29]:
+      - generic [ref=e131]:
+        - button "← Back to tasks" [ref=e132]
+        - generic [ref=e134]:
+          - generic [ref=e135]:
+            - heading "Fix critical login bug" [level=1] [ref=e136]
+            - generic [ref=e137]:
+              - button "Edit" [ref=e138] [cursor=pointer]
+              - button "Delete" [ref=e139] [cursor=pointer]
+          - paragraph [ref=e140]: Users can't login on mobile Safari
+          - region "Checklist" [ref=e141]:
+            - heading "Checklist" [level=3] [ref=e143]
+            - list
+            - textbox "Add checklist item" [ref=e145]:
+              - /placeholder: Add item...
+          - generic [ref=e146]:
+            - generic [ref=e147]: Todo
+            - generic [ref=e148]: High
+          - generic [ref=e150]:
+            - generic [ref=e151]:
+              - text: Created
+              - paragraph [ref=e152]: 9/5/2026
+            - generic [ref=e153]:
+              - text: Updated
+              - paragraph [ref=e154]: 9/5/2026
+            - generic [ref=e155]:
+              - text: Due Date
+              - paragraph [ref=e156]:
+                - generic [ref=e157]: Due today
+  - region "Notifications"

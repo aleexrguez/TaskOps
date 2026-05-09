@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useTask, useUpdateTask } from '../hooks/use-tasks';
 import { useTaskUIStore } from '../store/task-ui.store';
 import { useToastStore } from '../store/toast.store';
@@ -16,6 +17,18 @@ export function EditTaskContainer() {
   const { mutate: updateTask, isPending, isError, error } = useUpdateTask();
 
   const { data: task, isLoading } = useTask(selectedTaskId ?? '');
+
+  useEffect(() => {
+    if (!isOpen) return;
+    function handleKeyDown(event: KeyboardEvent): void {
+      if (event.key !== 'Escape') return;
+      if (document.querySelector('.taskops-date-picker [role="dialog"]'))
+        return;
+      closeEditModal();
+    }
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, closeEditModal]);
 
   if (!isOpen || !selectedTaskId) return null;
 

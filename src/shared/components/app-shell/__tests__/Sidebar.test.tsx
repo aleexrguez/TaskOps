@@ -162,4 +162,26 @@ describe('Sidebar — mobile overlay', () => {
 
     expect(onCloseMobile).toHaveBeenCalledOnce();
   });
+
+  it('calls onCloseMobile when Escape is pressed while mobile menu is open', async () => {
+    const user = userEvent.setup();
+    const onCloseMobile = vi.fn();
+
+    renderSidebar({ isMobileOpen: true, onCloseMobile });
+
+    await user.keyboard('{Escape}');
+
+    expect(onCloseMobile).toHaveBeenCalledOnce();
+  });
+
+  it('does not call onCloseMobile when Escape is pressed while mobile menu is closed', async () => {
+    const user = userEvent.setup();
+    const onCloseMobile = vi.fn();
+
+    renderSidebar({ isMobileOpen: false, onCloseMobile });
+
+    await user.keyboard('{Escape}');
+
+    expect(onCloseMobile).not.toHaveBeenCalled();
+  });
 });

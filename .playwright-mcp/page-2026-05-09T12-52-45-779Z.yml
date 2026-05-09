@@ -1,0 +1,120 @@
+- generic [ref=e2]:
+  - generic [ref=e3]:
+    - complementary [ref=e4]:
+      - generic [ref=e5]:
+        - img "TaskOps" [ref=e6]
+        - img [ref=e7]
+      - navigation "Main navigation" [ref=e8]:
+        - list [ref=e9]:
+          - listitem [ref=e10]:
+            - link "Tasks" [ref=e11] [cursor=pointer]:
+              - /url: /app/tasks
+              - img [ref=e12]
+              - generic [ref=e13]: Tasks
+          - listitem [ref=e14]:
+            - link "Recurrences" [ref=e15] [cursor=pointer]:
+              - /url: /app/recurrences
+              - img [ref=e16]
+              - generic [ref=e17]: Recurrences
+          - listitem [ref=e18]:
+            - link "Settings" [ref=e19] [cursor=pointer]:
+              - /url: /app/settings
+              - img [ref=e20]
+              - generic [ref=e21]: Settings
+        - button "Sign out" [ref=e23] [cursor=pointer]:
+          - img [ref=e24]
+          - generic [ref=e25]: Sign out
+      - button "Collapse sidebar" [expanded] [ref=e27] [cursor=pointer]: ←
+    - banner [ref=e28]
+    - main [ref=e29]:
+      - generic [ref=e30]:
+        - generic [ref=e31]:
+          - generic [ref=e32]:
+            - heading "Tasks" [level=1] [ref=e33]
+            - paragraph [ref=e34]: 3 tasks shown
+          - generic [ref=e35]:
+            - generic [ref=e36]:
+              - button "List" [pressed] [ref=e37] [cursor=pointer]
+              - button "Board" [ref=e38] [cursor=pointer]
+            - button "New Task" [ref=e39] [cursor=pointer]:
+              - generic [ref=e40]: +
+              - text: New Task
+        - generic [ref=e41]:
+          - generic [ref=e42]:
+            - generic [ref=e43]:
+              - paragraph [ref=e44]: "3"
+              - paragraph [ref=e45]: Total
+            - generic [ref=e46]:
+              - paragraph [ref=e47]: "1"
+              - paragraph [ref=e48]: Todo
+            - generic [ref=e49]:
+              - paragraph [ref=e50]: "1"
+              - paragraph [ref=e51]: In Progress
+            - generic [ref=e52]:
+              - paragraph [ref=e53]: "1"
+              - paragraph [ref=e54]: Done
+          - generic [ref=e55]:
+            - generic [ref=e57]:
+              - textbox "Search tasks" [ref=e58]:
+                - /placeholder: Search tasks...
+              - combobox "Filter by status" [ref=e59]:
+                - option "All Statuses" [selected]
+                - option "Todo"
+                - option "In Progress"
+                - option "Done"
+              - combobox "Filter by priority" [ref=e60]:
+                - option "All Priorities" [selected]
+                - option "Low"
+                - option "Medium"
+                - option "High"
+              - button "Reset" [ref=e61] [cursor=pointer]
+              - button "Show archived" [ref=e62] [cursor=pointer]
+            - generic [ref=e63]:
+              - generic [ref=e64] [cursor=pointer]:
+                - button "Fix critical login bug" [ref=e65]
+                - generic:
+                  - generic:
+                    - heading "Fix critical login bug" [level=3]
+                    - generic [ref=e66]:
+                      - button "Duplicate" [ref=e67]
+                      - button "Delete" [ref=e68]
+                  - paragraph: Users can't login on mobile Safari
+                  - generic:
+                    - generic: Todo
+                    - generic: High
+                    - generic: Due today
+                  - generic:
+                    - generic: 9/5/2026
+              - generic [ref=e69] [cursor=pointer]:
+                - button "Implement dark mode toggle" [ref=e70]
+                - generic:
+                  - generic:
+                    - heading "Implement dark mode toggle" [level=3]
+                    - generic [ref=e71]:
+                      - button "Duplicate" [ref=e72]
+                      - button "Delete" [ref=e73]
+                  - paragraph: Add theme switching in settings page
+                  - generic:
+                    - generic: In Progress
+                    - generic: Medium
+                  - generic:
+                    - generic: 9/5/2026
+              - generic [ref=e260] [cursor=pointer]:
+                - button "Write unit tests for auth" [ref=e261]
+                - generic:
+                  - generic:
+                    - heading "Write unit tests for auth" [level=3]
+                    - generic [ref=e262]:
+                      - button "Duplicate" [ref=e263]
+                      - button "Delete" [ref=e264]
+                      - button "Archive" [ref=e265]
+                  - paragraph: Cover login, register, and password reset flows
+                  - generic:
+                    - generic: Done
+                    - generic: Low
+                  - generic:
+                    - generic: 9/5/2026
+  - region "Notifications" [ref=e266]:
+    - status [ref=e267]:
+      - generic [ref=e268]: Task created
+      - 'button "Dismiss notification: Task created" [ref=e269]': ✕
