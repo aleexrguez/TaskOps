@@ -1,0 +1,77 @@
+- generic [ref=e2]:
+  - generic [ref=e56]:
+    - complementary [ref=e57]:
+      - generic [ref=e58]:
+        - img "TaskOps" [ref=e59]
+        - img [ref=e60]
+      - navigation "Main navigation" [ref=e61]:
+        - list [ref=e62]:
+          - listitem [ref=e63]:
+            - link "Tasks" [ref=e64] [cursor=pointer]:
+              - /url: /app/tasks
+              - img [ref=e65]
+              - generic [ref=e66]: Tasks
+          - listitem [ref=e67]:
+            - link "Recurrences" [ref=e68] [cursor=pointer]:
+              - /url: /app/recurrences
+              - img [ref=e69]
+              - generic [ref=e70]: Recurrences
+          - listitem [ref=e71]:
+            - link "Settings" [ref=e72] [cursor=pointer]:
+              - /url: /app/settings
+              - img [ref=e73]
+              - generic [ref=e74]: Settings
+        - button "Sign out" [ref=e76] [cursor=pointer]:
+          - img [ref=e77]
+          - generic [ref=e78]: Sign out
+      - button "Collapse sidebar" [expanded] [ref=e80] [cursor=pointer]: ←
+    - banner [ref=e81]
+    - main [ref=e82]:
+      - generic [ref=e83]:
+        - generic [ref=e84]:
+          - generic [ref=e85]:
+            - heading "Tasks" [level=1] [ref=e86]
+            - paragraph [ref=e87]: No tasks yet
+          - generic [ref=e88]:
+            - generic [ref=e89]:
+              - button "List" [pressed] [ref=e90] [cursor=pointer]
+              - button "Board" [ref=e91] [cursor=pointer]
+            - button "New Task" [ref=e92] [cursor=pointer]:
+              - generic [ref=e93]: +
+              - text: New Task
+        - generic [ref=e94]:
+          - generic [ref=e95]:
+            - generic [ref=e96]:
+              - paragraph [ref=e97]: "0"
+              - paragraph [ref=e98]: Total
+            - generic [ref=e99]:
+              - paragraph [ref=e100]: "0"
+              - paragraph [ref=e101]: Todo
+            - generic [ref=e102]:
+              - paragraph [ref=e103]: "0"
+              - paragraph [ref=e104]: In Progress
+            - generic [ref=e105]:
+              - paragraph [ref=e106]: "0"
+              - paragraph [ref=e107]: Done
+          - generic [ref=e108]:
+            - generic [ref=e110]:
+              - textbox "Search tasks" [ref=e111]:
+                - /placeholder: Search tasks...
+              - combobox "Filter by status" [ref=e112]:
+                - option "All Statuses" [selected]
+                - option "Todo"
+                - option "In Progress"
+                - option "Done"
+              - combobox "Filter by priority" [ref=e113]:
+                - option "All Priorities" [selected]
+                - option "Low"
+                - option "Medium"
+                - option "High"
+              - button "Reset" [ref=e114] [cursor=pointer]
+              - button "Show archived" [ref=e115] [cursor=pointer]
+            - generic [ref=e116]:
+              - generic [ref=e117]: 📋
+              - paragraph [ref=e118]: No tasks yet
+              - paragraph [ref=e119]: Create your first task to get started
+              - button "New Task" [ref=e120] [cursor=pointer]
+  - region "Notifications"

@@ -5,6 +5,7 @@ import {
   groupTasksByPosition,
   getExpiredTaskIds,
   filterVisibleTasks,
+  applyAllFilters,
   isDueDateOverdue,
   getDueDateDaysRemaining,
   extractReorderUpdates,
@@ -424,7 +425,127 @@ describe('filterVisibleTasks', () => {
 });
 
 // ---------------------------------------------------------------------------
-// 5. isDueDateOverdue
+// 5. applyAllFilters
+// ---------------------------------------------------------------------------
+
+describe('applyAllFilters', () => {
+  const defaults = {
+    showArchived: false,
+    statusFilter: 'all' as const,
+    priorityFilter: 'all' as const,
+    searchQuery: '',
+  };
+
+  it('with default options returns same as filterVisibleTasks', () => {
+    const archivedDone = makeTask({ status: 'done', isArchived: true });
+    const todo = makeTask({ status: 'todo' });
+    const tasks = [archivedDone, todo];
+
+    const result = applyAllFilters(tasks, defaults);
+    const expected = filterVisibleTasks(tasks, false);
+
+    expect(result).toEqual(expected);
+  });
+
+  it('filters by status when statusFilter is set', () => {
+    const todo = makeTask({ status: 'todo' });
+    const done = makeTask({ status: 'done' });
+
+    const result = applyAllFilters([todo, done], {
+      ...defaults,
+      statusFilter: 'todo',
+    });
+
+    expect(result).toHaveLength(1);
+    expect(result[0].id).toBe(todo.id);
+  });
+
+  it('filters by priority when priorityFilter is set', () => {
+    const high = makeTask({ priority: 'high' });
+    const low = makeTask({ priority: 'low' });
+
+    const result = applyAllFilters([high, low], {
+      ...defaults,
+      priorityFilter: 'high',
+    });
+
+    expect(result).toHaveLength(1);
+    expect(result[0].id).toBe(high.id);
+  });
+
+  it('filters by search query (case-insensitive, title only)', () => {
+    const match = makeTask({ title: 'Login Form' });
+    const noMatch = makeTask({ title: 'Dashboard' });
+
+    const result = applyAllFilters([match, noMatch], {
+      ...defaults,
+      searchQuery: 'login',
+    });
+
+    expect(result).toHaveLength(1);
+    expect(result[0].id).toBe(match.id);
+  });
+
+  it('stacks multiple filters correctly', () => {
+    const target = makeTask({
+      title: 'Login',
+      status: 'todo',
+      priority: 'high',
+    });
+    const wrongStatus = makeTask({
+      title: 'Login',
+      status: 'done',
+      priority: 'high',
+    });
+    const wrongPriority = makeTask({
+      title: 'Login',
+      status: 'todo',
+      priority: 'low',
+    });
+    const wrongTitle = makeTask({
+      title: 'Dashboard',
+      status: 'todo',
+      priority: 'high',
+    });
+
+    const result = applyAllFilters(
+      [target, wrongStatus, wrongPriority, wrongTitle],
+      {
+        ...defaults,
+        statusFilter: 'todo',
+        priorityFilter: 'high',
+        searchQuery: 'login',
+      },
+    );
+
+    expect(result).toHaveLength(1);
+    expect(result[0].id).toBe(target.id);
+  });
+
+  it('ignores whitespace-only search query', () => {
+    const task = makeTask({ title: 'Test' });
+
+    const result = applyAllFilters([task], {
+      ...defaults,
+      searchQuery: '   ',
+    });
+
+    expect(result).toHaveLength(1);
+  });
+
+  it('does not sort results', () => {
+    const low = makeTask({ priority: 'low', title: 'A' });
+    const high = makeTask({ priority: 'high', title: 'B' });
+
+    const result = applyAllFilters([low, high], defaults);
+
+    expect(result[0].id).toBe(low.id);
+    expect(result[1].id).toBe(high.id);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// 6. isDueDateOverdue
 // ---------------------------------------------------------------------------
 
 describe('isDueDateOverdue', () => {

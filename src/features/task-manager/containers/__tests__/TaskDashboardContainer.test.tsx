@@ -159,4 +159,42 @@ describe('TaskDashboardContainer', () => {
     const subtitle = await screen.findByText('3 tasks shown');
     expect(subtitle).toBeInTheDocument();
   });
+
+  it('subtitle reflects search query filter', async () => {
+    const tasks = [
+      makeTask({ id: 't1', title: 'Login Form', status: 'todo' }),
+      makeTask({ id: 't2', title: 'Dashboard', status: 'todo' }),
+      makeTask({ id: 't3', title: 'Settings', status: 'in-progress' }),
+    ];
+    (fetchTasks as ReturnType<typeof vi.fn>).mockResolvedValue({
+      tasks,
+      total: tasks.length,
+    });
+    useTaskUIStore.setState({ searchQuery: 'login' });
+
+    const Wrapper = createWrapper();
+    render(<TaskDashboardContainer />, { wrapper: Wrapper });
+
+    const subtitle = await screen.findByText('1 task shown');
+    expect(subtitle).toBeInTheDocument();
+  });
+
+  it('subtitle reflects status filter', async () => {
+    const tasks = [
+      makeTask({ id: 't1', status: 'todo' }),
+      makeTask({ id: 't2', status: 'in-progress' }),
+      makeTask({ id: 't3', status: 'done', isArchived: false }),
+    ];
+    (fetchTasks as ReturnType<typeof vi.fn>).mockResolvedValue({
+      tasks,
+      total: tasks.length,
+    });
+    useTaskUIStore.setState({ statusFilter: 'todo' });
+
+    const Wrapper = createWrapper();
+    render(<TaskDashboardContainer />, { wrapper: Wrapper });
+
+    const subtitle = await screen.findByText('1 task shown');
+    expect(subtitle).toBeInTheDocument();
+  });
 });

@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import type { NavItem, SidebarProps } from './app-shell.types';
 
@@ -93,6 +94,17 @@ export function Sidebar({
   isSigningOut,
 }: SidebarProps) {
   const collapseLabel = isCollapsed ? 'Expand sidebar' : 'Collapse sidebar';
+
+  useEffect(() => {
+    if (!isMobileOpen) return;
+    function handleKeyDown(event: KeyboardEvent): void {
+      if (event.key === 'Escape') {
+        onCloseMobile();
+      }
+    }
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isMobileOpen, onCloseMobile]);
 
   return (
     <>

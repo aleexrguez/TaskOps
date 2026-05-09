@@ -1,0 +1,100 @@
+- generic [ref=e2]:
+  - generic [ref=e3]:
+    - complementary [ref=e4]:
+      - generic [ref=e5]:
+        - img "TaskOps" [ref=e6]
+        - img [ref=e7]
+      - navigation "Main navigation" [ref=e8]:
+        - list [ref=e9]:
+          - listitem [ref=e10]:
+            - link "Tasks" [ref=e11] [cursor=pointer]:
+              - /url: /app/tasks
+              - img [ref=e12]
+              - generic [ref=e13]: Tasks
+          - listitem [ref=e14]:
+            - link "Recurrences" [ref=e15] [cursor=pointer]:
+              - /url: /app/recurrences
+              - img [ref=e16]
+              - generic [ref=e17]: Recurrences
+          - listitem [ref=e18]:
+            - link "Settings" [ref=e19] [cursor=pointer]:
+              - /url: /app/settings
+              - img [ref=e20]
+              - generic [ref=e21]: Settings
+        - button "Sign out" [ref=e23] [cursor=pointer]:
+          - img [ref=e24]
+          - generic [ref=e25]: Sign out
+      - button "Collapse sidebar" [expanded] [ref=e27] [cursor=pointer]: ←
+    - banner [ref=e28]
+    - main [ref=e29]:
+      - generic [ref=e30]:
+        - generic [ref=e124]:
+          - heading "Recurrences" [level=1] [ref=e125]
+          - button "New Recurrence" [ref=e126] [cursor=pointer]:
+            - generic [ref=e127]: +
+            - text: New Recurrence
+        - generic [ref=e158]:
+          - generic [ref=e159]:
+            - heading "Weekly" [level=2] [ref=e160]
+            - article [ref=e162]:
+              - generic [ref=e163]:
+                - heading "Weekly team standup" [level=3] [ref=e164]
+                - generic [ref=e165]:
+                  - button "Edit" [active] [ref=e166] [cursor=pointer]
+                  - button "Delete" [ref=e167] [cursor=pointer]
+              - paragraph [ref=e168]: Weekly (Mon, Wed)
+              - generic [ref=e169]:
+                - generic [ref=e170]: medium
+                - generic [ref=e171]: Active
+          - generic [ref=e201]:
+            - heading "Monthly" [level=2] [ref=e202]
+            - article [ref=e204]:
+              - generic [ref=e205]:
+                - heading "Monthly report" [level=3] [ref=e206]
+                - generic [ref=e207]:
+                  - button "Edit" [ref=e208] [cursor=pointer]
+                  - button "Delete" [ref=e209] [cursor=pointer]
+              - paragraph [ref=e210]: Monthly (15th)
+              - paragraph [ref=e211]: Generates 3 days early
+              - generic [ref=e212]:
+                - generic [ref=e213]: high
+                - generic [ref=e214]: Active
+        - generic [ref=e219]:
+          - generic [ref=e220]:
+            - heading "Edit Recurrence" [level=2] [ref=e221]
+            - button "Close" [ref=e222] [cursor=pointer]: ✕
+          - generic [ref=e223]:
+            - generic [ref=e224]:
+              - generic [ref=e225]: Title *
+              - textbox "Title *" [ref=e226]:
+                - /placeholder: Recurrence title
+                - text: Weekly team standup
+            - generic [ref=e227]:
+              - generic [ref=e228]: Description
+              - textbox "Description" [ref=e229]:
+                - /placeholder: Optional description
+                - text: Prepare standup notes and blockers
+            - generic [ref=e230]:
+              - generic [ref=e231]: Priority
+              - combobox "Priority" [ref=e232]:
+                - option "Low"
+                - option "Medium" [selected]
+                - option "High"
+            - generic [ref=e233]:
+              - generic [ref=e234]: Frequency
+              - combobox "Frequency" [ref=e235]:
+                - option "Daily"
+                - option "Weekly" [selected]
+                - option "Monthly"
+            - generic [ref=e236]:
+              - generic [ref=e237]: Days of the week
+              - generic [ref=e238]:
+                - button "Mon" [pressed] [ref=e239] [cursor=pointer]
+                - button "Tue" [ref=e240] [cursor=pointer]
+                - button "Wed" [pressed] [ref=e241] [cursor=pointer]
+                - button "Thu" [ref=e242] [cursor=pointer]
+                - button "Fri" [ref=e243] [cursor=pointer]
+                - button "Sat" [ref=e244] [cursor=pointer]
+                - button "Sun" [ref=e245] [cursor=pointer]
+            - button "Save Changes" [ref=e246] [cursor=pointer]
+  - region "Notifications"

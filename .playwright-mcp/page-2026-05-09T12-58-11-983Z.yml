@@ -1,0 +1,171 @@
+- generic [ref=e2]:
+  - generic [ref=e3]:
+    - dialog "Navigation menu" [ref=e97]:
+      - generic [ref=e99]:
+        - generic [ref=e100]:
+          - img "TaskOps" [ref=e101]
+          - img [ref=e102]
+        - navigation "Mobile navigation" [ref=e103]:
+          - list [ref=e104]:
+            - listitem [ref=e105]:
+              - link "Tasks" [ref=e106] [cursor=pointer]:
+                - /url: /app/tasks
+                - img [ref=e107]
+                - generic [ref=e108]: Tasks
+            - listitem [ref=e109]:
+              - link "Recurrences" [ref=e110] [cursor=pointer]:
+                - /url: /app/recurrences
+                - img [ref=e111]
+                - generic [ref=e112]: Recurrences
+            - listitem [ref=e113]:
+              - link "Settings" [ref=e114] [cursor=pointer]:
+                - /url: /app/settings
+                - img [ref=e115]
+                - generic [ref=e116]: Settings
+          - button "Sign out" [ref=e118] [cursor=pointer]:
+            - img [ref=e119]
+            - generic [ref=e120]: Sign out
+    - banner [ref=e4]:
+      - button "Open menu" [active] [ref=e5] [cursor=pointer]: ☰
+      - generic [ref=e6]: TaskOps
+    - main [ref=e7]:
+      - generic [ref=e8]:
+        - generic [ref=e9]:
+          - generic [ref=e10]:
+            - heading "Tasks" [level=1] [ref=e11]
+            - paragraph [ref=e12]: 6 tasks shown
+          - generic [ref=e13]:
+            - generic [ref=e14]:
+              - button "List" [ref=e15] [cursor=pointer]
+              - button "Board" [pressed] [ref=e16] [cursor=pointer]
+            - button "New Task" [ref=e17] [cursor=pointer]:
+              - generic [ref=e18]: +
+              - text: New Task
+        - generic [ref=e19]:
+          - generic [ref=e20]:
+            - generic [ref=e21]:
+              - paragraph [ref=e22]: "6"
+              - paragraph [ref=e23]: Total
+            - generic [ref=e24]:
+              - paragraph [ref=e25]: "2"
+              - paragraph [ref=e26]: Todo
+            - generic [ref=e27]:
+              - paragraph [ref=e28]: "2"
+              - paragraph [ref=e29]: In Progress
+            - generic [ref=e30]:
+              - paragraph [ref=e31]: "2"
+              - paragraph [ref=e32]: Done
+          - generic [ref=e33]:
+            - button "Filters" [ref=e35]
+            - generic [ref=e36]:
+              - region "Todo column" [ref=e37]:
+                - generic [ref=e38]:
+                  - heading "Todo" [level=2] [ref=e39]
+                  - generic [ref=e40]: "2"
+                - generic [ref=e41]:
+                  - button "Fix critical login bug Fix critical login bug Duplicate Delete Users can't login on mobile Safari Todo High Due today 9/5/2026" [ref=e42]:
+                    - generic [ref=e43] [cursor=pointer]:
+                      - button "Fix critical login bug" [ref=e44]
+                      - generic:
+                        - generic:
+                          - heading "Fix critical login bug" [level=3]
+                          - generic [ref=e45]:
+                            - button "Duplicate" [ref=e46]
+                            - button "Delete" [ref=e47]
+                        - paragraph: Users can't login on mobile Safari
+                        - generic:
+                          - generic: Todo
+                          - generic: High
+                          - generic: Due today
+                        - generic:
+                          - generic: 9/5/2026
+                  - button "Design settings page Design settings page Duplicate Delete Create mockups for user preferences Todo Medium 6 days left 9/5/2026" [ref=e48]:
+                    - generic [ref=e49] [cursor=pointer]:
+                      - button "Design settings page" [ref=e50]
+                      - generic:
+                        - generic:
+                          - heading "Design settings page" [level=3]
+                          - generic [ref=e51]:
+                            - button "Duplicate" [ref=e52]
+                            - button "Delete" [ref=e53]
+                        - paragraph: Create mockups for user preferences
+                        - generic:
+                          - generic: Todo
+                          - generic: Medium
+                          - generic: 6 days left
+                        - generic:
+                          - generic: 9/5/2026
+              - region "In Progress column" [ref=e54]:
+                - generic [ref=e55]:
+                  - heading "In Progress" [level=2] [ref=e56]
+                  - generic [ref=e57]: "2"
+                - generic [ref=e58]:
+                  - button "Implement dark mode toggle Implement dark mode toggle Duplicate Delete Add theme switching in settings page In Progress Medium 9/5/2026" [ref=e59]:
+                    - generic [ref=e60] [cursor=pointer]:
+                      - button "Implement dark mode toggle" [ref=e61]
+                      - generic:
+                        - generic:
+                          - heading "Implement dark mode toggle" [level=3]
+                          - generic [ref=e62]:
+                            - button "Duplicate" [ref=e63]
+                            - button "Delete" [ref=e64]
+                        - paragraph: Add theme switching in settings page
+                        - generic:
+                          - generic: In Progress
+                          - generic: Medium
+                        - generic:
+                          - generic: 9/5/2026
+                  - button "API integration for notifications API integration for notifications Duplicate Delete Connect push notification service In Progress High 9/5/2026" [ref=e65]:
+                    - generic [ref=e66] [cursor=pointer]:
+                      - button "API integration for notifications" [ref=e67]
+                      - generic:
+                        - generic:
+                          - heading "API integration for notifications" [level=3]
+                          - generic [ref=e68]:
+                            - button "Duplicate" [ref=e69]
+                            - button "Delete" [ref=e70]
+                        - paragraph: Connect push notification service
+                        - generic:
+                          - generic: In Progress
+                          - generic: High
+                        - generic:
+                          - generic: 9/5/2026
+              - region "Done column" [ref=e71]:
+                - generic [ref=e72]:
+                  - heading "Done" [level=2] [ref=e73]
+                  - generic [ref=e74]: "2"
+                - generic [ref=e75]:
+                  - button "Write unit tests for auth Write unit tests for auth Duplicate Delete Archive Cover login, register, and password reset flows Done Low 9/5/2026" [ref=e76]:
+                    - generic [ref=e77] [cursor=pointer]:
+                      - button "Write unit tests for auth" [ref=e78]
+                      - generic:
+                        - generic:
+                          - heading "Write unit tests for auth" [level=3]
+                          - generic [ref=e79]:
+                            - button "Duplicate" [ref=e80]
+                            - button "Delete" [ref=e81]
+                            - button "Archive" [ref=e82]
+                        - paragraph: Cover login, register, and password reset flows
+                        - generic:
+                          - generic: Done
+                          - generic: Low
+                        - generic:
+                          - generic: 9/5/2026
+                  - button "Setup CI/CD pipeline Setup CI/CD pipeline Duplicate Delete Archive GitHub Actions for build and deploy Done High 9/5/2026" [ref=e83]:
+                    - generic [ref=e84] [cursor=pointer]:
+                      - button "Setup CI/CD pipeline" [ref=e85]
+                      - generic:
+                        - generic:
+                          - heading "Setup CI/CD pipeline" [level=3]
+                          - generic [ref=e86]:
+                            - button "Duplicate" [ref=e87]
+                            - button "Delete" [ref=e88]
+                            - button "Archive" [ref=e89]
+                        - paragraph: GitHub Actions for build and deploy
+                        - generic:
+                          - generic: Done
+                          - generic: High
+                        - generic:
+                          - generic: 9/5/2026
+            - status [ref=e90]
+  - region "Notifications"

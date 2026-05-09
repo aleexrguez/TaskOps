@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useCreateTask } from '../hooks/use-tasks';
 import { useTaskUIStore } from '../store/task-ui.store';
 import { useToastStore } from '../store/toast.store';
@@ -9,6 +10,18 @@ export function CreateTaskContainer() {
   const closeCreateModal = useTaskUIStore((s) => s.closeCreateModal);
   const addToast = useToastStore((s) => s.addToast);
   const { mutate: createTask, isPending, isError, error } = useCreateTask();
+
+  useEffect(() => {
+    if (!isOpen) return;
+    function handleKeyDown(event: KeyboardEvent): void {
+      if (event.key !== 'Escape') return;
+      if (document.querySelector('.taskops-date-picker [role="dialog"]'))
+        return;
+      closeCreateModal();
+    }
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, closeCreateModal]);
 
   if (!isOpen) return null;
 

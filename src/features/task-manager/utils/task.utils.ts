@@ -1,6 +1,7 @@
 import type {
   Task,
   TaskStatus,
+  TaskPriority,
   CreateTaskInput,
   RetentionPolicy,
   ReorderUpdate,
@@ -131,6 +132,31 @@ export function filterVisibleTasks(
 ): Task[] {
   if (showArchived) return tasks;
   return tasks.filter((t) => !(t.status === 'done' && t.isArchived === true));
+}
+
+export interface TaskFilterOptions {
+  showArchived: boolean;
+  statusFilter: TaskStatus | 'all';
+  priorityFilter: TaskPriority | 'all';
+  searchQuery: string;
+}
+
+export function applyAllFilters(
+  tasks: Task[],
+  options: TaskFilterOptions,
+): Task[] {
+  let result = filterVisibleTasks(tasks, options.showArchived);
+  if (options.statusFilter !== 'all') {
+    result = filterTasksByStatus(result, options.statusFilter);
+  }
+  if (options.priorityFilter !== 'all') {
+    result = result.filter((task) => task.priority === options.priorityFilter);
+  }
+  if (options.searchQuery.trim()) {
+    const query = options.searchQuery.toLowerCase();
+    result = result.filter((task) => task.title.toLowerCase().includes(query));
+  }
+  return result;
 }
 
 export function isDueDateOverdue(

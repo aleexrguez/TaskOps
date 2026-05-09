@@ -1,0 +1,17 @@
+- generic [ref=e2]:
+  - generic [ref=e4]:
+    - link "← Back to login" [ref=e5] [cursor=pointer]:
+      - /url: /login
+    - generic [ref=e6]:
+      - heading "Reset Password" [level=1] [ref=e7]
+      - generic [ref=e8]:
+        - paragraph [ref=e9]: Enter your email and we'll send you a link to reset your password.
+        - generic [ref=e10]:
+          - generic [ref=e11]: Email *
+          - textbox "Email *" [ref=e12]:
+            - /placeholder: you@example.com
+        - button "Send Reset Link" [ref=e13] [cursor=pointer]
+        - paragraph [ref=e14]:
+          - link "Back to login" [ref=e15] [cursor=pointer]:
+            - /url: /login
+  - region "Notifications"

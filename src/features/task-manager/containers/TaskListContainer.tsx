@@ -10,8 +10,7 @@ import {
 import { useArchiveTask, useUnarchiveTask } from '../hooks/use-archive-task';
 import { useTaskUIStore } from '../store/task-ui.store';
 import {
-  filterTasksByStatus,
-  filterVisibleTasks,
+  applyAllFilters,
   sortTasks,
   groupTasksByPosition,
   extractReorderUpdates,
@@ -91,29 +90,18 @@ export function TaskListContainer() {
     return () => cancelAnimationFrame(raf);
   }, [highlightTaskId, navigate, location.pathname]);
 
-  const filteredTasks = useMemo(() => {
-    const allTasks = data?.tasks ?? [];
-
-    let result = filterVisibleTasks(allTasks, showArchived);
-
-    result =
-      statusFilter === 'all'
-        ? result
-        : filterTasksByStatus(result, statusFilter);
-
-    if (priorityFilter !== 'all') {
-      result = result.filter((task) => task.priority === priorityFilter);
-    }
-
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase();
-      result = result.filter((task) =>
-        task.title.toLowerCase().includes(query),
-      );
-    }
-
-    return sortTasks(result);
-  }, [data, statusFilter, priorityFilter, searchQuery, showArchived]);
+  const filteredTasks = useMemo(
+    () =>
+      sortTasks(
+        applyAllFilters(data?.tasks ?? [], {
+          showArchived,
+          statusFilter,
+          priorityFilter,
+          searchQuery,
+        }),
+      ),
+    [data, statusFilter, priorityFilter, searchQuery, showArchived],
+  );
 
   function handleDelete(id: string): void {
     setTaskToDelete(id);
