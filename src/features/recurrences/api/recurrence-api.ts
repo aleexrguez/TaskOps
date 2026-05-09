@@ -111,6 +111,25 @@ export async function updateRecurrence(
     updates.description = input.description ?? null;
   if (input.priority !== undefined) updates.priority = input.priority;
   if (input.isActive !== undefined) updates.is_active = input.isActive;
+
+  // Frequency change: clean up incompatible fields
+  if (input.frequency !== undefined) {
+    updates.frequency = input.frequency;
+    if (input.frequency === 'daily') {
+      updates.weekly_days = null;
+      updates.monthly_day = null;
+      updates.lead_time_days = 0;
+    } else if (input.frequency === 'weekly') {
+      updates.monthly_day = null;
+      updates.lead_time_days = 0;
+    } else if (input.frequency === 'monthly') {
+      updates.weekly_days = null;
+    }
+  }
+
+  // Frequency-specific fields (applied AFTER cleanup so correct values override)
+  if (input.weeklyDays !== undefined) updates.weekly_days = input.weeklyDays;
+  if (input.monthlyDay !== undefined) updates.monthly_day = input.monthlyDay;
   if (input.leadTimeDays !== undefined)
     updates.lead_time_days = input.leadTimeDays;
 

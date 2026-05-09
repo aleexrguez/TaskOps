@@ -2,7 +2,10 @@ import { useRecurrence, useUpdateRecurrence } from '../hooks/use-recurrences';
 import { useRecurrenceUIStore } from '../store/recurrence-ui.store';
 import { useToastStore } from '@/features/task-manager/store/toast.store';
 import { RecurrenceForm } from '../components/RecurrenceForm';
-import type { CreateRecurrenceInput } from '../types/recurrence.types';
+import type {
+  CreateRecurrenceInput,
+  UpdateRecurrenceInput,
+} from '../types/recurrence.types';
 
 export function EditRecurrenceContainer() {
   const isOpen = useRecurrenceUIStore((s) => s.isEditModalOpen);
@@ -18,7 +21,25 @@ export function EditRecurrenceContainer() {
   async function handleSubmit(data: CreateRecurrenceInput): Promise<void> {
     if (!selectedTemplateId) return;
     try {
-      await updateRecurrence({ id: selectedTemplateId, input: data });
+      const updateInput: UpdateRecurrenceInput = {
+        title: data.title,
+        description: data.description,
+        priority: data.priority,
+        frequency: data.frequency,
+        weeklyDays:
+          data.frequency === 'weekly' && 'weeklyDays' in data
+            ? data.weeklyDays
+            : undefined,
+        monthlyDay:
+          data.frequency === 'monthly' && 'monthlyDay' in data
+            ? data.monthlyDay
+            : undefined,
+        leadTimeDays:
+          data.frequency === 'monthly' && 'leadTimeDays' in data
+            ? data.leadTimeDays
+            : undefined,
+      };
+      await updateRecurrence({ id: selectedTemplateId, input: updateInput });
       addToast('Recurrence updated', 'success');
       closeEditModal();
     } catch {
