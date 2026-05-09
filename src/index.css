@@ -1,3 +1,47 @@
 @import 'tailwindcss';
+@import 'react-day-picker/style.css';
 
 @custom-variant dark (&:where(.dark, .dark *));
+
+/* DatePicker scoped overrides */
+.taskops-date-picker .rdp-day {
+  min-width: 44px;
+  min-height: 44px;
+}
+
+.taskops-date-picker .rdp-button {
+  min-width: 44px;
+  min-height: 44px;
+}
+
+@media (max-width: 767px) {
+  .taskops-date-picker > div[role='dialog'] {
+    width: 100vw;
+    left: 0;
+    right: 0;
+  }
+}
+
+.dark .taskops-date-picker .rdp-day_selected,
+.dark .taskops-date-picker .rdp-day_selected:hover {
+  background-color: #4f46e5;
+  color: #fff;
+}
+
+.dark .taskops-date-picker .rdp-caption_label,
+.dark .taskops-date-picker .rdp-head_cell,
+.dark .taskops-date-picker .rdp-day {
+  color: #e5e7eb;
+}
+
+.dark .taskops-date-picker .rdp-nav_button:hover,
+.dark .taskops-date-picker .rdp-day:hover:not(.rdp-day_selected) {
+  background-color: #374151;
+}
+
+/* Touch device: always show task card actions */
+@media (hover: none) {
+  .touch-show-actions {
+    opacity: 1 !important;
+  }
+}

@@ -1,6 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTask, useDeleteTask, useUpdateTask } from '../hooks/use-tasks';
+import {
+  useChecklist,
+  useCreateChecklistItem,
+  useUpdateChecklistItem,
+  useDeleteChecklistItem,
+  useReorderChecklistItems,
+} from '../hooks/use-checklist';
 import { useToastStore } from '../store/toast.store';
 import { TaskDetailView } from '../components/TaskDetailView';
 import { TaskNotFound } from '../components/TaskNotFound';
@@ -12,6 +19,7 @@ import {
 } from '@/features/recurrences/utils/recurrence.utils';
 import { useRecurrence } from '@/features/recurrences/hooks/use-recurrences';
 import type { CreateTaskInput } from '../types';
+import { celebrateTaskDone } from '../utils/confetti';
 
 export function TaskDetailContainer() {
   const { id = '' } = useParams<{ id: string }>();
@@ -39,6 +47,36 @@ export function TaskDetailContainer() {
     ? formatFrequencyLabel(recurrenceTemplate)
     : undefined;
 
+  // Checklist hooks
+  const { data: checklistItems, isLoading: checklistLoading } =
+    useChecklist(id);
+  const { mutate: createChecklistItemMut } = useCreateChecklistItem(id);
+  const { mutate: updateChecklistItemMut } = useUpdateChecklistItem(id);
+  const { mutate: deleteChecklistItemMut } = useDeleteChecklistItem(id);
+  const { mutate: reorderChecklistItemsMut } = useReorderChecklistItems(id);
+
+  function handleChecklistToggle(itemId: string, isCompleted: boolean): void {
+    updateChecklistItemMut({ id: itemId, input: { isCompleted } });
+  }
+
+  function handleChecklistCreate(title: string): void {
+    createChecklistItemMut({ title });
+  }
+
+  function handleChecklistDelete(itemId: string): void {
+    deleteChecklistItemMut(itemId);
+  }
+
+  function handleChecklistUpdate(itemId: string, title: string): void {
+    updateChecklistItemMut({ id: itemId, input: { title } });
+  }
+
+  function handleChecklistReorder(
+    items: { id: string; position: number }[],
+  ): void {
+    reorderChecklistItemsMut(items);
+  }
+
   function handleBack(): void {
     navigate('/app/tasks');
   }
@@ -49,12 +87,16 @@ export function TaskDetailContainer() {
 
   function handleSave(data: CreateTaskInput): void {
     if (!task) return;
+    const previousStatus = task.status;
     updateTask(
       { id: task.id, input: data },
       {
         onSuccess: () => {
           addToast('Task updated', 'success');
           setIsEditing(false);
+          if (data.status === 'done' && previousStatus !== 'done') {
+            celebrateTaskDone();
+          }
         },
         onError: () => {
           addToast('Failed to update task', 'error');
@@ -132,6 +174,13 @@ export function TaskDetailContainer() {
           isSubmitting={isUpdating}
           isRecurring={recurring}
           frequencyLabel={frequencyLabel}
+          checklistItems={checklistItems}
+          checklistLoading={checklistLoading}
+          onChecklistToggle={handleChecklistToggle}
+          onChecklistCreate={handleChecklistCreate}
+          onChecklistDelete={handleChecklistDelete}
+          onChecklistUpdate={handleChecklistUpdate}
+          onChecklistReorder={handleChecklistReorder}
         />
       );
     }

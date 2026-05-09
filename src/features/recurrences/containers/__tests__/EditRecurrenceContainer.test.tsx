@@ -236,4 +236,55 @@ describe('EditRecurrenceContainer', () => {
 
     expect(useRecurrenceUIStore.getState().isEditModalOpen).toBe(false);
   });
+
+  it('submits weekly template with frequency and weeklyDays in payload', async () => {
+    const user = userEvent.setup();
+    mockMutateAsync.mockResolvedValue({});
+    (useRecurrence as ReturnType<typeof vi.fn>).mockReturnValue({
+      data: makeTemplate({ frequency: 'weekly', weeklyDays: [1, 7] }),
+      isLoading: false,
+      isError: false,
+      error: null,
+    });
+    useRecurrenceUIStore.setState({
+      isEditModalOpen: true,
+      selectedTemplateId: 'template-1',
+    });
+    const Wrapper = createWrapper();
+    render(<EditRecurrenceContainer />, { wrapper: Wrapper });
+
+    await user.click(screen.getByRole('button', { name: /save changes/i }));
+
+    const callArgs = mockMutateAsync.mock.calls[0][0];
+    expect(callArgs.input.frequency).toBe('weekly');
+    expect(callArgs.input.weeklyDays).toBeDefined();
+  });
+
+  it('submits monthly template with frequency, monthlyDay, and leadTimeDays in payload', async () => {
+    const user = userEvent.setup();
+    mockMutateAsync.mockResolvedValue({});
+    (useRecurrence as ReturnType<typeof vi.fn>).mockReturnValue({
+      data: makeTemplate({
+        frequency: 'monthly',
+        monthlyDay: 15,
+        leadTimeDays: 3,
+      }),
+      isLoading: false,
+      isError: false,
+      error: null,
+    });
+    useRecurrenceUIStore.setState({
+      isEditModalOpen: true,
+      selectedTemplateId: 'template-1',
+    });
+    const Wrapper = createWrapper();
+    render(<EditRecurrenceContainer />, { wrapper: Wrapper });
+
+    await user.click(screen.getByRole('button', { name: /save changes/i }));
+
+    const callArgs = mockMutateAsync.mock.calls[0][0];
+    expect(callArgs.input.frequency).toBe('monthly');
+    expect(callArgs.input.monthlyDay).toBeDefined();
+    expect(callArgs.input.leadTimeDays).toBeDefined();
+  });
 });

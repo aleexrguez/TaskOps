@@ -5,3 +5,4 @@ export {
   createWeeklyInput,
   createMonthlyInput,
 } from './recurrence.factory';
+export { createMockChecklistItem } from './checklist.factory';

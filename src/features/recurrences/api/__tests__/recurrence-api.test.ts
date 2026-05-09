@@ -552,6 +552,139 @@ describe('CRUD operations', () => {
     expect(mockPropEq2).toHaveBeenCalledWith('is_archived', false);
   });
 
+  it('updateRecurrence sends frequency and weekly_days when editing a weekly template', async () => {
+    const updatedRow = makeDbRow({ frequency: 'weekly', weekly_days: [6] });
+
+    const mockSingle = vi
+      .fn()
+      .mockResolvedValue({ data: updatedRow, error: null });
+    const mockSelect = vi.fn().mockReturnValue({ single: mockSingle });
+    const mockEq = vi.fn().mockReturnValue({ select: mockSelect });
+    const mockUpdate = vi.fn().mockReturnValue({ eq: mockEq });
+
+    vi.mocked(supabase.from).mockReturnValue(
+      asFromReturn({ update: mockUpdate }),
+    );
+
+    await updateRecurrence('tmpl-uuid-001', {
+      frequency: 'weekly',
+      weeklyDays: [6],
+    });
+
+    expect(mockUpdate).toHaveBeenCalledWith(
+      expect.objectContaining({ frequency: 'weekly', weekly_days: [6] }),
+    );
+  });
+
+  it('updateRecurrence sends frequency and monthly_day when editing a monthly template', async () => {
+    const updatedRow = makeDbRow({ frequency: 'monthly', monthly_day: 20 });
+
+    const mockSingle = vi
+      .fn()
+      .mockResolvedValue({ data: updatedRow, error: null });
+    const mockSelect = vi.fn().mockReturnValue({ single: mockSingle });
+    const mockEq = vi.fn().mockReturnValue({ select: mockSelect });
+    const mockUpdate = vi.fn().mockReturnValue({ eq: mockEq });
+
+    vi.mocked(supabase.from).mockReturnValue(
+      asFromReturn({ update: mockUpdate }),
+    );
+
+    await updateRecurrence('tmpl-uuid-001', {
+      frequency: 'monthly',
+      monthlyDay: 20,
+    });
+
+    expect(mockUpdate).toHaveBeenCalledWith(
+      expect.objectContaining({ frequency: 'monthly', monthly_day: 20 }),
+    );
+  });
+
+  it('updateRecurrence clears weekly_days, monthly_day, and lead_time_days when frequency changes to daily', async () => {
+    const updatedRow = makeDbRow({ frequency: 'daily' });
+
+    const mockSingle = vi
+      .fn()
+      .mockResolvedValue({ data: updatedRow, error: null });
+    const mockSelect = vi.fn().mockReturnValue({ single: mockSingle });
+    const mockEq = vi.fn().mockReturnValue({ select: mockSelect });
+    const mockUpdate = vi.fn().mockReturnValue({ eq: mockEq });
+
+    vi.mocked(supabase.from).mockReturnValue(
+      asFromReturn({ update: mockUpdate }),
+    );
+
+    await updateRecurrence('tmpl-uuid-001', { frequency: 'daily' });
+
+    expect(mockUpdate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        frequency: 'daily',
+        weekly_days: null,
+        monthly_day: null,
+        lead_time_days: 0,
+      }),
+    );
+  });
+
+  it('updateRecurrence clears monthly_day and lead_time_days when frequency changes to weekly', async () => {
+    const updatedRow = makeDbRow({ frequency: 'weekly', weekly_days: [1, 3] });
+
+    const mockSingle = vi
+      .fn()
+      .mockResolvedValue({ data: updatedRow, error: null });
+    const mockSelect = vi.fn().mockReturnValue({ single: mockSingle });
+    const mockEq = vi.fn().mockReturnValue({ select: mockSelect });
+    const mockUpdate = vi.fn().mockReturnValue({ eq: mockEq });
+
+    vi.mocked(supabase.from).mockReturnValue(
+      asFromReturn({ update: mockUpdate }),
+    );
+
+    await updateRecurrence('tmpl-uuid-001', {
+      frequency: 'weekly',
+      weeklyDays: [1, 3],
+    });
+
+    expect(mockUpdate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        frequency: 'weekly',
+        weekly_days: [1, 3],
+        monthly_day: null,
+        lead_time_days: 0,
+      }),
+    );
+  });
+
+  it('updateRecurrence clears weekly_days when frequency changes to monthly', async () => {
+    const updatedRow = makeDbRow({ frequency: 'monthly', monthly_day: 15 });
+
+    const mockSingle = vi
+      .fn()
+      .mockResolvedValue({ data: updatedRow, error: null });
+    const mockSelect = vi.fn().mockReturnValue({ single: mockSingle });
+    const mockEq = vi.fn().mockReturnValue({ select: mockSelect });
+    const mockUpdate = vi.fn().mockReturnValue({ eq: mockEq });
+
+    vi.mocked(supabase.from).mockReturnValue(
+      asFromReturn({ update: mockUpdate }),
+    );
+
+    await updateRecurrence('tmpl-uuid-001', {
+      frequency: 'monthly',
+      monthlyDay: 15,
+      leadTimeDays: 3,
+    });
+
+    expect(mockUpdate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        frequency: 'monthly',
+        weekly_days: null,
+        monthly_day: 15,
+        lead_time_days: 3,
+      }),
+    );
+  });
+
   it('deleteRecurrence deletes by id', async () => {
     const mockEq = vi.fn().mockResolvedValue({ error: null });
     const mockDelete = vi.fn().mockReturnValue({ eq: mockEq });

@@ -3,6 +3,10 @@ import { useTaskUIStore } from '../store/task-ui.store';
 import { useToastStore } from '../store/toast.store';
 import { TaskForm } from '../components';
 import type { CreateTaskInput } from '../types';
+import {
+  celebrateTaskDone,
+  getConfettiOriginFromElement,
+} from '../utils/confetti';
 
 export function EditTaskContainer() {
   const isOpen = useTaskUIStore((s) => s.isEditModalOpen);
@@ -17,12 +21,23 @@ export function EditTaskContainer() {
 
   function handleSubmit(data: CreateTaskInput): void {
     if (!selectedTaskId) return;
+    const previousStatus = task?.status;
     updateTask(
       { id: selectedTaskId, input: data },
       {
         onSuccess: () => {
           addToast('Task updated', 'success');
           closeEditModal();
+          if (
+            data.status === 'done' &&
+            previousStatus !== undefined &&
+            previousStatus !== 'done'
+          ) {
+            const el = document.querySelector(
+              `[data-task-id="${CSS.escape(selectedTaskId!)}"]`,
+            );
+            celebrateTaskDone(getConfettiOriginFromElement(el));
+          }
         },
         onError: () => {
           addToast('Failed to update task', 'error');
@@ -34,8 +49,8 @@ export function EditTaskContainer() {
   const errorMessage = isError && error instanceof Error ? error.message : null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-xl dark:bg-gray-800">
+    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/50">
+      <div className="mx-4 w-full max-w-md rounded-lg bg-white p-4 shadow-xl md:mx-auto md:p-6 dark:bg-gray-800">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
             Edit Task

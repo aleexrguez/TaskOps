@@ -82,13 +82,14 @@ describe('BoardView', () => {
     expect(screen.getByText('Only Todo Task')).toBeInTheDocument();
   });
 
-  it('uses responsive grid classes that stack on mobile and show 3 columns on md+', () => {
+  it('uses responsive grid classes with tablet intermediate layout', () => {
     const { container } = render(<BoardView board={emptyBoard} />);
 
     // The grid is inside DndContext, so it's not the first child
     const grid = container.querySelector('.grid');
     expect(grid).toHaveClass('grid-cols-1');
-    expect(grid).toHaveClass('md:grid-cols-3');
+    expect(grid).toHaveClass('sm:grid-cols-2');
+    expect(grid).toHaveClass('lg:grid-cols-3');
   });
 
   it('shows delete loading state on the matching task card when deletingId is provided', () => {

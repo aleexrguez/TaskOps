@@ -302,4 +302,13 @@ describe('TaskCard — duplicate button', () => {
     expect(onDuplicate).toHaveBeenCalledOnce();
     expect(onClick).not.toHaveBeenCalled();
   });
+
+  it('action buttons container has touch-show-actions class for touch device visibility', () => {
+    render(
+      <TaskCard task={baseTask} onDelete={vi.fn()} onDuplicate={vi.fn()} />,
+    );
+
+    const duplicateButton = screen.getByRole('button', { name: /duplicate/i });
+    expect(duplicateButton.parentElement).toHaveClass('touch-show-actions');
+  });
 });

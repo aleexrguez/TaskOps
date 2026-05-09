@@ -1,4 +1,10 @@
-import type { CreateTaskInput, Task } from '../types';
+import type {
+  CreateTaskInput,
+  Task,
+  ChecklistItem,
+  ReorderChecklistItem,
+} from '../types';
+import { Checklist } from './Checklist';
 import { DueDateDisplay } from './DueDateDisplay';
 import { PriorityIndicator } from './PriorityIndicator';
 import { StatusBadge } from './StatusBadge';
@@ -14,6 +20,13 @@ interface TaskDetailViewProps {
   isSubmitting?: boolean;
   isRecurring?: boolean;
   frequencyLabel?: string;
+  checklistItems?: ChecklistItem[];
+  checklistLoading?: boolean;
+  onChecklistToggle?: (id: string, isCompleted: boolean) => void;
+  onChecklistCreate?: (title: string) => void;
+  onChecklistDelete?: (id: string) => void;
+  onChecklistUpdate?: (id: string, title: string) => void;
+  onChecklistReorder?: (items: ReorderChecklistItem[]) => void;
 }
 
 export function TaskDetailView({
@@ -26,6 +39,13 @@ export function TaskDetailView({
   isSubmitting = false,
   isRecurring = false,
   frequencyLabel,
+  checklistItems,
+  checklistLoading,
+  onChecklistToggle,
+  onChecklistCreate,
+  onChecklistDelete,
+  onChecklistUpdate,
+  onChecklistReorder,
 }: TaskDetailViewProps) {
   const createdDate = new Date(task.createdAt).toLocaleDateString();
   const updatedDate = new Date(task.updatedAt).toLocaleDateString();
@@ -65,13 +85,13 @@ export function TaskDetailView({
             <div className="flex shrink-0 gap-2">
               <button
                 onClick={onEdit}
-                className="cursor-pointer rounded-md px-3 py-1.5 text-sm font-medium text-indigo-600 hover:bg-indigo-50 dark:text-indigo-400 dark:hover:bg-indigo-900/40 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
+                className="cursor-pointer rounded-md min-h-[44px] px-4 py-2 text-sm font-medium text-indigo-600 hover:bg-indigo-50 dark:text-indigo-400 dark:hover:bg-indigo-900/40 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
               >
                 Edit
               </button>
               <button
                 onClick={onDelete}
-                className="cursor-pointer rounded-md px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/40 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
+                className="cursor-pointer rounded-md min-h-[44px] px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/40 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
               >
                 Delete
               </button>
@@ -81,6 +101,18 @@ export function TaskDetailView({
           <p className="text-sm text-gray-600 dark:text-gray-400">
             {task.description ?? 'No description'}
           </p>
+
+          {onChecklistCreate && (
+            <Checklist
+              items={checklistItems ?? []}
+              onToggle={onChecklistToggle!}
+              onCreate={onChecklistCreate}
+              onDelete={onChecklistDelete!}
+              onUpdate={onChecklistUpdate!}
+              onReorder={onChecklistReorder!}
+              isLoading={checklistLoading}
+            />
+          )}
 
           <div className="flex flex-wrap items-center gap-3">
             <StatusBadge status={task.status} />

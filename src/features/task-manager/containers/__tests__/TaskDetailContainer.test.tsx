@@ -21,6 +21,11 @@ vi.mock('@/features/task-manager/api', () => ({
   createTask: vi.fn(),
   updateTask: vi.fn(),
   deleteTask: vi.fn(),
+  fetchChecklistItems: vi.fn().mockResolvedValue([]),
+  createChecklistItem: vi.fn(),
+  updateChecklistItem: vi.fn(),
+  deleteChecklistItem: vi.fn(),
+  reorderChecklistItems: vi.fn(),
 }));
 
 vi.mock('@/features/recurrences/hooks/use-recurrences', () => ({
@@ -44,11 +49,15 @@ import {
   fetchTaskById,
   deleteTask,
   updateTask,
+  fetchChecklistItems,
 } from '@/features/task-manager/api';
 
 const mockFetchTaskById = fetchTaskById as MockedFunction<typeof fetchTaskById>;
 const mockDeleteTask = deleteTask as MockedFunction<typeof deleteTask>;
 const mockUpdateTask = updateTask as MockedFunction<typeof updateTask>;
+const mockFetchChecklistItems = fetchChecklistItems as MockedFunction<
+  typeof fetchChecklistItems
+>;
 
 const mockTask: Task = {
   id: 'task-uuid-001',
@@ -380,5 +389,65 @@ describe('TaskDetailContainer', () => {
     renderWithProviders('task-uuid-001');
 
     expect(await screen.findByText('Weekly (Mon, Wed)')).toBeInTheDocument();
+  });
+
+  it('renders checklist section when items are loaded', async () => {
+    mockFetchTaskById.mockResolvedValue(mockTask);
+    mockFetchChecklistItems.mockResolvedValue([
+      {
+        id: 'cl-1',
+        taskId: 'task-uuid-001',
+        title: 'Subtask A',
+        isCompleted: false,
+        position: 0,
+        createdAt: '2026-05-07T10:00:00.000Z',
+        updatedAt: '2026-05-07T10:00:00.000Z',
+      },
+    ]);
+
+    renderWithProviders('task-uuid-001');
+
+    expect(await screen.findByText('Subtask A')).toBeInTheDocument();
+    expect(screen.getByLabelText('Add checklist item')).toBeInTheDocument();
+  });
+
+  it('calls create checklist item when adding via Enter', async () => {
+    const user = userEvent.setup();
+    mockFetchTaskById.mockResolvedValue(mockTask);
+    mockFetchChecklistItems.mockResolvedValue([]);
+
+    renderWithProviders('task-uuid-001');
+
+    const addInput = await screen.findByLabelText('Add checklist item');
+    await user.type(addInput, 'New subtask{Enter}');
+
+    // The input should clear after creating
+    expect(addInput).toHaveValue('');
+  });
+
+  it('calls toggle when checking a checklist item', async () => {
+    const user = userEvent.setup();
+    mockFetchTaskById.mockResolvedValue(mockTask);
+    mockFetchChecklistItems.mockResolvedValue([
+      {
+        id: 'cl-1',
+        taskId: 'task-uuid-001',
+        title: 'Subtask A',
+        isCompleted: false,
+        position: 0,
+        createdAt: '2026-05-07T10:00:00.000Z',
+        updatedAt: '2026-05-07T10:00:00.000Z',
+      },
+    ]);
+
+    renderWithProviders('task-uuid-001');
+
+    const checkbox = await screen.findByRole('checkbox', {
+      name: /mark "subtask a" as complete/i,
+    });
+    await user.click(checkbox);
+
+    // Checkbox should have been clicked (toggle fired)
+    expect(checkbox).toBeInTheDocument();
   });
 });

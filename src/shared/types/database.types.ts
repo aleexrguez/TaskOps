@@ -52,6 +52,39 @@ export interface Database {
         };
         Relationships: [];
       };
+      checklist_items: {
+        Row: {
+          id: string;
+          task_id: string;
+          user_id: string;
+          title: string;
+          is_completed: boolean;
+          position: number;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          task_id: string;
+          user_id: string;
+          title: string;
+          is_completed?: boolean;
+          position?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          task_id?: string;
+          user_id?: string;
+          title?: string;
+          is_completed?: boolean;
+          position?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       recurrence_templates: {
         Row: {
           id: string;

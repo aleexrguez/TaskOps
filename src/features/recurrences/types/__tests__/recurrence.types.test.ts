@@ -529,4 +529,31 @@ describe('updateRecurrenceInputSchema', () => {
       updateRecurrenceInputSchema.parse({ leadTimeDays: -1 }),
     ).toThrow();
   });
+
+  it('accepts a partial update with frequency', () => {
+    const result = updateRecurrenceInputSchema.parse({ frequency: 'weekly' });
+    expect(result.frequency).toBe('weekly');
+  });
+
+  it('accepts a partial update with weeklyDays', () => {
+    const result = updateRecurrenceInputSchema.parse({ weeklyDays: [1, 6] });
+    expect(result.weeklyDays).toEqual([1, 6]);
+  });
+
+  it('accepts a partial update with monthlyDay', () => {
+    const result = updateRecurrenceInputSchema.parse({ monthlyDay: 15 });
+    expect(result.monthlyDay).toBe(15);
+  });
+
+  it('rejects weeklyDays with value 0 (out of 1-7 range)', () => {
+    expect(() =>
+      updateRecurrenceInputSchema.parse({ weeklyDays: [0] }),
+    ).toThrow();
+  });
+
+  it('rejects monthlyDay of 32 (out of 1-31 range)', () => {
+    expect(() =>
+      updateRecurrenceInputSchema.parse({ monthlyDay: 32 }),
+    ).toThrow();
+  });
 });

@@ -55,6 +55,9 @@ export const updateRecurrenceInputSchema = z.object({
   description: z.string().max(2000).optional(),
   priority: taskPrioritySchema.optional(),
   isActive: z.boolean().optional(),
+  frequency: recurrenceFrequencySchema.optional(),
+  weeklyDays: z.array(z.number().int().min(1).max(7)).optional(),
+  monthlyDay: z.number().int().min(1).max(31).optional(),
   leadTimeDays: z.number().int().min(0).max(14).optional(),
 });
 export type UpdateRecurrenceInput = z.infer<typeof updateRecurrenceInputSchema>;

@@ -21,6 +21,10 @@ import type { TaskListResponse } from '../api';
 import type { TaskBoard } from '../utils/task.utils';
 import { taskKeys } from '../hooks/task.keys';
 import { TaskFilters, TaskList, ConfirmDialog, BoardView } from '../components';
+import {
+  celebrateTaskDone,
+  getConfettiOriginFromElement,
+} from '../utils/confetti';
 
 const HIGHLIGHT_MS = 3000;
 const HIGHLIGHT_CLASS =
@@ -171,7 +175,22 @@ export function TaskListContainer() {
       tasks: optimisticTasks,
     });
 
+    // Detect first task transitioning to done (compare against pre-optimistic snapshot)
+    const previousTaskMap = new Map(previousData.tasks.map((t) => [t.id, t]));
+    const firstNewDone = updates.find(
+      (u) =>
+        u.status === 'done' && previousTaskMap.get(u.id)?.status !== 'done',
+    );
+
     reorderMutation(updates, {
+      onSuccess: () => {
+        if (firstNewDone) {
+          const el = document.querySelector(
+            `[data-task-id="${CSS.escape(firstNewDone.id)}"]`,
+          );
+          celebrateTaskDone(getConfettiOriginFromElement(el));
+        }
+      },
       onError: () => {
         queryClient.setQueryData(taskKeys.lists(), previousData);
       },
