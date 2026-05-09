@@ -38,3 +38,10 @@
 .dark .taskops-date-picker .rdp-day:hover:not(.rdp-day_selected) {
   background-color: #374151;
 }
+
+/* Touch device: always show task card actions */
+@media (hover: none) {
+  .touch-show-actions {
+    opacity: 1 !important;
+  }
+}

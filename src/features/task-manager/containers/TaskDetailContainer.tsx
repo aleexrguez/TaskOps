@@ -19,6 +19,7 @@ import {
 } from '@/features/recurrences/utils/recurrence.utils';
 import { useRecurrence } from '@/features/recurrences/hooks/use-recurrences';
 import type { CreateTaskInput } from '../types';
+import { celebrateTaskDone } from '../utils/confetti';
 
 export function TaskDetailContainer() {
   const { id = '' } = useParams<{ id: string }>();
@@ -86,12 +87,16 @@ export function TaskDetailContainer() {
 
   function handleSave(data: CreateTaskInput): void {
     if (!task) return;
+    const previousStatus = task.status;
     updateTask(
       { id: task.id, input: data },
       {
         onSuccess: () => {
           addToast('Task updated', 'success');
           setIsEditing(false);
+          if (data.status === 'done' && previousStatus !== 'done') {
+            celebrateTaskDone();
+          }
         },
         onError: () => {
           addToast('Failed to update task', 'error');

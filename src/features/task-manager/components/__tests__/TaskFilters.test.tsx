@@ -66,6 +66,68 @@ describe('TaskFilters', () => {
   });
 });
 
+describe('TaskFilters — mobile collapse', () => {
+  it('renders a Filters toggle button with aria-expanded="false"', () => {
+    render(<TaskFilters {...defaultProps} />);
+
+    expect(screen.getByRole('button', { name: /filters/i })).toHaveAttribute(
+      'aria-expanded',
+      'false',
+    );
+  });
+
+  it('sets aria-expanded="true" and shows filter panel when toggle is clicked', async () => {
+    const user = userEvent.setup();
+    render(<TaskFilters {...defaultProps} />);
+
+    const toggleButton = screen.getByRole('button', { name: /filters/i });
+    await user.click(toggleButton);
+
+    expect(toggleButton).toHaveAttribute('aria-expanded', 'true');
+    expect(toggleButton).toHaveAttribute('aria-controls', 'task-filters-panel');
+
+    const panel = document.getElementById('task-filters-panel');
+    expect(panel).not.toHaveClass('hidden');
+  });
+
+  it('shows badge with active filter count when filters are active', () => {
+    render(
+      <TaskFilters
+        {...defaultProps}
+        searchQuery="test"
+        priorityFilter="high"
+      />,
+    );
+
+    const toggleButton = screen.getByRole('button', { name: /filters/i });
+    expect(toggleButton).toHaveTextContent('2');
+  });
+
+  it('does not show badge when no filters are active', () => {
+    render(<TaskFilters {...defaultProps} />);
+
+    const toggleButton = screen.getByRole('button', { name: /filters/i });
+    expect(toggleButton.textContent).toMatch(/^Filters$/);
+  });
+
+  it('filter controls remain accessible when panel is expanded', async () => {
+    const user = userEvent.setup();
+    render(<TaskFilters {...defaultProps} />);
+
+    await user.click(screen.getByRole('button', { name: /filters/i }));
+
+    expect(
+      screen.getByRole('textbox', { name: /search tasks/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('combobox', { name: /filter by status/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('combobox', { name: /filter by priority/i }),
+    ).toBeInTheDocument();
+  });
+});
+
 describe('TaskFilters — accessibility', () => {
   it('search input has accessible name', () => {
     render(<TaskFilters {...defaultProps} />);

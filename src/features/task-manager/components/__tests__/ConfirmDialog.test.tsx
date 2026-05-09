@@ -42,4 +42,14 @@ describe('ConfirmDialog — accessibility', () => {
     );
     expect(container.firstChild).toBeNull();
   });
+
+  it('action buttons meet touch target minimum height', () => {
+    render(<ConfirmDialog {...defaultProps} />);
+
+    const cancelButton = screen.getByRole('button', { name: /cancel/i });
+    const confirmButton = screen.getByRole('button', { name: /delete/i });
+
+    expect(cancelButton.className).toContain('min-h-[44px]');
+    expect(confirmButton.className).toContain('min-h-[44px]');
+  });
 });
