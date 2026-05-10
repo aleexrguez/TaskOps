@@ -136,13 +136,50 @@ describe('RecurrenceGroupedLayout — empty state', () => {
   it('shows a single empty state message when all groups are empty', () => {
     render(<RecurrenceGroupedLayout groups={emptyGroups} />);
 
-    expect(screen.getByText(/no recurrences/i)).toBeInTheDocument();
+    expect(screen.getByText(/no recurrences yet/i)).toBeInTheDocument();
+    expect(screen.getByText(/set up recurring tasks/i)).toBeInTheDocument();
   });
 
   it('does not render any section headings when all groups are empty', () => {
     render(<RecurrenceGroupedLayout groups={emptyGroups} />);
 
     expect(screen.queryByRole('heading', { level: 2 })).not.toBeInTheDocument();
+  });
+
+  it('renders "Create Recurrence" CTA when onCreateNew is provided', () => {
+    render(
+      <RecurrenceGroupedLayout groups={emptyGroups} onCreateNew={vi.fn()} />,
+    );
+
+    expect(
+      screen.getByRole('button', { name: /create recurrence/i }),
+    ).toBeInTheDocument();
+  });
+
+  it('calls onCreateNew when CTA button is clicked', async () => {
+    const user = userEvent.setup();
+    const onCreateNew = vi.fn();
+
+    render(
+      <RecurrenceGroupedLayout
+        groups={emptyGroups}
+        onCreateNew={onCreateNew}
+      />,
+    );
+
+    await user.click(
+      screen.getByRole('button', { name: /create recurrence/i }),
+    );
+
+    expect(onCreateNew).toHaveBeenCalledOnce();
+  });
+
+  it('does not render CTA when onCreateNew is not provided', () => {
+    render(<RecurrenceGroupedLayout groups={emptyGroups} />);
+
+    expect(
+      screen.queryByRole('button', { name: /create recurrence/i }),
+    ).not.toBeInTheDocument();
   });
 });
 

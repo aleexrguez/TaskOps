@@ -128,6 +128,52 @@ describe('TaskFilters — mobile collapse', () => {
   });
 });
 
+describe('TaskFilters — mobile archived banner', () => {
+  it('shows "Viewing archived tasks" banner when showArchived is true and filters are collapsed', () => {
+    render(<TaskFilters {...defaultProps} showArchived={true} />);
+
+    expect(screen.getByText('Viewing archived tasks')).toBeInTheDocument();
+  });
+
+  it('does not show banner when showArchived is false', () => {
+    render(<TaskFilters {...defaultProps} showArchived={false} />);
+
+    expect(
+      screen.queryByText('Viewing archived tasks'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('banner Hide button calls onToggleArchived', async () => {
+    const user = userEvent.setup();
+    const onToggleArchived = vi.fn();
+
+    render(
+      <TaskFilters
+        {...defaultProps}
+        showArchived={true}
+        onToggleArchived={onToggleArchived}
+      />,
+    );
+
+    await user.click(screen.getByRole('button', { name: /^hide$/i }));
+
+    expect(onToggleArchived).toHaveBeenCalledOnce();
+  });
+
+  it('hides banner when filters panel is expanded', async () => {
+    const user = userEvent.setup();
+
+    render(<TaskFilters {...defaultProps} showArchived={true} />);
+
+    // Expand filters
+    await user.click(screen.getByRole('button', { name: /filters/i }));
+
+    expect(
+      screen.queryByText('Viewing archived tasks'),
+    ).not.toBeInTheDocument();
+  });
+});
+
 describe('TaskFilters — accessibility', () => {
   it('search input has accessible name', () => {
     render(<TaskFilters {...defaultProps} />);
