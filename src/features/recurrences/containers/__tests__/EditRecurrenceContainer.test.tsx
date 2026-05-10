@@ -288,3 +288,62 @@ describe('EditRecurrenceContainer', () => {
     expect(callArgs.input.leadTimeDays).toBeDefined();
   });
 });
+
+describe('EditRecurrenceContainer — dialog accessibility', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    useRecurrenceUIStore.setState({
+      isCreateModalOpen: false,
+      isEditModalOpen: false,
+      selectedTemplateId: null,
+    });
+    (useRecurrence as ReturnType<typeof vi.fn>).mockReturnValue({
+      data: makeTemplate(),
+      isLoading: false,
+      isError: false,
+      error: null,
+    });
+  });
+
+  it('renders with role="dialog" and aria-modal="true" when open', () => {
+    useRecurrenceUIStore.setState({
+      isEditModalOpen: true,
+      selectedTemplateId: 'template-1',
+    });
+    const Wrapper = createWrapper();
+    render(<EditRecurrenceContainer />, { wrapper: Wrapper });
+
+    const dialog = screen.getByRole('dialog');
+    expect(dialog).toHaveAttribute('aria-modal', 'true');
+  });
+
+  it('has aria-labelledby pointing to the modal title', () => {
+    useRecurrenceUIStore.setState({
+      isEditModalOpen: true,
+      selectedTemplateId: 'template-1',
+    });
+    const Wrapper = createWrapper();
+    render(<EditRecurrenceContainer />, { wrapper: Wrapper });
+
+    const dialog = screen.getByRole('dialog');
+    expect(dialog).toHaveAttribute('aria-labelledby', 'edit-recurrence-title');
+
+    const title = document.getElementById('edit-recurrence-title');
+    expect(title).toBeInTheDocument();
+    expect(title?.textContent).toBe('Edit Recurrence');
+  });
+
+  it('closes modal when Escape key is pressed', async () => {
+    const user = userEvent.setup();
+    useRecurrenceUIStore.setState({
+      isEditModalOpen: true,
+      selectedTemplateId: 'template-1',
+    });
+    const Wrapper = createWrapper();
+    render(<EditRecurrenceContainer />, { wrapper: Wrapper });
+
+    await user.keyboard('{Escape}');
+
+    expect(useRecurrenceUIStore.getState().isEditModalOpen).toBe(false);
+  });
+});

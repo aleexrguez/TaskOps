@@ -63,9 +63,17 @@ export function EditTaskContainer() {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/50">
-      <div className="mx-4 w-full max-w-md rounded-lg bg-white p-4 shadow-xl md:mx-auto md:p-6 dark:bg-gray-800">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="edit-task-title"
+        className="mx-4 w-full max-w-md rounded-lg bg-white p-4 shadow-xl md:mx-auto md:p-6 dark:bg-gray-800"
+      >
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+          <h2
+            id="edit-task-title"
+            className="text-lg font-semibold text-gray-900 dark:text-gray-100"
+          >
             Edit Task
           </h2>
           <button

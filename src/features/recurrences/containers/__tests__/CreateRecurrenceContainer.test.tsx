@@ -183,3 +183,50 @@ describe('CreateRecurrenceContainer', () => {
     expect(useRecurrenceUIStore.getState().isCreateModalOpen).toBe(true);
   });
 });
+
+describe('CreateRecurrenceContainer — dialog accessibility', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    useRecurrenceUIStore.setState({
+      isCreateModalOpen: false,
+      isEditModalOpen: false,
+      selectedTemplateId: null,
+    });
+  });
+
+  it('renders with role="dialog" and aria-modal="true" when open', () => {
+    useRecurrenceUIStore.setState({ isCreateModalOpen: true });
+    const Wrapper = createWrapper();
+    render(<CreateRecurrenceContainer />, { wrapper: Wrapper });
+
+    const dialog = screen.getByRole('dialog');
+    expect(dialog).toHaveAttribute('aria-modal', 'true');
+  });
+
+  it('has aria-labelledby pointing to the modal title', () => {
+    useRecurrenceUIStore.setState({ isCreateModalOpen: true });
+    const Wrapper = createWrapper();
+    render(<CreateRecurrenceContainer />, { wrapper: Wrapper });
+
+    const dialog = screen.getByRole('dialog');
+    expect(dialog).toHaveAttribute(
+      'aria-labelledby',
+      'create-recurrence-title',
+    );
+
+    const title = document.getElementById('create-recurrence-title');
+    expect(title).toBeInTheDocument();
+    expect(title?.textContent).toBe('New Recurrence');
+  });
+
+  it('closes modal when Escape key is pressed', async () => {
+    const user = userEvent.setup();
+    useRecurrenceUIStore.setState({ isCreateModalOpen: true });
+    const Wrapper = createWrapper();
+    render(<CreateRecurrenceContainer />, { wrapper: Wrapper });
+
+    await user.keyboard('{Escape}');
+
+    expect(useRecurrenceUIStore.getState().isCreateModalOpen).toBe(false);
+  });
+});
