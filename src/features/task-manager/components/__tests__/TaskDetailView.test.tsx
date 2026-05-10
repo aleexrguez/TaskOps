@@ -73,12 +73,7 @@ describe('TaskDetailView', () => {
       <TaskDetailView task={mockTask} onEdit={vi.fn()} onDelete={vi.fn()} />,
     );
 
-    const formattedDate = new Date(
-      '2026-03-15T10:00:00.000Z',
-    ).toLocaleDateString();
-    expect(
-      screen.getByText(new RegExp(formattedDate.replace(/\//g, '\\/'))),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/Mar 15, 2026/)).toBeInTheDocument();
   });
 
   it('renders formatted updated date', () => {
@@ -86,12 +81,7 @@ describe('TaskDetailView', () => {
       <TaskDetailView task={mockTask} onEdit={vi.fn()} onDelete={vi.fn()} />,
     );
 
-    const formattedDate = new Date(
-      '2026-03-20T15:30:00.000Z',
-    ).toLocaleDateString();
-    expect(
-      screen.getByText(new RegExp(formattedDate.replace(/\//g, '\\/'))),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/Mar 20, 2026/)).toBeInTheDocument();
   });
 
   it('calls onEdit when Edit button is clicked', async () => {

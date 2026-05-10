@@ -1,5 +1,6 @@
 import type { Task } from '../types';
 import { isGeneratedTask } from '@/features/recurrences/utils/recurrence.utils';
+import { formatDate, formatDateTime } from '../utils/date.utils';
 import { StatusBadge } from './StatusBadge';
 import { PriorityIndicator } from './PriorityIndicator';
 import { DueDateDisplay } from './DueDateDisplay';
@@ -21,7 +22,7 @@ export function TaskCard({
   onDuplicate,
   isDeleting = false,
 }: TaskCardProps) {
-  const formattedDate = new Date(task.createdAt).toLocaleDateString();
+  const formattedDate = formatDate(task.createdAt);
   const recurring = isGeneratedTask(task);
 
   const cardContent = (
@@ -88,12 +89,12 @@ export function TaskCard({
       </div>
 
       <div className="mt-3 flex items-center justify-between border-t border-gray-100 pt-3 text-xs text-gray-400 dark:border-gray-700 dark:text-gray-500">
-        <span className="shrink-0">{formattedDate}</span>
+        <span className="shrink-0">Created {formattedDate}</span>
       </div>
       {task.status === 'done' && task.completedAt && (
         <div className="mt-1 text-xs text-gray-400 dark:text-gray-500">
           <span className="font-medium">Completed</span>{' '}
-          {new Date(task.completedAt).toLocaleString()}
+          {formatDateTime(task.completedAt)}
         </div>
       )}
     </>

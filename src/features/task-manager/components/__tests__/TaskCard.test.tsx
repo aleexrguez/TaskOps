@@ -92,7 +92,13 @@ describe('TaskCard — Block 1 features', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('renders completedAt for done tasks', () => {
+  it('renders "Created" label with formatted date', () => {
+    render(<TaskCard task={baseTask} />);
+
+    expect(screen.getByText(/Created Apr 1, 2026/)).toBeInTheDocument();
+  });
+
+  it('renders completedAt for done tasks with formatted datetime', () => {
     const task: Task = {
       ...baseTask,
       status: 'done',
@@ -102,6 +108,7 @@ describe('TaskCard — Block 1 features', () => {
     render(<TaskCard task={task} />);
 
     expect(screen.getByText(/Completed/)).toBeInTheDocument();
+    expect(screen.getByText(/Apr 10, 2026/)).toBeInTheDocument();
   });
 
   it('does not render completedAt for non-done tasks', () => {
