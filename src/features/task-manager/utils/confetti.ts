@@ -24,9 +24,11 @@ export async function celebrateTaskDone(
   const { default: confetti } = await import('canvas-confetti');
 
   confetti({
-    particleCount: 80,
-    spread: 60,
+    particleCount: 40,
+    spread: 50,
     origin: origin ?? { y: 0.7 },
+    decay: 0.92,
+    ticks: 150,
     disableForReducedMotion: true,
   });
 }

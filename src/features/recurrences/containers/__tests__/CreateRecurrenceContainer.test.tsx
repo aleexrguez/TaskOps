@@ -114,7 +114,9 @@ describe('CreateRecurrenceContainer', () => {
 
     await user.clear(screen.getByLabelText(/title/i));
     await user.type(screen.getByLabelText(/title/i), 'Daily standup');
-    await user.click(screen.getByRole('button', { name: /submit/i }));
+    await user.click(
+      screen.getByRole('button', { name: /create recurrence/i }),
+    );
 
     expect(mockMutateAsync).toHaveBeenCalledWith(
       expect.objectContaining({ title: 'Daily standup', frequency: 'daily' }),
@@ -129,7 +131,9 @@ describe('CreateRecurrenceContainer', () => {
     render(<CreateRecurrenceContainer />, { wrapper: Wrapper });
 
     await user.type(screen.getByLabelText(/title/i), 'Daily standup');
-    await user.click(screen.getByRole('button', { name: /submit/i }));
+    await user.click(
+      screen.getByRole('button', { name: /create recurrence/i }),
+    );
 
     expect(useRecurrenceUIStore.getState().isCreateModalOpen).toBe(false);
   });
@@ -142,7 +146,9 @@ describe('CreateRecurrenceContainer', () => {
     render(<CreateRecurrenceContainer />, { wrapper: Wrapper });
 
     await user.type(screen.getByLabelText(/title/i), 'Daily standup');
-    await user.click(screen.getByRole('button', { name: /submit/i }));
+    await user.click(
+      screen.getByRole('button', { name: /create recurrence/i }),
+    );
 
     expect(mockAddToast).toHaveBeenCalledWith(expect.any(String), 'success');
   });
@@ -155,7 +161,9 @@ describe('CreateRecurrenceContainer', () => {
     render(<CreateRecurrenceContainer />, { wrapper: Wrapper });
 
     await user.type(screen.getByLabelText(/title/i), 'Daily standup');
-    await user.click(screen.getByRole('button', { name: /submit/i }));
+    await user.click(
+      screen.getByRole('button', { name: /create recurrence/i }),
+    );
 
     expect(mockAddToast).toHaveBeenCalledWith(expect.any(String), 'error');
   });
@@ -168,7 +176,9 @@ describe('CreateRecurrenceContainer', () => {
     render(<CreateRecurrenceContainer />, { wrapper: Wrapper });
 
     await user.type(screen.getByLabelText(/title/i), 'Daily standup');
-    await user.click(screen.getByRole('button', { name: /submit/i }));
+    await user.click(
+      screen.getByRole('button', { name: /create recurrence/i }),
+    );
 
     expect(useRecurrenceUIStore.getState().isCreateModalOpen).toBe(true);
   });

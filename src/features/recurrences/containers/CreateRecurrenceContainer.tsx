@@ -41,7 +41,7 @@ export function CreateRecurrenceContainer() {
         <RecurrenceForm
           onSubmit={handleSubmit}
           isSubmitting={isPending}
-          submitLabel="Submit"
+          submitLabel="Create Recurrence"
           autoFocusTitle
         />
       </div>
