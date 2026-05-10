@@ -4,6 +4,7 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import type { Task, TaskStatus } from '../types';
+import type { ChecklistSummaries } from '../api/checklist-api';
 import { SortableTaskCard } from './SortableTaskCard';
 
 interface BoardColumnProps {
@@ -15,6 +16,7 @@ interface BoardColumnProps {
   onArchive?: (id: string) => void;
   onDuplicate?: (id: string) => void;
   deletingId?: string | null;
+  checklistSummaries?: ChecklistSummaries;
 }
 
 export function BoardColumn({
@@ -26,6 +28,7 @@ export function BoardColumn({
   onArchive,
   onDuplicate,
   deletingId = null,
+  checklistSummaries,
 }: BoardColumnProps) {
   const { setNodeRef, isOver } = useDroppable({ id: status });
   const taskIds = tasks.map((t) => t.id);
@@ -65,6 +68,7 @@ export function BoardColumn({
                 onArchive={onArchive}
                 onDuplicate={onDuplicate}
                 isDeleting={deletingId === task.id}
+                checklistSummary={checklistSummaries?.[task.id]}
               />
             ))
           )}

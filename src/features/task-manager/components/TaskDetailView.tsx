@@ -4,6 +4,7 @@ import type {
   ChecklistItem,
   ReorderChecklistItem,
 } from '../types';
+import { formatDate, formatDateTime } from '../utils/date.utils';
 import { Checklist } from './Checklist';
 import { DueDateDisplay } from './DueDateDisplay';
 import { PriorityIndicator } from './PriorityIndicator';
@@ -47,8 +48,8 @@ export function TaskDetailView({
   onChecklistUpdate,
   onChecklistReorder,
 }: TaskDetailViewProps) {
-  const createdDate = new Date(task.createdAt).toLocaleDateString();
-  const updatedDate = new Date(task.updatedAt).toLocaleDateString();
+  const createdDate = formatDate(task.createdAt);
+  const updatedDate = formatDate(task.updatedAt);
 
   const initialValues: Partial<CreateTaskInput> = {
     title: task.title,
@@ -162,7 +163,7 @@ export function TaskDetailView({
                   Completed
                 </span>
                 <p className="mt-1 text-gray-900 dark:text-gray-100">
-                  {new Date(task.completedAt).toLocaleString()}
+                  {formatDateTime(task.completedAt)}
                 </p>
               </div>
             )}

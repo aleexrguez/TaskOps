@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useRecurrence, useUpdateRecurrence } from '../hooks/use-recurrences';
 import { useRecurrenceUIStore } from '../store/recurrence-ui.store';
 import { useToastStore } from '@/features/task-manager/store/toast.store';
@@ -15,6 +16,15 @@ export function EditRecurrenceContainer() {
   const { mutateAsync: updateRecurrence, isPending } = useUpdateRecurrence();
 
   const { data: template, isLoading } = useRecurrence(selectedTemplateId ?? '');
+
+  useEffect(() => {
+    if (!isOpen) return;
+    function handleKeyDown(event: KeyboardEvent): void {
+      if (event.key === 'Escape') closeEditModal();
+    }
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, closeEditModal]);
 
   if (!isOpen || !selectedTemplateId) return null;
 
@@ -49,9 +59,17 @@ export function EditRecurrenceContainer() {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-xl dark:bg-gray-800">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="edit-recurrence-title"
+        className="w-full max-w-md rounded-lg bg-white p-6 shadow-xl dark:bg-gray-800"
+      >
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+          <h2
+            id="edit-recurrence-title"
+            className="text-lg font-semibold text-gray-900 dark:text-gray-100"
+          >
             Edit Recurrence
           </h2>
           <button

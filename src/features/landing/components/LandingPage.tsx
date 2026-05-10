@@ -136,7 +136,7 @@ export function LandingPage() {
 
       {/* Footer */}
       <footer className="border-t border-gray-200 py-6 text-center text-sm text-gray-500 dark:border-gray-700 dark:text-gray-400">
-        TaskOps V1 — Built with React + Supabase
+        TaskOps · Built by Alessandro Rodriguez Rojas
       </footer>
     </div>
   );

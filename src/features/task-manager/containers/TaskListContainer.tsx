@@ -7,6 +7,7 @@ import {
   useCreateTask,
   useReorderTasks,
 } from '../hooks/use-tasks';
+import { useChecklistSummaries } from '../hooks/use-checklist';
 import { useArchiveTask, useUnarchiveTask } from '../hooks/use-archive-task';
 import { useTaskUIStore } from '../store/task-ui.store';
 import {
@@ -34,6 +35,7 @@ export function TaskListContainer() {
   const location = useLocation();
   const queryClient = useQueryClient();
   const { data, isLoading, isError, error, refetch } = useTasks();
+  const { data: checklistSummaries } = useChecklistSummaries();
   const {
     mutate: deleteTask,
     isPending: isDeleting,
@@ -245,6 +247,7 @@ export function TaskListContainer() {
             onDuplicate={handleDuplicate}
             deletingId={isDeleting ? (deletingId ?? null) : null}
             onBoardChange={handleBoardChange}
+            checklistSummaries={checklistSummaries}
           />
         ) : (
           <TaskList
@@ -256,6 +259,7 @@ export function TaskListContainer() {
             onCreateNew={openCreateModal}
             onArchive={handleArchive}
             onDuplicate={handleDuplicate}
+            checklistSummaries={checklistSummaries}
           />
         )}
       </div>

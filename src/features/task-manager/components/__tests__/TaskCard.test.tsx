@@ -92,7 +92,13 @@ describe('TaskCard — Block 1 features', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('renders completedAt for done tasks', () => {
+  it('renders "Created" label with formatted date', () => {
+    render(<TaskCard task={baseTask} />);
+
+    expect(screen.getByText(/Created Apr 1, 2026/)).toBeInTheDocument();
+  });
+
+  it('renders completedAt for done tasks with formatted datetime', () => {
     const task: Task = {
       ...baseTask,
       status: 'done',
@@ -102,6 +108,7 @@ describe('TaskCard — Block 1 features', () => {
     render(<TaskCard task={task} />);
 
     expect(screen.getByText(/Completed/)).toBeInTheDocument();
+    expect(screen.getByText(/Apr 10, 2026/)).toBeInTheDocument();
   });
 
   it('does not render completedAt for non-done tasks', () => {
@@ -310,5 +317,50 @@ describe('TaskCard — duplicate button', () => {
 
     const duplicateButton = screen.getByRole('button', { name: /duplicate/i });
     expect(duplicateButton.parentElement).toHaveClass('touch-show-actions');
+  });
+});
+
+describe('TaskCard — checklist progress', () => {
+  const baseTask: Task = {
+    id: 'task-cl-001',
+    title: 'Task with checklist',
+    status: 'in-progress',
+    priority: 'medium',
+    isArchived: false,
+    position: 0,
+    createdAt: '2026-04-01T10:00:00.000Z',
+    updatedAt: '2026-04-01T10:00:00.000Z',
+  };
+
+  it('shows checklist progress when summary has items', () => {
+    render(
+      <TaskCard
+        task={baseTask}
+        checklistSummary={{ total: 7, completed: 2 }}
+      />,
+    );
+
+    expect(screen.getByText('Checklist')).toBeInTheDocument();
+    expect(screen.getByText('2/7')).toBeInTheDocument();
+    expect(screen.getByRole('progressbar')).toBeInTheDocument();
+  });
+
+  it('does not show checklist progress when no summary is provided', () => {
+    render(<TaskCard task={baseTask} />);
+
+    expect(screen.queryByText('Checklist')).not.toBeInTheDocument();
+    expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
+  });
+
+  it('does not show checklist progress when total is 0', () => {
+    render(
+      <TaskCard
+        task={baseTask}
+        checklistSummary={{ total: 0, completed: 0 }}
+      />,
+    );
+
+    expect(screen.queryByText('Checklist')).not.toBeInTheDocument();
+    expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
   });
 });

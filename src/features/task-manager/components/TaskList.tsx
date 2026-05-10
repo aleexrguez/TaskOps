@@ -1,4 +1,5 @@
 import type { Task } from '../types';
+import type { ChecklistSummaries } from '../api/checklist-api';
 import { TaskCard } from './TaskCard';
 
 interface TaskListProps {
@@ -11,6 +12,7 @@ interface TaskListProps {
   deletingId?: string | null;
   emptyMessage?: string;
   onCreateNew?: () => void;
+  checklistSummaries?: ChecklistSummaries;
 }
 
 export function TaskList({
@@ -23,6 +25,7 @@ export function TaskList({
   deletingId = null,
   emptyMessage = 'No tasks yet',
   onCreateNew,
+  checklistSummaries,
 }: TaskListProps) {
   if (isLoading) {
     return (
@@ -86,6 +89,7 @@ export function TaskList({
           onArchive={onArchive}
           onDuplicate={onDuplicate}
           isDeleting={deletingId === task.id}
+          checklistSummary={checklistSummaries?.[task.id]}
         />
       ))}
     </div>

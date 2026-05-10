@@ -101,6 +101,7 @@ export function RecurrenceDashboardContainer() {
         groups={groups}
         onEdit={openEditModal}
         onDelete={handleDeleteRequest}
+        onCreateNew={openCreateModal}
       />
 
       <ConfirmDialog

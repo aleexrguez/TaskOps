@@ -27,6 +27,12 @@ vi.mock('../../api', () => ({
   unarchiveTask: vi.fn(),
   purgeTasks: vi.fn(),
   reorderTasks: vi.fn(),
+  fetchChecklistSummaries: vi.fn().mockResolvedValue({}),
+  fetchChecklistItems: vi.fn(),
+  createChecklistItem: vi.fn(),
+  updateChecklistItem: vi.fn(),
+  deleteChecklistItem: vi.fn(),
+  reorderChecklistItems: vi.fn(),
 }));
 
 import {

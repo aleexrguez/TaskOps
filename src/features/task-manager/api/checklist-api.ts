@@ -42,8 +42,38 @@ function toDbInsert(
 }
 
 // ---------------------------------------------------------------------------
+// Summary types (lightweight aggregation — no full row mapping needed)
+// ---------------------------------------------------------------------------
+
+export interface ChecklistSummary {
+  total: number;
+  completed: number;
+}
+
+export type ChecklistSummaries = Record<string, ChecklistSummary>;
+
+// ---------------------------------------------------------------------------
 // API functions
 // ---------------------------------------------------------------------------
+
+export async function fetchChecklistSummaries(): Promise<ChecklistSummaries> {
+  await requireAuthenticatedUser();
+
+  const { data, error } = await supabase
+    .from('checklist_items')
+    .select('task_id, is_completed');
+
+  if (error) throw new Error(error.message);
+
+  const result: ChecklistSummaries = {};
+  for (const row of data ?? []) {
+    const existing = result[row.task_id] ?? { total: 0, completed: 0 };
+    existing.total += 1;
+    if (row.is_completed) existing.completed += 1;
+    result[row.task_id] = existing;
+  }
+  return result;
+}
 
 export async function fetchChecklistItems(
   taskId: string,

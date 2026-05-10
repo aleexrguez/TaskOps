@@ -242,7 +242,14 @@ describe('Checklist', () => {
   });
 
   describe('reorder', () => {
-    it('calls onReorder with swapped positions when moving item up', async () => {
+    const item4 = createMockChecklistItem({
+      id: 'item-4',
+      title: 'Run CI',
+      isCompleted: false,
+      position: 3,
+    });
+
+    it('normalizes all positions when moving item up', async () => {
       const user = userEvent.setup();
       const onReorder = vi.fn();
       render(
@@ -258,10 +265,11 @@ describe('Checklist', () => {
       expect(onReorder).toHaveBeenCalledWith([
         { id: 'item-2', position: 0 },
         { id: 'item-1', position: 1 },
+        { id: 'item-3', position: 2 },
       ] satisfies ReorderChecklistItem[]);
     });
 
-    it('calls onReorder with swapped positions when moving item down', async () => {
+    it('normalizes all positions when moving item down', async () => {
       const user = userEvent.setup();
       const onReorder = vi.fn();
       render(
@@ -275,8 +283,9 @@ describe('Checklist', () => {
       );
 
       expect(onReorder).toHaveBeenCalledWith([
-        { id: 'item-1', position: 1 },
         { id: 'item-2', position: 0 },
+        { id: 'item-1', position: 1 },
+        { id: 'item-3', position: 2 },
       ] satisfies ReorderChecklistItem[]);
     });
 
@@ -293,6 +302,105 @@ describe('Checklist', () => {
 
       expect(
         screen.getByRole('button', { name: /move "write tests" down/i }),
+      ).toBeDisabled();
+    });
+
+    it('moves first item down in a 4-item list', async () => {
+      const user = userEvent.setup();
+      const onReorder = vi.fn();
+      render(
+        <Checklist
+          {...createDefaultProps({
+            items: [item1, item2, item3, item4],
+            onReorder,
+          })}
+        />,
+      );
+
+      await user.click(
+        screen.getByRole('button', { name: /move "buy milk" down/i }),
+      );
+
+      expect(onReorder).toHaveBeenCalledWith([
+        { id: 'item-2', position: 0 },
+        { id: 'item-1', position: 1 },
+        { id: 'item-3', position: 2 },
+        { id: 'item-4', position: 3 },
+      ] satisfies ReorderChecklistItem[]);
+    });
+
+    it('moves last item up in a 4-item list', async () => {
+      const user = userEvent.setup();
+      const onReorder = vi.fn();
+      render(
+        <Checklist
+          {...createDefaultProps({
+            items: [item1, item2, item3, item4],
+            onReorder,
+          })}
+        />,
+      );
+
+      await user.click(
+        screen.getByRole('button', { name: /move "run ci" up/i }),
+      );
+
+      expect(onReorder).toHaveBeenCalledWith([
+        { id: 'item-1', position: 0 },
+        { id: 'item-2', position: 1 },
+        { id: 'item-4', position: 2 },
+        { id: 'item-3', position: 3 },
+      ] satisfies ReorderChecklistItem[]);
+    });
+
+    it('works when all items have the same position value', async () => {
+      const user = userEvent.setup();
+      const onReorder = vi.fn();
+      const samePos = [
+        createMockChecklistItem({ id: 'a', title: 'A', position: 0 }),
+        createMockChecklistItem({ id: 'b', title: 'B', position: 0 }),
+        createMockChecklistItem({ id: 'c', title: 'C', position: 0 }),
+        createMockChecklistItem({ id: 'd', title: 'D', position: 0 }),
+      ];
+      render(
+        <Checklist {...createDefaultProps({ items: samePos, onReorder })} />,
+      );
+
+      await user.click(screen.getByRole('button', { name: /move "a" down/i }));
+
+      expect(onReorder).toHaveBeenCalledWith([
+        { id: 'b', position: 0 },
+        { id: 'a', position: 1 },
+        { id: 'c', position: 2 },
+        { id: 'd', position: 3 },
+      ] satisfies ReorderChecklistItem[]);
+    });
+
+    it('first item cannot move up (disabled)', () => {
+      render(
+        <Checklist
+          {...createDefaultProps({
+            items: [item1, item2, item3, item4],
+          })}
+        />,
+      );
+
+      expect(
+        screen.getByRole('button', { name: /move "buy milk" up/i }),
+      ).toBeDisabled();
+    });
+
+    it('last item cannot move down (disabled)', () => {
+      render(
+        <Checklist
+          {...createDefaultProps({
+            items: [item1, item2, item3, item4],
+          })}
+        />,
+      );
+
+      expect(
+        screen.getByRole('button', { name: /move "run ci" down/i }),
       ).toBeDisabled();
     });
   });

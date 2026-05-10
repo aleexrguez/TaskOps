@@ -114,7 +114,9 @@ describe('CreateRecurrenceContainer', () => {
 
     await user.clear(screen.getByLabelText(/title/i));
     await user.type(screen.getByLabelText(/title/i), 'Daily standup');
-    await user.click(screen.getByRole('button', { name: /submit/i }));
+    await user.click(
+      screen.getByRole('button', { name: /create recurrence/i }),
+    );
 
     expect(mockMutateAsync).toHaveBeenCalledWith(
       expect.objectContaining({ title: 'Daily standup', frequency: 'daily' }),
@@ -129,7 +131,9 @@ describe('CreateRecurrenceContainer', () => {
     render(<CreateRecurrenceContainer />, { wrapper: Wrapper });
 
     await user.type(screen.getByLabelText(/title/i), 'Daily standup');
-    await user.click(screen.getByRole('button', { name: /submit/i }));
+    await user.click(
+      screen.getByRole('button', { name: /create recurrence/i }),
+    );
 
     expect(useRecurrenceUIStore.getState().isCreateModalOpen).toBe(false);
   });
@@ -142,7 +146,9 @@ describe('CreateRecurrenceContainer', () => {
     render(<CreateRecurrenceContainer />, { wrapper: Wrapper });
 
     await user.type(screen.getByLabelText(/title/i), 'Daily standup');
-    await user.click(screen.getByRole('button', { name: /submit/i }));
+    await user.click(
+      screen.getByRole('button', { name: /create recurrence/i }),
+    );
 
     expect(mockAddToast).toHaveBeenCalledWith(expect.any(String), 'success');
   });
@@ -155,7 +161,9 @@ describe('CreateRecurrenceContainer', () => {
     render(<CreateRecurrenceContainer />, { wrapper: Wrapper });
 
     await user.type(screen.getByLabelText(/title/i), 'Daily standup');
-    await user.click(screen.getByRole('button', { name: /submit/i }));
+    await user.click(
+      screen.getByRole('button', { name: /create recurrence/i }),
+    );
 
     expect(mockAddToast).toHaveBeenCalledWith(expect.any(String), 'error');
   });
@@ -168,8 +176,57 @@ describe('CreateRecurrenceContainer', () => {
     render(<CreateRecurrenceContainer />, { wrapper: Wrapper });
 
     await user.type(screen.getByLabelText(/title/i), 'Daily standup');
-    await user.click(screen.getByRole('button', { name: /submit/i }));
+    await user.click(
+      screen.getByRole('button', { name: /create recurrence/i }),
+    );
 
     expect(useRecurrenceUIStore.getState().isCreateModalOpen).toBe(true);
+  });
+});
+
+describe('CreateRecurrenceContainer — dialog accessibility', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    useRecurrenceUIStore.setState({
+      isCreateModalOpen: false,
+      isEditModalOpen: false,
+      selectedTemplateId: null,
+    });
+  });
+
+  it('renders with role="dialog" and aria-modal="true" when open', () => {
+    useRecurrenceUIStore.setState({ isCreateModalOpen: true });
+    const Wrapper = createWrapper();
+    render(<CreateRecurrenceContainer />, { wrapper: Wrapper });
+
+    const dialog = screen.getByRole('dialog');
+    expect(dialog).toHaveAttribute('aria-modal', 'true');
+  });
+
+  it('has aria-labelledby pointing to the modal title', () => {
+    useRecurrenceUIStore.setState({ isCreateModalOpen: true });
+    const Wrapper = createWrapper();
+    render(<CreateRecurrenceContainer />, { wrapper: Wrapper });
+
+    const dialog = screen.getByRole('dialog');
+    expect(dialog).toHaveAttribute(
+      'aria-labelledby',
+      'create-recurrence-title',
+    );
+
+    const title = document.getElementById('create-recurrence-title');
+    expect(title).toBeInTheDocument();
+    expect(title?.textContent).toBe('New Recurrence');
+  });
+
+  it('closes modal when Escape key is pressed', async () => {
+    const user = userEvent.setup();
+    useRecurrenceUIStore.setState({ isCreateModalOpen: true });
+    const Wrapper = createWrapper();
+    render(<CreateRecurrenceContainer />, { wrapper: Wrapper });
+
+    await user.keyboard('{Escape}');
+
+    expect(useRecurrenceUIStore.getState().isCreateModalOpen).toBe(false);
   });
 });

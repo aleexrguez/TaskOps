@@ -5,6 +5,7 @@ interface RecurrenceGroupedLayoutProps {
   groups: FrequencyGroups;
   onEdit?: (id: string) => void;
   onDelete?: (id: string) => void;
+  onCreateNew?: () => void;
 }
 
 const SECTION_LABELS: Record<keyof FrequencyGroups, string> = {
@@ -17,6 +18,7 @@ export function RecurrenceGroupedLayout({
   groups,
   onEdit,
   onDelete,
+  onCreateNew,
 }: RecurrenceGroupedLayoutProps) {
   const hasAny =
     groups.daily.length > 0 ||
@@ -25,9 +27,26 @@ export function RecurrenceGroupedLayout({
 
   if (!hasAny) {
     return (
-      <p className="text-sm text-gray-500 dark:text-gray-400">
-        No recurrences found.
-      </p>
+      <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-gray-300 py-16 text-center dark:border-gray-700">
+        <div className="mb-3 text-4xl" aria-hidden="true">
+          🔄
+        </div>
+        <p className="text-base font-bold text-gray-700 dark:text-gray-300">
+          No recurrences yet
+        </p>
+        <p className="mt-1 text-sm text-gray-400 dark:text-gray-500">
+          Set up recurring tasks to automate your workflow
+        </p>
+        {onCreateNew && (
+          <button
+            type="button"
+            onClick={onCreateNew}
+            className="mt-4 cursor-pointer rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
+          >
+            Create Recurrence
+          </button>
+        )}
+      </div>
     );
   }
 

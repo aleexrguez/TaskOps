@@ -1,8 +1,11 @@
 import type { Task } from '../types';
+import type { ChecklistSummary } from '../api/checklist-api';
 import { isGeneratedTask } from '@/features/recurrences/utils/recurrence.utils';
+import { formatDate, formatDateTime } from '../utils/date.utils';
 import { StatusBadge } from './StatusBadge';
 import { PriorityIndicator } from './PriorityIndicator';
 import { DueDateDisplay } from './DueDateDisplay';
+import { ChecklistProgress } from './ChecklistProgress';
 
 interface TaskCardProps {
   task: Task;
@@ -11,6 +14,7 @@ interface TaskCardProps {
   onArchive?: (id: string) => void;
   onDuplicate?: (id: string) => void;
   isDeleting?: boolean;
+  checklistSummary?: ChecklistSummary;
 }
 
 export function TaskCard({
@@ -20,8 +24,9 @@ export function TaskCard({
   onArchive,
   onDuplicate,
   isDeleting = false,
+  checklistSummary,
 }: TaskCardProps) {
-  const formattedDate = new Date(task.createdAt).toLocaleDateString();
+  const formattedDate = formatDate(task.createdAt);
   const recurring = isGeneratedTask(task);
 
   const cardContent = (
@@ -87,13 +92,25 @@ export function TaskCard({
         )}
       </div>
 
+      {checklistSummary && checklistSummary.total > 0 && (
+        <div className="mt-2 flex items-center gap-1.5">
+          <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
+            Checklist
+          </span>
+          <ChecklistProgress
+            completed={checklistSummary.completed}
+            total={checklistSummary.total}
+          />
+        </div>
+      )}
+
       <div className="mt-3 flex items-center justify-between border-t border-gray-100 pt-3 text-xs text-gray-400 dark:border-gray-700 dark:text-gray-500">
-        <span className="shrink-0">{formattedDate}</span>
+        <span className="shrink-0">Created {formattedDate}</span>
       </div>
       {task.status === 'done' && task.completedAt && (
         <div className="mt-1 text-xs text-gray-400 dark:text-gray-500">
           <span className="font-medium">Completed</span>{' '}
-          {new Date(task.completedAt).toLocaleString()}
+          {formatDateTime(task.completedAt)}
         </div>
       )}
     </>

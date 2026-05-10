@@ -66,6 +66,19 @@ export function TaskFilters({
         )}
       </button>
 
+      {showArchived && !isFiltersExpanded && (
+        <div className="flex items-center gap-2 rounded-md bg-indigo-50 px-3 py-2 text-sm text-indigo-700 md:hidden dark:bg-indigo-900/30 dark:text-indigo-300">
+          <span>Viewing archived tasks</span>
+          <button
+            type="button"
+            onClick={onToggleArchived}
+            className="ml-auto cursor-pointer text-xs font-medium underline"
+          >
+            Hide
+          </button>
+        </div>
+      )}
+
       <div
         id="task-filters-panel"
         className={`${isFiltersExpanded ? 'flex' : 'hidden'} flex-wrap items-center gap-3 md:flex`}

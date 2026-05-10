@@ -123,10 +123,20 @@ export function Sidebar({
             className="h-8 w-8 shrink-0 object-contain"
           />
           <img
+            src="/Brand-Image-Light.png"
+            alt=""
+            aria-hidden="true"
+            className={`h-12 shrink-0 object-contain transition-all duration-300 dark:hidden ${
+              isCollapsed
+                ? 'opacity-0 -translate-x-2'
+                : 'opacity-100 translate-x-0'
+            }`}
+          />
+          <img
             src="/Brand-Image2.png"
             alt=""
             aria-hidden="true"
-            className={`h-6 shrink-0 object-contain transition-all duration-300 ${
+            className={`hidden h-6 shrink-0 object-contain transition-all duration-300 dark:block ${
               isCollapsed
                 ? 'opacity-0 -translate-x-2'
                 : 'opacity-100 translate-x-0'
@@ -180,10 +190,16 @@ export function Sidebar({
                 className="h-8 w-8 shrink-0 object-contain"
               />
               <img
+                src="/Brand-Image-Light.png"
+                alt=""
+                aria-hidden="true"
+                className="h-10 object-contain dark:hidden"
+              />
+              <img
                 src="/Brand-Image2.png"
                 alt=""
                 aria-hidden="true"
-                className="h-6 object-contain"
+                className="hidden h-6 object-contain dark:block"
               />
             </div>
 

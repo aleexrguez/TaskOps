@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useCreateRecurrence } from '../hooks/use-recurrences';
 import { useRecurrenceUIStore } from '../store/recurrence-ui.store';
 import { useToastStore } from '@/features/task-manager/store/toast.store';
@@ -9,6 +10,15 @@ export function CreateRecurrenceContainer() {
   const closeCreateModal = useRecurrenceUIStore((s) => s.closeCreateModal);
   const addToast = useToastStore((s) => s.addToast);
   const { mutateAsync: createRecurrence, isPending } = useCreateRecurrence();
+
+  useEffect(() => {
+    if (!isOpen) return;
+    function handleKeyDown(event: KeyboardEvent): void {
+      if (event.key === 'Escape') closeCreateModal();
+    }
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, closeCreateModal]);
 
   if (!isOpen) return null;
 
@@ -24,9 +34,17 @@ export function CreateRecurrenceContainer() {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-xl dark:bg-gray-800">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="create-recurrence-title"
+        className="w-full max-w-md rounded-lg bg-white p-6 shadow-xl dark:bg-gray-800"
+      >
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+          <h2
+            id="create-recurrence-title"
+            className="text-lg font-semibold text-gray-900 dark:text-gray-100"
+          >
             New Recurrence
           </h2>
           <button
@@ -41,7 +59,7 @@ export function CreateRecurrenceContainer() {
         <RecurrenceForm
           onSubmit={handleSubmit}
           isSubmitting={isPending}
-          submitLabel="Submit"
+          submitLabel="Create Recurrence"
           autoFocusTitle
         />
       </div>
