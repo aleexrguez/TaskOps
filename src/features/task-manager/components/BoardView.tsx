@@ -19,6 +19,7 @@ import type {
 import { arrayMove, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import type { Task, TaskStatus } from '../types';
 import type { TaskBoard } from '../utils';
+import type { ChecklistSummaries } from '../api/checklist-api';
 import { BoardColumn } from './BoardColumn';
 import { TaskCard } from './TaskCard';
 
@@ -30,6 +31,7 @@ interface BoardViewProps {
   onDuplicate?: (id: string) => void;
   deletingId?: string | null;
   onBoardChange?: (board: TaskBoard) => void;
+  checklistSummaries?: ChecklistSummaries;
 }
 
 const STATUSES: TaskStatus[] = ['todo', 'in-progress', 'done'];
@@ -108,6 +110,7 @@ export function BoardView({
   onDuplicate,
   deletingId,
   onBoardChange,
+  checklistSummaries,
 }: BoardViewProps) {
   const [localBoard, setLocalBoard] = useState<TaskBoard>(board);
   const [activeTask, setActiveTask] = useState<Task | null>(null);
@@ -280,6 +283,7 @@ export function BoardView({
           onArchive={onArchive}
           onDuplicate={onDuplicate}
           deletingId={deletingId}
+          checklistSummaries={checklistSummaries}
         />
         <BoardColumn
           title="In Progress"
@@ -290,6 +294,7 @@ export function BoardView({
           onArchive={onArchive}
           onDuplicate={onDuplicate}
           deletingId={deletingId}
+          checklistSummaries={checklistSummaries}
         />
         <BoardColumn
           title="Done"
@@ -300,10 +305,16 @@ export function BoardView({
           onArchive={onArchive}
           onDuplicate={onDuplicate}
           deletingId={deletingId}
+          checklistSummaries={checklistSummaries}
         />
       </div>
       <DragOverlay>
-        {activeTask ? <TaskCard task={activeTask} /> : null}
+        {activeTask ? (
+          <TaskCard
+            task={activeTask}
+            checklistSummary={checklistSummaries?.[activeTask.id]}
+          />
+        ) : null}
       </DragOverlay>
     </DndContext>
   );

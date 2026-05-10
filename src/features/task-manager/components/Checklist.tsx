@@ -78,21 +78,23 @@ export function Checklist({
   }
 
   function handleMoveUp(index: number) {
-    const current = items[index];
-    const above = items[index - 1];
-    onReorder([
-      { id: current.id, position: above.position },
-      { id: above.id, position: current.position },
-    ]);
+    if (index === 0) return;
+    const reordered = [...items];
+    [reordered[index - 1], reordered[index]] = [
+      reordered[index],
+      reordered[index - 1],
+    ];
+    onReorder(reordered.map((item, i) => ({ id: item.id, position: i })));
   }
 
   function handleMoveDown(index: number) {
-    const current = items[index];
-    const below = items[index + 1];
-    onReorder([
-      { id: current.id, position: below.position },
-      { id: below.id, position: current.position },
-    ]);
+    if (index === items.length - 1) return;
+    const reordered = [...items];
+    [reordered[index], reordered[index + 1]] = [
+      reordered[index + 1],
+      reordered[index],
+    ];
+    onReorder(reordered.map((item, i) => ({ id: item.id, position: i })));
   }
 
   function handleCreateKeyDown(e: React.KeyboardEvent) {

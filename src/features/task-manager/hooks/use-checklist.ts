@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   fetchChecklistItems,
+  fetchChecklistSummaries,
   createChecklistItem,
   updateChecklistItem,
   deleteChecklistItem,
@@ -23,6 +24,16 @@ export function useChecklist(taskId: string) {
   });
 }
 
+export function useChecklistSummaries() {
+  const { user } = useAuth();
+  return useQuery({
+    queryKey: checklistKeys.summaries(),
+    queryFn: fetchChecklistSummaries,
+    enabled: !!user,
+    staleTime: 30_000,
+  });
+}
+
 export function useCreateChecklistItem(taskId: string) {
   const queryClient = useQueryClient();
   return useMutation({
@@ -30,6 +41,9 @@ export function useCreateChecklistItem(taskId: string) {
       createChecklistItem(taskId, input),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: checklistKeys.list(taskId) });
+      queryClient.invalidateQueries({
+        queryKey: checklistKeys.summaries(),
+      });
     },
   });
 }
@@ -46,6 +60,9 @@ export function useUpdateChecklistItem(taskId: string) {
     }) => updateChecklistItem(id, input),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: checklistKeys.list(taskId) });
+      queryClient.invalidateQueries({
+        queryKey: checklistKeys.summaries(),
+      });
     },
   });
 }
@@ -56,6 +73,9 @@ export function useDeleteChecklistItem(taskId: string) {
     mutationFn: (id: string) => deleteChecklistItem(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: checklistKeys.list(taskId) });
+      queryClient.invalidateQueries({
+        queryKey: checklistKeys.summaries(),
+      });
     },
   });
 }

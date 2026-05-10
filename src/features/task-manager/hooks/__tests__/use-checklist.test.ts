@@ -6,6 +6,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 import {
   useChecklist,
+  useChecklistSummaries,
   useCreateChecklistItem,
   useUpdateChecklistItem,
   useDeleteChecklistItem,
@@ -14,6 +15,7 @@ import {
 import { checklistKeys } from '../../hooks';
 import {
   fetchChecklistItems,
+  fetchChecklistSummaries,
   createChecklistItem,
   updateChecklistItem,
   deleteChecklistItem,
@@ -37,6 +39,7 @@ vi.mock('../../api', () => ({
   purgeTasks: vi.fn(),
   reorderTasks: vi.fn(),
   // checklist API exports
+  fetchChecklistSummaries: vi.fn(),
   fetchChecklistItems: vi.fn(),
   createChecklistItem: vi.fn(),
   updateChecklistItem: vi.fn(),
@@ -140,6 +143,46 @@ describe('useChecklist', () => {
 });
 
 // ---------------------------------------------------------------------------
+// useChecklistSummaries
+// ---------------------------------------------------------------------------
+
+describe('useChecklistSummaries', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('fetches checklist summaries', async () => {
+    const summaries = { 'task-1': { total: 3, completed: 1 } };
+    (fetchChecklistSummaries as ReturnType<typeof vi.fn>).mockResolvedValue(
+      summaries,
+    );
+
+    const { Wrapper } = createWrapper();
+    const { result } = renderHook(() => useChecklistSummaries(), {
+      wrapper: Wrapper,
+    });
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+    expect(fetchChecklistSummaries).toHaveBeenCalled();
+    expect(result.current.data).toEqual(summaries);
+  });
+
+  it('uses checklistKeys.summaries() as query key', async () => {
+    (fetchChecklistSummaries as ReturnType<typeof vi.fn>).mockResolvedValue({});
+
+    const { Wrapper, queryClient } = createWrapper();
+    renderHook(() => useChecklistSummaries(), { wrapper: Wrapper });
+
+    await waitFor(() =>
+      expect(
+        queryClient.getQueryState(checklistKeys.summaries()),
+      ).toBeDefined(),
+    );
+  });
+});
+
+// ---------------------------------------------------------------------------
 // useCreateChecklistItem
 // ---------------------------------------------------------------------------
 
@@ -180,6 +223,23 @@ describe('useCreateChecklistItem', () => {
 
     expect(invalidateSpy).toHaveBeenCalledWith({
       queryKey: checklistKeys.list(TASK_ID),
+    });
+  });
+
+  it('invalidates checklistKeys.summaries() on success', async () => {
+    const { Wrapper, queryClient } = createWrapper();
+    const invalidateSpy = vi.spyOn(queryClient, 'invalidateQueries');
+
+    const { result } = renderHook(() => useCreateChecklistItem(TASK_ID), {
+      wrapper: Wrapper,
+    });
+
+    result.current.mutate({ title: 'New item' });
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+    expect(invalidateSpy).toHaveBeenCalledWith({
+      queryKey: checklistKeys.summaries(),
     });
   });
 
@@ -245,6 +305,23 @@ describe('useUpdateChecklistItem', () => {
     });
   });
 
+  it('invalidates checklistKeys.summaries() on success', async () => {
+    const { Wrapper, queryClient } = createWrapper();
+    const invalidateSpy = vi.spyOn(queryClient, 'invalidateQueries');
+
+    const { result } = renderHook(() => useUpdateChecklistItem(TASK_ID), {
+      wrapper: Wrapper,
+    });
+
+    result.current.mutate({ id: 'item-1', input: { isCompleted: true } });
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+    expect(invalidateSpy).toHaveBeenCalledWith({
+      queryKey: checklistKeys.summaries(),
+    });
+  });
+
   it('surfaces errors from the API', async () => {
     (updateChecklistItem as ReturnType<typeof vi.fn>).mockRejectedValue(
       new Error('Update failed'),
@@ -302,6 +379,23 @@ describe('useDeleteChecklistItem', () => {
 
     expect(invalidateSpy).toHaveBeenCalledWith({
       queryKey: checklistKeys.list(TASK_ID),
+    });
+  });
+
+  it('invalidates checklistKeys.summaries() on success', async () => {
+    const { Wrapper, queryClient } = createWrapper();
+    const invalidateSpy = vi.spyOn(queryClient, 'invalidateQueries');
+
+    const { result } = renderHook(() => useDeleteChecklistItem(TASK_ID), {
+      wrapper: Wrapper,
+    });
+
+    result.current.mutate('item-1');
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+    expect(invalidateSpy).toHaveBeenCalledWith({
+      queryKey: checklistKeys.summaries(),
     });
   });
 

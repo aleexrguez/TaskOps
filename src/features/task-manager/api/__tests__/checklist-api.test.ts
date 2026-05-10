@@ -17,6 +17,7 @@ vi.mock('@/shared/services/auth.guard', () => ({
 import { supabase } from '@/shared/services/supabase';
 import { requireAuthenticatedUser } from '@/shared/services/auth.guard';
 import {
+  fetchChecklistSummaries,
   fetchChecklistItems,
   createChecklistItem,
   updateChecklistItem,
@@ -48,6 +49,94 @@ function makeDbRow(overrides: Record<string, unknown> = {}) {
     ...overrides,
   };
 }
+
+// ---------------------------------------------------------------------------
+// fetchChecklistItems
+// ---------------------------------------------------------------------------
+
+// ---------------------------------------------------------------------------
+// fetchChecklistSummaries
+// ---------------------------------------------------------------------------
+
+describe('fetchChecklistSummaries', () => {
+  beforeEach(() => {
+    vi.mocked(supabase.from).mockReset();
+  });
+
+  it('aggregates multiple items for the same task', async () => {
+    const rows = [
+      { task_id: 'task-1', is_completed: true },
+      { task_id: 'task-1', is_completed: false },
+      { task_id: 'task-1', is_completed: true },
+    ];
+
+    const mockSelect = vi.fn().mockResolvedValue({ data: rows, error: null });
+
+    vi.mocked(supabase.from).mockReturnValue(
+      asFromReturn({ select: mockSelect }),
+    );
+
+    const result = await fetchChecklistSummaries();
+
+    expect(result['task-1']).toEqual({ total: 3, completed: 2 });
+  });
+
+  it('aggregates items across multiple tasks', async () => {
+    const rows = [
+      { task_id: 'task-1', is_completed: true },
+      { task_id: 'task-2', is_completed: false },
+      { task_id: 'task-2', is_completed: true },
+    ];
+
+    const mockSelect = vi.fn().mockResolvedValue({ data: rows, error: null });
+
+    vi.mocked(supabase.from).mockReturnValue(
+      asFromReturn({ select: mockSelect }),
+    );
+
+    const result = await fetchChecklistSummaries();
+
+    expect(result['task-1']).toEqual({ total: 1, completed: 1 });
+    expect(result['task-2']).toEqual({ total: 2, completed: 1 });
+  });
+
+  it('returns empty record when no items exist', async () => {
+    const mockSelect = vi.fn().mockResolvedValue({ data: [], error: null });
+
+    vi.mocked(supabase.from).mockReturnValue(
+      asFromReturn({ select: mockSelect }),
+    );
+
+    const result = await fetchChecklistSummaries();
+
+    expect(result).toEqual({});
+  });
+
+  it('selects only task_id and is_completed', async () => {
+    const mockSelect = vi.fn().mockResolvedValue({ data: [], error: null });
+
+    vi.mocked(supabase.from).mockReturnValue(
+      asFromReturn({ select: mockSelect }),
+    );
+
+    await fetchChecklistSummaries();
+
+    expect(mockSelect).toHaveBeenCalledWith('task_id, is_completed');
+  });
+
+  it('throws when supabase returns an error', async () => {
+    const mockSelect = vi.fn().mockResolvedValue({
+      data: null,
+      error: { message: 'DB error' },
+    });
+
+    vi.mocked(supabase.from).mockReturnValue(
+      asFromReturn({ select: mockSelect }),
+    );
+
+    await expect(fetchChecklistSummaries()).rejects.toThrow('DB error');
+  });
+});
 
 // ---------------------------------------------------------------------------
 // fetchChecklistItems
