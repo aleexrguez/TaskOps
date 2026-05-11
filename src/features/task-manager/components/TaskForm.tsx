@@ -61,7 +61,8 @@ export function TaskForm({
       status: fields.status,
       priority: fields.priority,
     };
-    if (fields.description) payload.description = fields.description;
+    const normalizedDescription = fields.description?.trim() ?? '';
+    payload.description = normalizedDescription;
     if (fields.dueDate) payload.dueDate = fields.dueDate;
     onSubmit(payload);
   }

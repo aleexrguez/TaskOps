@@ -96,6 +96,8 @@ export interface Database {
           weekly_days: number[] | null;
           monthly_day: number | null;
           lead_time_days: number;
+          repeat_interval: number;
+          start_date: string;
           is_active: boolean;
           created_at: string;
           updated_at: string;
@@ -110,6 +112,8 @@ export interface Database {
           weekly_days?: number[] | null;
           monthly_day?: number | null;
           lead_time_days?: number;
+          repeat_interval?: number;
+          start_date: string;
           is_active?: boolean;
           created_at?: string;
           updated_at?: string;
@@ -124,6 +128,8 @@ export interface Database {
           weekly_days?: number[] | null;
           monthly_day?: number | null;
           lead_time_days?: number;
+          repeat_interval?: number;
+          start_date?: string;
           is_active?: boolean;
           created_at?: string;
           updated_at?: string;

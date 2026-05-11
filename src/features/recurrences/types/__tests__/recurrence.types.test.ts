@@ -15,6 +15,8 @@ const BASE_TEMPLATE = {
   title: 'Daily standup',
   priority: 'medium' as const,
   frequency: 'daily' as const,
+  interval: 1,
+  startDate: '2024-01-01',
   isActive: true,
   createdAt: '2024-01-10T10:00:00.000Z',
   updatedAt: '2024-01-10T10:00:00.000Z',
@@ -184,6 +186,7 @@ describe('createRecurrenceInputSchema', () => {
       const result = createRecurrenceInputSchema.parse({
         frequency: 'daily',
         title: 'Morning routine',
+        startDate: '2024-01-01',
       });
       expect(result.frequency).toBe('daily');
       expect(result.title).toBe('Morning routine');
@@ -193,6 +196,7 @@ describe('createRecurrenceInputSchema', () => {
       const result = createRecurrenceInputSchema.parse({
         frequency: 'daily',
         title: 'Morning routine',
+        startDate: '2024-01-01',
       });
       expect(result.priority).toBe('medium');
     });
@@ -201,6 +205,7 @@ describe('createRecurrenceInputSchema', () => {
       const result = createRecurrenceInputSchema.parse({
         frequency: 'daily',
         title: 'Morning routine',
+        startDate: '2024-01-01',
         description: 'A daily morning routine',
       });
       expect(result.description).toBe('A daily morning routine');
@@ -210,6 +215,7 @@ describe('createRecurrenceInputSchema', () => {
       const result = createRecurrenceInputSchema.parse({
         frequency: 'daily',
         title: 'Morning routine',
+        startDate: '2024-01-01',
         priority: 'high',
       });
       expect(result.priority).toBe('high');
@@ -236,6 +242,7 @@ describe('createRecurrenceInputSchema', () => {
       const result = createRecurrenceInputSchema.parse({
         frequency: 'weekly',
         title: 'Team sync',
+        startDate: '2024-01-01',
         weeklyDays: [1, 3, 5],
       });
       expect(result.frequency).toBe('weekly');
@@ -248,6 +255,7 @@ describe('createRecurrenceInputSchema', () => {
       const result = createRecurrenceInputSchema.parse({
         frequency: 'weekly',
         title: 'Team sync',
+        startDate: '2024-01-01',
         weeklyDays: [2],
       });
       expect(result.priority).toBe('medium');
@@ -304,6 +312,7 @@ describe('createRecurrenceInputSchema', () => {
       const result = createRecurrenceInputSchema.parse({
         frequency: 'weekly',
         title: 'Every day',
+        startDate: '2024-01-01',
         weeklyDays: [1, 2, 3, 4, 5, 6, 7],
       });
       expect((result as { weeklyDays: number[] }).weeklyDays).toHaveLength(7);
@@ -313,6 +322,7 @@ describe('createRecurrenceInputSchema', () => {
       const result = createRecurrenceInputSchema.parse({
         frequency: 'weekly',
         title: 'Sunday review',
+        startDate: '2024-01-01',
         weeklyDays: [7],
       });
       expect((result as { weeklyDays: number[] }).weeklyDays).toEqual([7]);
@@ -324,6 +334,7 @@ describe('createRecurrenceInputSchema', () => {
       const result = createRecurrenceInputSchema.parse({
         frequency: 'monthly',
         title: 'Monthly report',
+        startDate: '2024-01-01',
         monthlyDay: 15,
       });
       expect(result.frequency).toBe('monthly');
@@ -334,6 +345,7 @@ describe('createRecurrenceInputSchema', () => {
       const result = createRecurrenceInputSchema.parse({
         frequency: 'monthly',
         title: 'Monthly report',
+        startDate: '2024-01-01',
         monthlyDay: 1,
       });
       expect(result.priority).toBe('medium');
@@ -372,6 +384,7 @@ describe('createRecurrenceInputSchema', () => {
       const result = createRecurrenceInputSchema.parse({
         frequency: 'monthly',
         title: 'End of month',
+        startDate: '2024-01-01',
         monthlyDay: 31,
       });
       expect((result as { monthlyDay: number }).monthlyDay).toBe(31);
@@ -381,6 +394,7 @@ describe('createRecurrenceInputSchema', () => {
       const result = createRecurrenceInputSchema.parse({
         frequency: 'monthly',
         title: 'First of month',
+        startDate: '2024-01-01',
         monthlyDay: 1,
       });
       expect((result as { monthlyDay: number }).monthlyDay).toBe(1);
@@ -414,6 +428,7 @@ describe('createRecurrenceInputSchema — leadTimeDays', () => {
     const result = createRecurrenceInputSchema.parse({
       frequency: 'monthly',
       title: 'Monthly report',
+      startDate: '2024-01-01',
       monthlyDay: 15,
       leadTimeDays: 5,
     });
@@ -446,6 +461,7 @@ describe('createRecurrenceInputSchema — leadTimeDays', () => {
     const result = createRecurrenceInputSchema.parse({
       frequency: 'monthly',
       title: 'Monthly report',
+      startDate: '2024-01-01',
       monthlyDay: 15,
     });
     expect((result as { leadTimeDays: number }).leadTimeDays).toBe(0);
@@ -456,6 +472,7 @@ describe('createRecurrenceInputSchema — leadTimeDays', () => {
     const result = createRecurrenceInputSchema.parse({
       frequency: 'daily',
       title: 'Morning routine',
+      startDate: '2024-01-01',
     });
     expect('leadTimeDays' in result).toBe(false);
   });
@@ -465,6 +482,7 @@ describe('createRecurrenceInputSchema — leadTimeDays', () => {
     const result = createRecurrenceInputSchema.parse({
       frequency: 'weekly',
       title: 'Team sync',
+      startDate: '2024-01-01',
       weeklyDays: [1, 3],
     });
     expect('leadTimeDays' in result).toBe(false);

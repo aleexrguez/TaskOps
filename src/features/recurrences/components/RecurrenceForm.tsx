@@ -21,6 +21,16 @@ interface FormState {
   weeklyDays: number[];
   monthlyDay: string;
   leadTimeDays: string;
+  interval: string;
+  startDate: string;
+}
+
+function todayDateKey(): string {
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
 }
 
 function buildInitialState(
@@ -43,6 +53,14 @@ function buildInitialState(
       initial?.frequency === 'monthly' && 'leadTimeDays' in (initial ?? {})
         ? String((initial as { leadTimeDays?: number }).leadTimeDays ?? 0)
         : '0',
+    interval:
+      'interval' in (initial ?? {})
+        ? String((initial as { interval?: number }).interval ?? 1)
+        : '1',
+    startDate:
+      'startDate' in (initial ?? {})
+        ? ((initial as { startDate?: string }).startDate ?? todayDateKey())
+        : todayDateKey(),
   };
 }
 
@@ -105,6 +123,18 @@ export function RecurrenceForm({
       next.monthlyDay = 'Day must be between 1 and 31';
     }
 
+    if (
+      isNaN(Number(fields.interval)) ||
+      Number(fields.interval) < 1 ||
+      Number(fields.interval) > 365
+    ) {
+      next.interval = 'Interval must be between 1 and 365';
+    }
+
+    if (!fields.startDate) {
+      next.startDate = 'Start date is required';
+    }
+
     setErrors(next);
     return Object.keys(next).length === 0;
   }
@@ -115,12 +145,20 @@ export function RecurrenceForm({
 
     let payload: CreateRecurrenceInput;
 
+    const normalizedDescription = fields.description?.trim() ?? '';
+    const descriptionField = normalizedDescription
+      ? { description: normalizedDescription }
+      : {};
+    const intervalNum = Number(fields.interval);
+
     if (fields.frequency === 'daily') {
       payload = {
         frequency: 'daily',
         title: fields.title,
         priority: fields.priority,
-        ...(fields.description ? { description: fields.description } : {}),
+        interval: intervalNum,
+        startDate: fields.startDate,
+        ...descriptionField,
       };
     } else if (fields.frequency === 'weekly') {
       payload = {
@@ -128,7 +166,9 @@ export function RecurrenceForm({
         title: fields.title,
         priority: fields.priority,
         weeklyDays: fields.weeklyDays,
-        ...(fields.description ? { description: fields.description } : {}),
+        interval: intervalNum,
+        startDate: fields.startDate,
+        ...descriptionField,
       };
     } else {
       payload = {
@@ -137,7 +177,9 @@ export function RecurrenceForm({
         priority: fields.priority,
         monthlyDay: Number(fields.monthlyDay),
         leadTimeDays: Number(fields.leadTimeDays),
-        ...(fields.description ? { description: fields.description } : {}),
+        interval: intervalNum,
+        startDate: fields.startDate,
+        ...descriptionField,
       };
     }
 
@@ -210,6 +252,52 @@ export function RecurrenceForm({
           <option value="weekly">Weekly</option>
           <option value="monthly">Monthly</option>
         </select>
+      </div>
+
+      <div className="flex flex-col gap-1">
+        <label htmlFor="interval" className={labelClass}>
+          Repeat every
+        </label>
+        <div className="flex items-center gap-2">
+          <input
+            id="interval"
+            name="interval"
+            type="number"
+            min={1}
+            max={365}
+            value={fields.interval}
+            onChange={handleChange}
+            className={`${inputClass} w-20`}
+          />
+          <span className="text-sm text-gray-600 dark:text-gray-400">
+            {fields.frequency === 'daily' &&
+              (fields.interval === '1' ? 'day' : 'days')}
+            {fields.frequency === 'weekly' &&
+              (fields.interval === '1' ? 'week' : 'weeks')}
+            {fields.frequency === 'monthly' &&
+              (fields.interval === '1' ? 'month' : 'months')}
+          </span>
+        </div>
+        {errors.interval && (
+          <p className="text-xs text-red-500">{errors.interval}</p>
+        )}
+      </div>
+
+      <div className="flex flex-col gap-1">
+        <label htmlFor="startDate" className={labelClass}>
+          Starting from
+        </label>
+        <input
+          id="startDate"
+          name="startDate"
+          type="date"
+          value={fields.startDate}
+          onChange={handleChange}
+          className={inputClass}
+        />
+        {errors.startDate && (
+          <p className="text-xs text-red-500">{errors.startDate}</p>
+        )}
       </div>
 
       {fields.frequency === 'weekly' && (

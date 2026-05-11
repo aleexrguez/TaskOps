@@ -53,6 +53,8 @@ function makeTemplate(
     title: 'Daily standup',
     priority: 'medium',
     frequency: 'daily',
+    interval: 1,
+    startDate: '2024-01-01',
     leadTimeDays: 0,
     isActive: true,
     createdAt: new Date().toISOString(),
@@ -185,6 +187,8 @@ describe('useCreateRecurrence', () => {
       frequency: 'daily' as const,
       title: 'Daily standup',
       priority: 'medium' as const,
+      interval: 1,
+      startDate: '2024-01-01',
     };
     result.current.mutate(input);
 
@@ -208,6 +212,8 @@ describe('useCreateRecurrence', () => {
       frequency: 'daily' as const,
       title: 'Daily standup',
       priority: 'medium' as const,
+      interval: 1,
+      startDate: '2024-01-01',
     });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));

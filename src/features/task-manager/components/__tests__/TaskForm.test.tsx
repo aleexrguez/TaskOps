@@ -56,3 +56,50 @@ describe('TaskForm — dueDate support', () => {
     expect(payload.dueDate).toBeUndefined();
   });
 });
+
+describe('TaskForm — description normalization', () => {
+  it('sends trimmed description when text has surrounding spaces', async () => {
+    const user = userEvent.setup();
+    const onSubmit = vi.fn();
+    render(<TaskForm onSubmit={onSubmit} />);
+
+    await user.type(screen.getByLabelText(/title/i), 'My Task');
+    await user.type(screen.getByLabelText(/description/i), '  hello world  ');
+    await user.click(screen.getByRole('button', { name: /submit/i }));
+
+    expect(onSubmit).toHaveBeenCalledOnce();
+    expect(onSubmit.mock.calls[0][0].description).toBe('hello world');
+  });
+
+  it('sends empty string when description is cleared', async () => {
+    const user = userEvent.setup();
+    const onSubmit = vi.fn();
+    render(
+      <TaskForm
+        onSubmit={onSubmit}
+        initialValues={{ description: 'existing text' }}
+      />,
+    );
+
+    const textarea = screen.getByLabelText(/description/i);
+    await user.clear(textarea);
+    await user.type(screen.getByLabelText(/title/i), 'My Task');
+    await user.click(screen.getByRole('button', { name: /submit/i }));
+
+    expect(onSubmit).toHaveBeenCalledOnce();
+    expect(onSubmit.mock.calls[0][0].description).toBe('');
+  });
+
+  it('sends empty string when description has only spaces', async () => {
+    const user = userEvent.setup();
+    const onSubmit = vi.fn();
+    render(<TaskForm onSubmit={onSubmit} />);
+
+    await user.type(screen.getByLabelText(/title/i), 'My Task');
+    await user.type(screen.getByLabelText(/description/i), '   ');
+    await user.click(screen.getByRole('button', { name: /submit/i }));
+
+    expect(onSubmit).toHaveBeenCalledOnce();
+    expect(onSubmit.mock.calls[0][0].description).toBe('');
+  });
+});
