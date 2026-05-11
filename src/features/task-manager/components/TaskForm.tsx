@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
 import type { CreateTaskInput, TaskStatus, TaskPriority } from '../types';
-import { DatePicker } from './DatePicker';
+import { DatePicker } from '@/shared/components/DatePicker';
 
 interface TaskFormProps {
   onSubmit: (data: CreateTaskInput) => void;

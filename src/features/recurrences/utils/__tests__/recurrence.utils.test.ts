@@ -15,6 +15,8 @@ import {
   isGeneratedTask,
   groupByFrequency,
   isIntervalMatch,
+  getNextOccurrences,
+  INTERVAL_HELPER_TEXT,
 } from '../recurrence.utils';
 
 // ---------------------------------------------------------------------------
@@ -1084,5 +1086,314 @@ describe('formatFrequencyLabel — intervals', () => {
   it('returns "Daily" for interval=1 (unchanged)', () => {
     const template = makeTemplate({ frequency: 'daily', interval: 1 });
     expect(formatFrequencyLabel(template)).toBe('Daily');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// 18. getNextOccurrences
+// ---------------------------------------------------------------------------
+
+describe('getNextOccurrences', () => {
+  describe('daily', () => {
+    it('returns 5 consecutive days from referenceDate with interval=1', () => {
+      const ref = new Date(2026, 4, 11); // May 11 2026
+      const result = getNextOccurrences(
+        { frequency: 'daily', interval: 1, startDate: '2026-01-01' },
+        5,
+        ref,
+      );
+      expect(result).toEqual([
+        '2026-05-11',
+        '2026-05-12',
+        '2026-05-13',
+        '2026-05-14',
+        '2026-05-15',
+      ]);
+    });
+
+    it('returns every 3rd day with interval=3', () => {
+      const ref = new Date(2026, 0, 1); // Jan 1 2026
+      const result = getNextOccurrences(
+        { frequency: 'daily', interval: 3, startDate: '2026-01-01' },
+        5,
+        ref,
+      );
+      expect(result).toEqual([
+        '2026-01-01',
+        '2026-01-04',
+        '2026-01-07',
+        '2026-01-10',
+        '2026-01-13',
+      ]);
+    });
+
+    it('starts from future startDate, not referenceDate', () => {
+      const ref = new Date(2026, 0, 1); // Jan 1
+      const result = getNextOccurrences(
+        { frequency: 'daily', interval: 1, startDate: '2026-06-01' },
+        3,
+        ref,
+      );
+      expect(result).toEqual(['2026-06-01', '2026-06-02', '2026-06-03']);
+    });
+
+    it('skips past dates when startDate is in the past and interval > 1', () => {
+      // startDate = May 18, ref = May 20, interval = 3
+      // Days from start: May 18 (0), May 21 (3), May 24 (6)...
+      // First date >= May 20 that matches interval: May 21
+      const ref = new Date(2026, 4, 20); // May 20
+      const result = getNextOccurrences(
+        { frequency: 'daily', interval: 3, startDate: '2026-05-18' },
+        3,
+        ref,
+      );
+      expect(result).toEqual(['2026-05-21', '2026-05-24', '2026-05-27']);
+    });
+  });
+
+  describe('weekly', () => {
+    it('returns next 5 Mon/Wed/Fri with interval=1', () => {
+      // May 11 2026 is a Monday
+      const ref = new Date(2026, 4, 11);
+      const result = getNextOccurrences(
+        {
+          frequency: 'weekly',
+          interval: 1,
+          startDate: '2026-01-01',
+          weeklyDays: [1, 3, 5],
+        },
+        5,
+        ref,
+      );
+      expect(result).toEqual([
+        '2026-05-11', // Mon
+        '2026-05-13', // Wed
+        '2026-05-15', // Fri
+        '2026-05-18', // Mon
+        '2026-05-20', // Wed
+      ]);
+    });
+
+    it('skips alternate weeks with interval=2', () => {
+      // startDate = Monday Jan 5 2026 (week 0)
+      // Week 0: Jan 5-11, Week 2: Jan 19-25, Week 4: Feb 2-8...
+      const ref = new Date(2026, 0, 5);
+      const result = getNextOccurrences(
+        {
+          frequency: 'weekly',
+          interval: 2,
+          startDate: '2026-01-05',
+          weeklyDays: [1], // Mondays
+        },
+        3,
+        ref,
+      );
+      expect(result).toEqual(['2026-01-05', '2026-01-19', '2026-02-02']);
+    });
+
+    it('returns empty array when weeklyDays is empty', () => {
+      const ref = new Date(2026, 4, 11);
+      const result = getNextOccurrences(
+        {
+          frequency: 'weekly',
+          interval: 1,
+          startDate: '2026-01-01',
+          weeklyDays: [],
+        },
+        5,
+        ref,
+      );
+      expect(result).toEqual([]);
+    });
+  });
+
+  describe('monthly', () => {
+    it('returns 15th of next 5 months with interval=1', () => {
+      const ref = new Date(2026, 0, 15); // Jan 15
+      const result = getNextOccurrences(
+        {
+          frequency: 'monthly',
+          interval: 1,
+          startDate: '2026-01-01',
+          monthlyDay: 15,
+        },
+        5,
+        ref,
+      );
+      expect(result).toEqual([
+        '2026-01-15',
+        '2026-02-15',
+        '2026-03-15',
+        '2026-04-15',
+        '2026-05-15',
+      ]);
+    });
+
+    it('clamps day 31 to last day of short months', () => {
+      const ref = new Date(2026, 0, 31); // Jan 31
+      const result = getNextOccurrences(
+        {
+          frequency: 'monthly',
+          interval: 1,
+          startDate: '2026-01-01',
+          monthlyDay: 31,
+        },
+        5,
+        ref,
+      );
+      // Jan 31, Feb 28, Mar 31, Apr 30, May 31
+      expect(result).toEqual([
+        '2026-01-31',
+        '2026-02-28',
+        '2026-03-31',
+        '2026-04-30',
+        '2026-05-31',
+      ]);
+    });
+
+    it('skips months with interval=2', () => {
+      // startDate = Jan 15, interval=2 → Jan, Mar, May...
+      const ref = new Date(2026, 0, 15);
+      const result = getNextOccurrences(
+        {
+          frequency: 'monthly',
+          interval: 2,
+          startDate: '2026-01-15',
+          monthlyDay: 15,
+        },
+        3,
+        ref,
+      );
+      expect(result).toEqual(['2026-01-15', '2026-03-15', '2026-05-15']);
+    });
+
+    it('starts from future startDate', () => {
+      const ref = new Date(2026, 0, 1); // Jan 1
+      const result = getNextOccurrences(
+        {
+          frequency: 'monthly',
+          interval: 1,
+          startDate: '2026-06-01',
+          monthlyDay: 10,
+        },
+        3,
+        ref,
+      );
+      expect(result).toEqual(['2026-06-10', '2026-07-10', '2026-08-10']);
+    });
+
+    it('skips current month when monthlyDay already passed', () => {
+      // ref = May 20, monthlyDay = 15 → May 15 is past, start from Jun 15
+      const ref = new Date(2026, 4, 20); // May 20
+      const result = getNextOccurrences(
+        {
+          frequency: 'monthly',
+          interval: 1,
+          startDate: '2026-01-01',
+          monthlyDay: 15,
+        },
+        3,
+        ref,
+      );
+      expect(result).toEqual(['2026-06-15', '2026-07-15', '2026-08-15']);
+    });
+
+    it('returns empty array when monthlyDay is undefined', () => {
+      const ref = new Date(2026, 4, 11);
+      const result = getNextOccurrences(
+        {
+          frequency: 'monthly',
+          interval: 1,
+          startDate: '2026-01-01',
+        },
+        5,
+        ref,
+      );
+      expect(result).toEqual([]);
+    });
+  });
+
+  describe('invariants', () => {
+    it('never returns dates before referenceDate for daily', () => {
+      const ref = new Date(2026, 4, 20);
+      const result = getNextOccurrences(
+        { frequency: 'daily', interval: 1, startDate: '2026-01-01' },
+        5,
+        ref,
+      );
+      for (const dateKey of result) {
+        expect(
+          new Date(dateKey + 'T00:00:00').getTime(),
+        ).toBeGreaterThanOrEqual(new Date(2026, 4, 20).getTime());
+      }
+    });
+
+    it('never returns dates before referenceDate for weekly', () => {
+      const ref = new Date(2026, 4, 20);
+      const result = getNextOccurrences(
+        {
+          frequency: 'weekly',
+          interval: 1,
+          startDate: '2026-01-01',
+          weeklyDays: [1, 2, 3, 4, 5, 6, 7],
+        },
+        5,
+        ref,
+      );
+      for (const dateKey of result) {
+        expect(
+          new Date(dateKey + 'T00:00:00').getTime(),
+        ).toBeGreaterThanOrEqual(new Date(2026, 4, 20).getTime());
+      }
+    });
+
+    it('never returns dates before referenceDate for monthly', () => {
+      const ref = new Date(2026, 4, 20);
+      const result = getNextOccurrences(
+        {
+          frequency: 'monthly',
+          interval: 1,
+          startDate: '2026-01-01',
+          monthlyDay: 15,
+        },
+        5,
+        ref,
+      );
+      for (const dateKey of result) {
+        expect(
+          new Date(dateKey + 'T00:00:00').getTime(),
+        ).toBeGreaterThanOrEqual(new Date(2026, 4, 20).getTime());
+      }
+    });
+
+    it('does not infinite loop on impossible config (returns limited results)', () => {
+      // Weekly with no matching days in weeklyDays is guarded, but test safety cap
+      // by using a very large interval where few matches exist within 730 days
+      const ref = new Date(2026, 0, 1);
+      const result = getNextOccurrences(
+        { frequency: 'daily', interval: 365, startDate: '2026-01-01' },
+        10,
+        ref,
+      );
+      // With interval=365, only 2 matches in 730 days: day 0 and day 365
+      expect(result.length).toBeLessThanOrEqual(2);
+      expect(result.length).toBeGreaterThanOrEqual(1);
+    });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// 19. INTERVAL_HELPER_TEXT
+// ---------------------------------------------------------------------------
+
+describe('INTERVAL_HELPER_TEXT', () => {
+  it('has entries for all three frequencies', () => {
+    expect(INTERVAL_HELPER_TEXT.daily).toBe('1 = every day. 2 = every 2 days.');
+    expect(INTERVAL_HELPER_TEXT.weekly).toBe(
+      '1 = every week. 2 = every 2 weeks.',
+    );
+    expect(INTERVAL_HELPER_TEXT.monthly).toBe(
+      '1 = every month. 2 = every 2 months.',
+    );
   });
 });

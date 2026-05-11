@@ -116,6 +116,170 @@ export function isIntervalMatch(
 }
 
 // ---------------------------------------------------------------------------
+// Next occurrences preview
+// ---------------------------------------------------------------------------
+
+/**
+ * Parameters for computing the next N occurrence dates of a recurrence.
+ * leadTimeDays is intentionally excluded — preview shows occurrence/due dates,
+ * not generation dates.
+ */
+export interface GetNextOccurrencesParams {
+  frequency: RecurrenceFrequency;
+  interval: number;
+  startDate: string; // YYYY-MM-DD
+  weeklyDays?: number[]; // 1=Mon..7=Sun
+  monthlyDay?: number; // 1-31
+}
+
+const MAX_ITERATIONS = 730;
+
+/**
+ * Returns the next `count` occurrence dates (YYYY-MM-DD) for a recurrence,
+ * starting from `referenceDate` (defaults to today). Never returns dates
+ * before the effective start (max of startDate and referenceDate).
+ */
+export function getNextOccurrences(
+  params: GetNextOccurrencesParams,
+  count = 5,
+  referenceDate: Date = new Date(),
+): string[] {
+  const { frequency, interval, startDate, weeklyDays, monthlyDay } = params;
+
+  const startParsed = parseDateKey(startDate);
+  const effectiveStart =
+    referenceDate > startParsed ? referenceDate : startParsed;
+
+  switch (frequency) {
+    case 'daily':
+      return getNextDailyOccurrences(
+        interval,
+        startDate,
+        effectiveStart,
+        count,
+      );
+    case 'weekly':
+      return getNextWeeklyOccurrences(
+        interval,
+        startDate,
+        effectiveStart,
+        weeklyDays ?? [],
+        count,
+      );
+    case 'monthly':
+      return getNextMonthlyOccurrences(
+        interval,
+        startDate,
+        effectiveStart,
+        monthlyDay,
+        count,
+      );
+    default:
+      return [];
+  }
+}
+
+function getNextDailyOccurrences(
+  interval: number,
+  startDate: string,
+  effectiveStart: Date,
+  count: number,
+): string[] {
+  const results: string[] = [];
+  const cursor = new Date(
+    effectiveStart.getFullYear(),
+    effectiveStart.getMonth(),
+    effectiveStart.getDate(),
+  );
+
+  for (let i = 0; i < MAX_ITERATIONS && results.length < count; i++) {
+    const key = formatDateKey(cursor);
+    if (isIntervalMatch('daily', interval, startDate, key)) {
+      results.push(key);
+    }
+    cursor.setDate(cursor.getDate() + 1);
+  }
+
+  return results;
+}
+
+function getNextWeeklyOccurrences(
+  interval: number,
+  startDate: string,
+  effectiveStart: Date,
+  weeklyDays: number[],
+  count: number,
+): string[] {
+  if (weeklyDays.length === 0) return [];
+
+  const results: string[] = [];
+  const daySet = new Set(weeklyDays);
+  const cursor = new Date(
+    effectiveStart.getFullYear(),
+    effectiveStart.getMonth(),
+    effectiveStart.getDate(),
+  );
+
+  for (let i = 0; i < MAX_ITERATIONS && results.length < count; i++) {
+    const isoDay = getISODayOfWeek(cursor);
+    if (daySet.has(isoDay)) {
+      const key = formatDateKey(cursor);
+      if (isIntervalMatch('weekly', interval, startDate, key)) {
+        results.push(key);
+      }
+    }
+    cursor.setDate(cursor.getDate() + 1);
+  }
+
+  return results;
+}
+
+function getNextMonthlyOccurrences(
+  interval: number,
+  startDate: string,
+  effectiveStart: Date,
+  monthlyDay: number | undefined,
+  count: number,
+): string[] {
+  if (monthlyDay === undefined) return [];
+
+  const results: string[] = [];
+  let year = effectiveStart.getFullYear();
+  let month = effectiveStart.getMonth() + 1; // 1-indexed
+
+  for (let i = 0; i < MAX_ITERATIONS && results.length < count; i++) {
+    const clamped = clampMonthlyDay(monthlyDay, year, month);
+    const candidate = new Date(year, month - 1, clamped);
+
+    if (candidate >= effectiveStart) {
+      const key = formatDateKey(candidate);
+      if (isIntervalMatch('monthly', interval, startDate, key)) {
+        results.push(key);
+      }
+    }
+
+    // Advance to next month
+    month++;
+    if (month > 12) {
+      month = 1;
+      year++;
+    }
+  }
+
+  return results;
+}
+
+// ---------------------------------------------------------------------------
+// Interval helper text
+// ---------------------------------------------------------------------------
+
+export const INTERVAL_HELPER_TEXT: Record<RecurrenceFrequency, string> = {
+  daily: '1 = every day. 2 = every 2 days.',
+  weekly: '1 = every week. 2 = every 2 weeks.',
+  monthly: '1 = every month. 2 = every 2 months.',
+};
+
+// ---------------------------------------------------------------------------
 // Occurrence logic
 // ---------------------------------------------------------------------------
 
