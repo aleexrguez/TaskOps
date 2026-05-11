@@ -1,4 +1,7 @@
-import type { RecurrenceTemplate } from '../types/recurrence.types';
+import type {
+  RecurrenceFrequency,
+  RecurrenceTemplate,
+} from '../types/recurrence.types';
 import type {
   Task,
   TaskPriority,
@@ -48,6 +51,234 @@ export function formatDateKey(date: Date): string {
   return `${year}-${month}-${day}`;
 }
 
+/**
+ * Parses a YYYY-MM-DD string into a local Date (midnight).
+ */
+export function parseDateKey(dateKey: string): Date {
+  const [y, m, d] = dateKey.split('-').map(Number);
+  return new Date(y, m - 1, d);
+}
+
+/**
+ * Returns the number of calendar days between two dates (a - b).
+ * Both dates are treated as midnight local time.
+ */
+function diffInDays(a: Date, b: Date): number {
+  const msPerDay = 24 * 60 * 60 * 1000;
+  const aTime = new Date(a.getFullYear(), a.getMonth(), a.getDate()).getTime();
+  const bTime = new Date(b.getFullYear(), b.getMonth(), b.getDate()).getTime();
+  return Math.round((aTime - bTime) / msPerDay);
+}
+
+/**
+ * Returns the number of whole months between two dates (a - b).
+ * Only counts year/month difference, ignores day component.
+ */
+function diffInMonths(a: Date, b: Date): number {
+  return (
+    (a.getFullYear() - b.getFullYear()) * 12 + (a.getMonth() - b.getMonth())
+  );
+}
+
+/**
+ * Returns true if `targetDate` falls on an interval step from `startDate`
+ * for the given frequency. Returns false if targetDate is before startDate.
+ *
+ * When interval === 1, always returns true (as long as target >= start).
+ */
+export function isIntervalMatch(
+  frequency: RecurrenceFrequency,
+  interval: number,
+  startDate: string,
+  targetDate: string,
+): boolean {
+  const start = parseDateKey(startDate);
+  const target = parseDateKey(targetDate);
+
+  if (target < start) return false;
+  if (interval === 1) return true;
+
+  switch (frequency) {
+    case 'daily': {
+      return diffInDays(target, start) % interval === 0;
+    }
+    case 'weekly': {
+      const weeks = Math.floor(diffInDays(target, start) / 7);
+      return weeks % interval === 0;
+    }
+    case 'monthly': {
+      const months = diffInMonths(target, start);
+      return months >= 0 && months % interval === 0;
+    }
+    default:
+      return false;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Next occurrences preview
+// ---------------------------------------------------------------------------
+
+/**
+ * Parameters for computing the next N occurrence dates of a recurrence.
+ * leadTimeDays is intentionally excluded — preview shows occurrence/due dates,
+ * not generation dates.
+ */
+export interface GetNextOccurrencesParams {
+  frequency: RecurrenceFrequency;
+  interval: number;
+  startDate: string; // YYYY-MM-DD
+  weeklyDays?: number[]; // 1=Mon..7=Sun
+  monthlyDay?: number; // 1-31
+}
+
+const MAX_ITERATIONS = 730;
+
+/**
+ * Returns the next `count` occurrence dates (YYYY-MM-DD) for a recurrence,
+ * starting from `referenceDate` (defaults to today). Never returns dates
+ * before the effective start (max of startDate and referenceDate).
+ */
+export function getNextOccurrences(
+  params: GetNextOccurrencesParams,
+  count = 5,
+  referenceDate: Date = new Date(),
+): string[] {
+  const { frequency, interval, startDate, weeklyDays, monthlyDay } = params;
+
+  const startParsed = parseDateKey(startDate);
+  const effectiveStart =
+    referenceDate > startParsed ? referenceDate : startParsed;
+
+  switch (frequency) {
+    case 'daily':
+      return getNextDailyOccurrences(
+        interval,
+        startDate,
+        effectiveStart,
+        count,
+      );
+    case 'weekly':
+      return getNextWeeklyOccurrences(
+        interval,
+        startDate,
+        effectiveStart,
+        weeklyDays ?? [],
+        count,
+      );
+    case 'monthly':
+      return getNextMonthlyOccurrences(
+        interval,
+        startDate,
+        effectiveStart,
+        monthlyDay,
+        count,
+      );
+    default:
+      return [];
+  }
+}
+
+function getNextDailyOccurrences(
+  interval: number,
+  startDate: string,
+  effectiveStart: Date,
+  count: number,
+): string[] {
+  const results: string[] = [];
+  const cursor = new Date(
+    effectiveStart.getFullYear(),
+    effectiveStart.getMonth(),
+    effectiveStart.getDate(),
+  );
+
+  for (let i = 0; i < MAX_ITERATIONS && results.length < count; i++) {
+    const key = formatDateKey(cursor);
+    if (isIntervalMatch('daily', interval, startDate, key)) {
+      results.push(key);
+    }
+    cursor.setDate(cursor.getDate() + 1);
+  }
+
+  return results;
+}
+
+function getNextWeeklyOccurrences(
+  interval: number,
+  startDate: string,
+  effectiveStart: Date,
+  weeklyDays: number[],
+  count: number,
+): string[] {
+  if (weeklyDays.length === 0) return [];
+
+  const results: string[] = [];
+  const daySet = new Set(weeklyDays);
+  const cursor = new Date(
+    effectiveStart.getFullYear(),
+    effectiveStart.getMonth(),
+    effectiveStart.getDate(),
+  );
+
+  for (let i = 0; i < MAX_ITERATIONS && results.length < count; i++) {
+    const isoDay = getISODayOfWeek(cursor);
+    if (daySet.has(isoDay)) {
+      const key = formatDateKey(cursor);
+      if (isIntervalMatch('weekly', interval, startDate, key)) {
+        results.push(key);
+      }
+    }
+    cursor.setDate(cursor.getDate() + 1);
+  }
+
+  return results;
+}
+
+function getNextMonthlyOccurrences(
+  interval: number,
+  startDate: string,
+  effectiveStart: Date,
+  monthlyDay: number | undefined,
+  count: number,
+): string[] {
+  if (monthlyDay === undefined) return [];
+
+  const results: string[] = [];
+  let year = effectiveStart.getFullYear();
+  let month = effectiveStart.getMonth() + 1; // 1-indexed
+
+  for (let i = 0; i < MAX_ITERATIONS && results.length < count; i++) {
+    const clamped = clampMonthlyDay(monthlyDay, year, month);
+    const candidate = new Date(year, month - 1, clamped);
+
+    if (candidate >= effectiveStart) {
+      const key = formatDateKey(candidate);
+      if (isIntervalMatch('monthly', interval, startDate, key)) {
+        results.push(key);
+      }
+    }
+
+    // Advance to next month
+    month++;
+    if (month > 12) {
+      month = 1;
+      year++;
+    }
+  }
+
+  return results;
+}
+
+// ---------------------------------------------------------------------------
+// Interval helper text
+// ---------------------------------------------------------------------------
+
+export const INTERVAL_HELPER_TEXT: Record<RecurrenceFrequency, string> = {
+  daily: '1 = every day. 2 = every 2 days.',
+  weekly: '1 = every week. 2 = every 2 weeks.',
+  monthly: '1 = every month. 2 = every 2 months.',
+};
+
 // ---------------------------------------------------------------------------
 // Occurrence logic
 // ---------------------------------------------------------------------------
@@ -60,13 +291,27 @@ export function getOccurrenceDateForToday(
   template: RecurrenceTemplate,
   today: Date = new Date(),
 ): string | null {
+  const todayKey = formatDateKey(today);
+
+  // Gate: today must be on or after startDate
+  if (todayKey < template.startDate) return null;
+
   const year = today.getFullYear();
   const month = today.getMonth() + 1; // 1-indexed
   const dayOfMonth = today.getDate();
 
   switch (template.frequency) {
     case 'daily': {
-      return formatDateKey(today);
+      if (
+        !isIntervalMatch(
+          'daily',
+          template.interval,
+          template.startDate,
+          todayKey,
+        )
+      )
+        return null;
+      return todayKey;
     }
 
     case 'weekly': {
@@ -74,7 +319,17 @@ export function getOccurrenceDateForToday(
         return null;
       }
       const isoDay = getISODayOfWeek(today);
-      return template.weeklyDays.includes(isoDay) ? formatDateKey(today) : null;
+      if (!template.weeklyDays.includes(isoDay)) return null;
+      if (
+        !isIntervalMatch(
+          'weekly',
+          template.interval,
+          template.startDate,
+          todayKey,
+        )
+      )
+        return null;
+      return todayKey;
     }
 
     case 'monthly': {
@@ -82,7 +337,17 @@ export function getOccurrenceDateForToday(
         return null;
       }
       const effectiveDay = clampMonthlyDay(template.monthlyDay, year, month);
-      return effectiveDay === dayOfMonth ? formatDateKey(today) : null;
+      if (effectiveDay !== dayOfMonth) return null;
+      if (
+        !isIntervalMatch(
+          'monthly',
+          template.interval,
+          template.startDate,
+          todayKey,
+        )
+      )
+        return null;
+      return todayKey;
     }
 
     default:
@@ -102,12 +367,26 @@ export function getOccurrencesInWindow(
   template: RecurrenceTemplate,
   today: Date = new Date(),
 ): string[] {
+  const todayKey = formatDateKey(today);
+
+  // Gate: today must be on or after startDate
+  if (todayKey < template.startDate) return [];
+
   const year = today.getFullYear();
   const month = today.getMonth() + 1; // 1-indexed
 
   switch (template.frequency) {
     case 'daily': {
-      return [formatDateKey(today)];
+      if (
+        !isIntervalMatch(
+          'daily',
+          template.interval,
+          template.startDate,
+          todayKey,
+        )
+      )
+        return [];
+      return [todayKey];
     }
 
     case 'weekly': {
@@ -115,7 +394,17 @@ export function getOccurrencesInWindow(
         return [];
       }
       const isoDay = getISODayOfWeek(today);
-      return template.weeklyDays.includes(isoDay) ? [formatDateKey(today)] : [];
+      if (!template.weeklyDays.includes(isoDay)) return [];
+      if (
+        !isIntervalMatch(
+          'weekly',
+          template.interval,
+          template.startDate,
+          todayKey,
+        )
+      )
+        return [];
+      return [todayKey];
     }
 
     case 'monthly': {
@@ -152,7 +441,19 @@ export function getOccurrencesInWindow(
           occurrenceTime - leadTime * 24 * 60 * 60 * 1000;
 
         if (todayTime >= generationStartTime && todayTime <= occurrenceTime) {
-          result.push(formatDateKey(occurrence));
+          // Interval match is checked against the OCCURRENCE date, not today
+          const occurrenceKey = formatDateKey(occurrence);
+          if (occurrenceKey < template.startDate) continue;
+          if (
+            !isIntervalMatch(
+              'monthly',
+              template.interval,
+              template.startDate,
+              occurrenceKey,
+            )
+          )
+            continue;
+          result.push(occurrenceKey);
         }
       }
 
@@ -274,22 +575,25 @@ export function formatMonthlyDay(day: number): string {
  * e.g. "Daily", "Weekly (Mon, Wed, Fri)", "Monthly (15th)"
  */
 export function formatFrequencyLabel(template: RecurrenceTemplate): string {
+  const n = template.interval;
   switch (template.frequency) {
     case 'daily':
-      return 'Daily';
+      return n > 1 ? `Every ${n} days` : 'Daily';
 
     case 'weekly': {
+      const prefix = n > 1 ? `Every ${n} weeks` : 'Weekly';
       if (template.weeklyDays && template.weeklyDays.length > 0) {
-        return `Weekly (${formatWeeklyDays(template.weeklyDays)})`;
+        return `${prefix} (${formatWeeklyDays(template.weeklyDays)})`;
       }
-      return 'Weekly';
+      return prefix;
     }
 
     case 'monthly': {
+      const prefix = n > 1 ? `Every ${n} months` : 'Monthly';
       if (template.monthlyDay !== undefined) {
-        return `Monthly (${formatMonthlyDay(template.monthlyDay)})`;
+        return `${prefix} (${formatMonthlyDay(template.monthlyDay)})`;
       }
-      return 'Monthly';
+      return prefix;
     }
 
     default:

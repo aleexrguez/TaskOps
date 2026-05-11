@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
 import type { CreateTaskInput, TaskStatus, TaskPriority } from '../types';
-import { DatePicker } from './DatePicker';
+import { DatePicker } from '@/shared/components/DatePicker';
 
 interface TaskFormProps {
   onSubmit: (data: CreateTaskInput) => void;
@@ -61,7 +61,8 @@ export function TaskForm({
       status: fields.status,
       priority: fields.priority,
     };
-    if (fields.description) payload.description = fields.description;
+    const normalizedDescription = fields.description?.trim() ?? '';
+    payload.description = normalizedDescription;
     if (fields.dueDate) payload.dueDate = fields.dueDate;
     onSubmit(payload);
   }

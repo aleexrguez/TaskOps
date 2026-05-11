@@ -28,6 +28,8 @@ function fromDbRow(row: DbRecurrenceRow): RecurrenceTemplate {
     weeklyDays: row.weekly_days ?? undefined,
     monthlyDay: row.monthly_day ?? undefined,
     leadTimeDays: row.lead_time_days,
+    interval: row.repeat_interval,
+    startDate: row.start_date,
     isActive: row.is_active,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
@@ -47,6 +49,8 @@ function toDbInsert(
     weekly_days: 'weeklyDays' in input ? (input.weeklyDays ?? null) : null,
     monthly_day: 'monthlyDay' in input ? (input.monthlyDay ?? null) : null,
     lead_time_days: 'leadTimeDays' in input ? (input.leadTimeDays ?? 0) : 0,
+    repeat_interval: input.interval ?? 1,
+    start_date: input.startDate,
   };
 }
 
@@ -132,6 +136,8 @@ export async function updateRecurrence(
   if (input.monthlyDay !== undefined) updates.monthly_day = input.monthlyDay;
   if (input.leadTimeDays !== undefined)
     updates.lead_time_days = input.leadTimeDays;
+  if (input.interval !== undefined) updates.repeat_interval = input.interval;
+  if (input.startDate !== undefined) updates.start_date = input.startDate;
 
   const { data, error } = await supabase
     .from('recurrence_templates')

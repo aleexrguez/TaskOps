@@ -61,6 +61,8 @@ function makeTemplate(
     title: 'Morning exercise',
     priority: 'medium',
     frequency: 'daily',
+    interval: 1,
+    startDate: '2024-01-01',
     leadTimeDays: 0,
     isActive: true,
     createdAt: '2026-01-10T10:00:00.000Z',

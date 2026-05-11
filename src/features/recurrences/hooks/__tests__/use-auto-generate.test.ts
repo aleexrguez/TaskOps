@@ -52,6 +52,8 @@ function makeTemplate(
     title: 'Daily standup',
     priority: 'medium',
     frequency: 'daily',
+    interval: 1,
+    startDate: '2024-01-01',
     leadTimeDays: 0,
     isActive: true,
     createdAt: new Date().toISOString(),

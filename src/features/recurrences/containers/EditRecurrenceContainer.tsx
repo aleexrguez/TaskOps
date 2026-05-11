@@ -36,6 +36,8 @@ export function EditRecurrenceContainer() {
         description: data.description,
         priority: data.priority,
         frequency: data.frequency,
+        interval: data.interval,
+        startDate: data.startDate,
         weeklyDays:
           data.frequency === 'weekly' && 'weeklyDays' in data
             ? data.weeklyDays

@@ -47,6 +47,8 @@ function makeDbRow(overrides: Record<string, unknown> = {}) {
     weekly_days: null,
     monthly_day: null,
     lead_time_days: 0,
+    repeat_interval: 1,
+    start_date: '2024-01-01',
     is_active: true,
     created_at: '2026-04-16T10:00:00.000Z',
     updated_at: '2026-04-16T10:00:00.000Z',
@@ -88,6 +90,8 @@ describe('fetchRecurrences — fromDbRow mapping', () => {
       weeklyDays: undefined,
       monthlyDay: undefined,
       leadTimeDays: 0,
+      interval: 1,
+      startDate: '2024-01-01',
       isActive: true,
       createdAt: '2026-04-16T10:00:00.000Z',
       updatedAt: '2026-04-16T10:00:00.000Z',
@@ -232,6 +236,8 @@ describe('createRecurrence — toDbInsert mapping', () => {
       frequency: 'daily',
       title: 'Daily standup',
       priority: 'medium',
+      interval: 1,
+      startDate: '2024-01-01',
     });
 
     expect(mockInsert).toHaveBeenCalledWith(
@@ -260,6 +266,8 @@ describe('createRecurrence — toDbInsert mapping', () => {
       frequency: 'weekly',
       title: 'Weekly review',
       priority: 'medium',
+      interval: 1,
+      startDate: '2024-01-01',
       weeklyDays: [1, 3],
     });
 
@@ -293,6 +301,8 @@ describe('createRecurrence — toDbInsert mapping', () => {
       frequency: 'monthly',
       title: 'Monthly report',
       priority: 'medium',
+      interval: 1,
+      startDate: '2024-01-01',
       monthlyDay: 15,
       leadTimeDays: 5,
     });
@@ -323,6 +333,8 @@ describe('createRecurrence — toDbInsert mapping', () => {
       frequency: 'daily',
       title: 'Daily standup',
       priority: 'medium',
+      interval: 1,
+      startDate: '2024-01-01',
     });
 
     expect(mockInsert).toHaveBeenCalledWith(
@@ -351,6 +363,8 @@ describe('createRecurrence — toDbInsert mapping', () => {
       priority: 'medium',
       monthlyDay: 15,
       leadTimeDays: 0,
+      interval: 1,
+      startDate: '2024-01-01',
     });
 
     expect(mockInsert).toHaveBeenCalledWith(
@@ -728,6 +742,8 @@ describe('CRUD operations', () => {
         frequency: 'daily',
         title: 'Failing',
         priority: 'medium',
+        interval: 1,
+        startDate: '2024-01-01',
       }),
     ).rejects.toThrow('Insert failed');
   });

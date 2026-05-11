@@ -9,6 +9,8 @@ const TEMPLATE_DEFAULTS: RecurrenceTemplate = {
   priority: 'medium',
   frequency: 'daily',
   leadTimeDays: 0,
+  interval: 1,
+  startDate: '2026-01-01',
   isActive: true,
   createdAt: '2026-01-10T10:00:00.000Z',
   updatedAt: '2026-01-10T10:00:00.000Z',
@@ -29,6 +31,8 @@ export function createDailyInput(
     frequency: 'daily',
     title: 'Daily Task',
     priority: 'medium',
+    interval: 1,
+    startDate: '2026-01-01',
     ...overrides,
   };
 }
@@ -42,6 +46,8 @@ export function createWeeklyInput(
     frequency: 'weekly',
     title: 'Weekly Task',
     priority: 'medium',
+    interval: 1,
+    startDate: '2026-01-01',
     weeklyDays: [1],
     ...overrides,
   };
@@ -56,6 +62,8 @@ export function createMonthlyInput(
     frequency: 'monthly',
     title: 'Monthly Task',
     priority: 'medium',
+    interval: 1,
+    startDate: '2026-01-01',
     monthlyDay: 1,
     leadTimeDays: 0,
     ...overrides,

@@ -38,7 +38,7 @@ function toDbInsert(input: CreateTaskInput, userId: string): DbTaskInsert {
   return {
     user_id: userId,
     title: input.title,
-    description: input.description ?? null,
+    description: input.description || null,
     status: input.status ?? 'todo',
     priority: input.priority ?? 'medium',
     due_date: input.dueDate ?? null,
@@ -108,7 +108,7 @@ export async function updateTask(
 
   if (input.title !== undefined) updates.title = input.title;
   if (input.description !== undefined)
-    updates.description = input.description ?? null;
+    updates.description = input.description || null;
   if (input.status !== undefined) updates.status = input.status;
   if (input.priority !== undefined) updates.priority = input.priority;
   if (input.dueDate !== undefined) updates.due_date = input.dueDate ?? null;

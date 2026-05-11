@@ -1,8 +1,14 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { FormEvent } from 'react';
 import type { CreateRecurrenceInput } from '../types/recurrence.types';
 import type { RecurrenceFrequency } from '../types/recurrence.types';
 import type { TaskPriority } from '@/features/task-manager/types/task.types';
+import {
+  getNextOccurrences,
+  INTERVAL_HELPER_TEXT,
+  parseDateKey,
+} from '../utils/recurrence.utils';
+import { DatePicker } from '@/shared/components/DatePicker';
 import { WeeklyDaysPicker } from './WeeklyDaysPicker';
 
 interface RecurrenceFormProps {
@@ -21,6 +27,16 @@ interface FormState {
   weeklyDays: number[];
   monthlyDay: string;
   leadTimeDays: string;
+  interval: string;
+  startDate: string;
+}
+
+function todayDateKey(): string {
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
 }
 
 function buildInitialState(
@@ -43,7 +59,24 @@ function buildInitialState(
       initial?.frequency === 'monthly' && 'leadTimeDays' in (initial ?? {})
         ? String((initial as { leadTimeDays?: number }).leadTimeDays ?? 0)
         : '0',
+    interval:
+      'interval' in (initial ?? {})
+        ? String((initial as { interval?: number }).interval ?? 1)
+        : '1',
+    startDate:
+      'startDate' in (initial ?? {})
+        ? ((initial as { startDate?: string }).startDate ?? todayDateKey())
+        : todayDateKey(),
   };
+}
+
+function formatPreviewDate(dateKey: string): string {
+  const date = parseDateKey(dateKey);
+  return date.toLocaleDateString('en-US', {
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+  });
 }
 
 const inputClass =
@@ -59,10 +92,47 @@ export function RecurrenceForm({
   autoFocusTitle = false,
 }: RecurrenceFormProps) {
   const titleRef = useRef<HTMLInputElement>(null);
+  const hasUserEditedMonthlyDay = useRef(
+    initialValues?.frequency === 'monthly' &&
+      'monthlyDay' in (initialValues ?? {}),
+  );
   const [fields, setFields] = useState<FormState>(() =>
     buildInitialState(initialValues),
   );
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const nextDates = useMemo(() => {
+    if (!fields.startDate) return [];
+    const intervalNum = Number(fields.interval);
+    if (isNaN(intervalNum) || intervalNum < 1) return [];
+    if (fields.frequency === 'weekly' && fields.weeklyDays.length === 0)
+      return [];
+    if (fields.frequency === 'monthly') {
+      const md = Number(fields.monthlyDay);
+      if (isNaN(md) || md < 1 || md > 31) return [];
+    }
+
+    return getNextOccurrences(
+      {
+        frequency: fields.frequency,
+        interval: intervalNum,
+        startDate: fields.startDate,
+        weeklyDays:
+          fields.frequency === 'weekly' ? fields.weeklyDays : undefined,
+        monthlyDay:
+          fields.frequency === 'monthly'
+            ? Number(fields.monthlyDay)
+            : undefined,
+      },
+      5,
+    );
+  }, [
+    fields.frequency,
+    fields.interval,
+    fields.startDate,
+    fields.weeklyDays,
+    fields.monthlyDay,
+  ]);
 
   useEffect(() => {
     if (autoFocusTitle) {
@@ -70,19 +140,56 @@ export function RecurrenceForm({
     }
   }, [autoFocusTitle]);
 
+  function autofillMonthlyDay(
+    frequency: RecurrenceFrequency,
+    startDate: string,
+  ): Partial<FormState> {
+    if (
+      frequency === 'monthly' &&
+      !hasUserEditedMonthlyDay.current &&
+      startDate
+    ) {
+      const date = parseDateKey(startDate);
+      return { monthlyDay: String(date.getDate()) };
+    }
+    return {};
+  }
+
   function handleChange(
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >,
   ): void {
     const { name, value } = e.target;
-    setFields((prev) => ({ ...prev, [name]: value }));
+    if (name === 'monthlyDay') {
+      hasUserEditedMonthlyDay.current = true;
+    }
+    setFields((prev) => {
+      const next = { ...prev, [name]: value };
+      if (name === 'frequency') {
+        Object.assign(
+          next,
+          autofillMonthlyDay(value as RecurrenceFrequency, prev.startDate),
+        );
+      }
+      return next;
+    });
     setErrors((prev) => ({ ...prev, [name]: '' }));
   }
 
   function handleWeeklyDaysChange(days: number[]): void {
     setFields((prev) => ({ ...prev, weeklyDays: days }));
     setErrors((prev) => ({ ...prev, weeklyDays: '' }));
+  }
+
+  function handleStartDateChange(date: string | undefined): void {
+    const startDate = date ?? '';
+    setFields((prev) => ({
+      ...prev,
+      startDate,
+      ...autofillMonthlyDay(prev.frequency, startDate),
+    }));
+    setErrors((prev) => ({ ...prev, startDate: '' }));
   }
 
   function validate(): boolean {
@@ -105,6 +212,18 @@ export function RecurrenceForm({
       next.monthlyDay = 'Day must be between 1 and 31';
     }
 
+    if (
+      isNaN(Number(fields.interval)) ||
+      Number(fields.interval) < 1 ||
+      Number(fields.interval) > 365
+    ) {
+      next.interval = 'Interval must be between 1 and 365';
+    }
+
+    if (!fields.startDate) {
+      next.startDate = 'Start date is required';
+    }
+
     setErrors(next);
     return Object.keys(next).length === 0;
   }
@@ -115,12 +234,20 @@ export function RecurrenceForm({
 
     let payload: CreateRecurrenceInput;
 
+    const normalizedDescription = fields.description?.trim() ?? '';
+    const descriptionField = normalizedDescription
+      ? { description: normalizedDescription }
+      : {};
+    const intervalNum = Number(fields.interval);
+
     if (fields.frequency === 'daily') {
       payload = {
         frequency: 'daily',
         title: fields.title,
         priority: fields.priority,
-        ...(fields.description ? { description: fields.description } : {}),
+        interval: intervalNum,
+        startDate: fields.startDate,
+        ...descriptionField,
       };
     } else if (fields.frequency === 'weekly') {
       payload = {
@@ -128,7 +255,9 @@ export function RecurrenceForm({
         title: fields.title,
         priority: fields.priority,
         weeklyDays: fields.weeklyDays,
-        ...(fields.description ? { description: fields.description } : {}),
+        interval: intervalNum,
+        startDate: fields.startDate,
+        ...descriptionField,
       };
     } else {
       payload = {
@@ -137,7 +266,9 @@ export function RecurrenceForm({
         priority: fields.priority,
         monthlyDay: Number(fields.monthlyDay),
         leadTimeDays: Number(fields.leadTimeDays),
-        ...(fields.description ? { description: fields.description } : {}),
+        interval: intervalNum,
+        startDate: fields.startDate,
+        ...descriptionField,
       };
     }
 
@@ -212,6 +343,48 @@ export function RecurrenceForm({
         </select>
       </div>
 
+      <div className="flex flex-col gap-1">
+        <label htmlFor="interval" className={labelClass}>
+          Repeat every
+        </label>
+        <div className="flex items-center gap-2">
+          <input
+            id="interval"
+            name="interval"
+            type="number"
+            min={1}
+            max={365}
+            value={fields.interval}
+            onChange={handleChange}
+            className={`${inputClass} w-20`}
+          />
+          <span className="text-sm text-gray-600 dark:text-gray-400">
+            {fields.frequency === 'daily' &&
+              (fields.interval === '1' ? 'day' : 'days')}
+            {fields.frequency === 'weekly' &&
+              (fields.interval === '1' ? 'week' : 'weeks')}
+            {fields.frequency === 'monthly' &&
+              (fields.interval === '1' ? 'month' : 'months')}
+          </span>
+        </div>
+        <p className="text-xs text-gray-500 dark:text-gray-400">
+          {INTERVAL_HELPER_TEXT[fields.frequency]}
+        </p>
+        {errors.interval && (
+          <p className="text-xs text-red-500">{errors.interval}</p>
+        )}
+      </div>
+
+      <DatePicker
+        id="startDate"
+        label="Starting from"
+        value={fields.startDate || undefined}
+        onChange={handleStartDateChange}
+      />
+      {errors.startDate && (
+        <p className="text-xs text-red-500">{errors.startDate}</p>
+      )}
+
       {fields.frequency === 'weekly' && (
         <div className="flex flex-col gap-1">
           <span className={labelClass}>Days of the week</span>
@@ -261,6 +434,22 @@ export function RecurrenceForm({
             onChange={handleChange}
             className={inputClass}
           />
+        </div>
+      )}
+
+      {nextDates.length > 0 && (
+        <div className="flex flex-col gap-1">
+          <span className={labelClass}>Next occurrences</span>
+          <ul className="flex flex-wrap gap-2" aria-label="Next occurrences">
+            {nextDates.map((dateKey) => (
+              <li
+                key={dateKey}
+                className="rounded-md bg-gray-100 px-2 py-1 text-xs text-gray-700 dark:bg-gray-700 dark:text-gray-300"
+              >
+                {formatPreviewDate(dateKey)}
+              </li>
+            ))}
+          </ul>
         </div>
       )}
 
