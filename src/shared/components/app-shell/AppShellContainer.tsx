@@ -4,6 +4,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useAppPreferencesStore } from '@/shared/store/app-preferences.store';
 import { useSignOut } from '@/features/auth/hooks';
 import { useApplyTheme } from '@/shared/hooks/use-apply-theme';
+import { usePWAUpdate } from '@/shared/hooks/use-pwa-update';
 import { useTasks } from '@/features/task-manager/hooks/use-tasks';
 import { useRecurrences } from '@/features/recurrences/hooks/use-recurrences';
 import { useAutoGenerate } from '@/features/recurrences/hooks/use-auto-generate';
@@ -19,6 +20,7 @@ const NAV_ITEMS: NavItem[] = [
 
 export function AppShellContainer() {
   useApplyTheme();
+  const { needRefresh, updateServiceWorker, dismissUpdate } = usePWAUpdate();
 
   const { data: tasksData } = useTasks();
   const { data: recurrencesData } = useRecurrences();
@@ -50,6 +52,14 @@ export function AppShellContainer() {
           isCollapsed: isSidebarCollapsed,
           onToggleMobileSidebar: () => setIsMobileSidebarOpen(true),
         }}
+        pwaUpdateProps={
+          needRefresh
+            ? {
+                onUpdate: () => updateServiceWorker(true),
+                onDismiss: dismissUpdate,
+              }
+            : undefined
+        }
         sidebarProps={{
           navItems: NAV_ITEMS,
           isCollapsed: isSidebarCollapsed,
