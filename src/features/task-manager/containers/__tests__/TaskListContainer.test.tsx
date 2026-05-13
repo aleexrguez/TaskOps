@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { render, screen, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -45,8 +46,9 @@ import type { TaskBoard } from '../../utils';
 
 // Capture onBoardChange prop passed to BoardView for direct invocation in tests
 let capturedOnBoardChange: ((board: TaskBoard) => void) | undefined;
-vi.mock('../../components', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('../../components')>();
+vi.mock('../../components/BoardView', async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import('../../components/BoardView')>();
   return {
     ...actual,
     BoardView: (props: {
@@ -68,7 +70,9 @@ function createWrapper() {
   return function Wrapper({ children }: { children: React.ReactNode }) {
     return (
       <QueryClientProvider client={queryClient}>
-        <MemoryRouter>{children}</MemoryRouter>
+        <MemoryRouter>
+          <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
+        </MemoryRouter>
       </QueryClientProvider>
     );
   };

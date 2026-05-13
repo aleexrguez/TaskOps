@@ -1,4 +1,6 @@
+import { Suspense } from 'react';
 import { Outlet } from 'react-router-dom';
+import { RouteSpinner } from '@/shared/components/RouteSpinner';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 import type { AppShellLayoutProps } from './app-shell.types';
@@ -18,7 +20,9 @@ export function AppShellLayout({
 
       <main className={`pt-14 ${mainMargin} transition-[margin] duration-300`}>
         <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-          <Outlet />
+          <Suspense fallback={<RouteSpinner />}>
+            <Outlet />
+          </Suspense>
         </div>
       </main>
     </div>

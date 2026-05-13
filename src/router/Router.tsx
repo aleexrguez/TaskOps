@@ -1,8 +1,5 @@
+import { lazy } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import {
-  TaskDashboardContainer,
-  TaskDetailContainer,
-} from '@/features/task-manager/containers';
 import {
   LoginContainer,
   RegisterContainer,
@@ -11,10 +8,31 @@ import {
 } from '@/features/auth';
 import { LandingPage } from '@/features/landing';
 import { AppShellContainer } from '@/shared/components/app-shell';
-import { RecurrenceDashboardContainer } from '@/features/recurrences';
-import { SettingsContainer } from '@/features/settings';
 import { ProtectedRoute } from './ProtectedRoute';
 import { PublicOnlyRoute } from './PublicOnlyRoute';
+
+const TaskDashboardContainer = lazy(() =>
+  import('@/features/task-manager/containers/TaskDashboardContainer').then(
+    (m) => ({ default: m.TaskDashboardContainer }),
+  ),
+);
+const TaskDetailContainer = lazy(() =>
+  import('@/features/task-manager/containers/TaskDetailContainer').then(
+    (m) => ({
+      default: m.TaskDetailContainer,
+    }),
+  ),
+);
+const RecurrenceDashboardContainer = lazy(() =>
+  import('@/features/recurrences/containers/RecurrenceDashboardContainer').then(
+    (m) => ({ default: m.RecurrenceDashboardContainer }),
+  ),
+);
+const SettingsContainer = lazy(() =>
+  import('@/features/settings/containers/SettingsContainer').then((m) => ({
+    default: m.SettingsContainer,
+  })),
+);
 
 export function Router() {
   return (

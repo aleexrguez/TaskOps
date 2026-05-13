@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import {
@@ -20,11 +20,18 @@ import {
 import type { TaskListResponse } from '../api';
 import type { TaskBoard } from '../utils/task.utils';
 import { taskKeys } from '../hooks/task.keys';
-import { TaskFilters, TaskList, ConfirmDialog, BoardView } from '../components';
+import { RouteSpinner } from '@/shared/components/RouteSpinner';
+import { TaskFilters } from '../components/TaskFilters';
+import { TaskList } from '../components/TaskList';
+import { ConfirmDialog } from '../components/ConfirmDialog';
 import {
   celebrateTaskDone,
   getConfettiOriginFromElement,
 } from '../utils/confetti';
+
+const BoardView = lazy(() =>
+  import('../components/BoardView').then((m) => ({ default: m.BoardView })),
+);
 
 const HIGHLIGHT_MS = 3000;
 const HIGHLIGHT_CLASS =
@@ -239,16 +246,18 @@ export function TaskListContainer() {
           onToggleArchived={toggleShowArchived}
         />
         {viewMode === 'board' ? (
-          <BoardView
-            board={board}
-            onDelete={handleDelete}
-            onClick={(id) => navigate(`/app/tasks/${id}`)}
-            onArchive={handleArchive}
-            onDuplicate={handleDuplicate}
-            deletingId={isDeleting ? (deletingId ?? null) : null}
-            onBoardChange={handleBoardChange}
-            checklistSummaries={checklistSummaries}
-          />
+          <Suspense fallback={<RouteSpinner />}>
+            <BoardView
+              board={board}
+              onDelete={handleDelete}
+              onClick={(id) => navigate(`/app/tasks/${id}`)}
+              onArchive={handleArchive}
+              onDuplicate={handleDuplicate}
+              deletingId={isDeleting ? (deletingId ?? null) : null}
+              onBoardChange={handleBoardChange}
+              checklistSummaries={checklistSummaries}
+            />
+          </Suspense>
         ) : (
           <TaskList
             tasks={filteredTasks}
