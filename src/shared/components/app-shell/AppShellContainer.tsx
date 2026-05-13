@@ -8,7 +8,7 @@ import { useTasks } from '@/features/task-manager/hooks/use-tasks';
 import { useRecurrences } from '@/features/recurrences/hooks/use-recurrences';
 import { useAutoGenerate } from '@/features/recurrences/hooks/use-auto-generate';
 import { AppShellLayout } from './AppShellLayout';
-import { ReminderContainerCtrl } from '@/features/task-manager/containers';
+import { ReminderContainerCtrl } from '@/features/task-manager/containers/ReminderContainerCtrl';
 import type { NavItem } from './app-shell.types';
 
 const NAV_ITEMS: NavItem[] = [
