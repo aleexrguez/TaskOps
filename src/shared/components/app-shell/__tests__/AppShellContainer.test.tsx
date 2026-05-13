@@ -20,6 +20,14 @@ vi.mock('@/shared/hooks/use-apply-theme', () => ({
   useApplyTheme: vi.fn(),
 }));
 
+vi.mock('@/shared/hooks/use-pwa-update', () => ({
+  usePWAUpdate: () => ({
+    needRefresh: false,
+    updateServiceWorker: vi.fn(),
+    dismissUpdate: vi.fn(),
+  }),
+}));
+
 vi.mock('@tanstack/react-query', () => ({
   useQueryClient: vi.fn(),
 }));

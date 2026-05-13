@@ -20,7 +20,13 @@ export interface SidebarProps {
   isSigningOut: boolean;
 }
 
+export interface PWAUpdateProps {
+  onUpdate: () => void;
+  onDismiss: () => void;
+}
+
 export interface AppShellLayoutProps {
   headerProps: HeaderProps;
   sidebarProps: SidebarProps;
+  pwaUpdateProps?: PWAUpdateProps;
 }
