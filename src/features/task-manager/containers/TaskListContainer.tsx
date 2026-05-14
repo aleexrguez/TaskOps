@@ -260,6 +260,7 @@ export function TaskListContainer() {
           </Suspense>
         ) : (
           <TaskList
+            compact
             tasks={filteredTasks}
             isLoading={isLoading}
             deletingId={isDeleting ? (deletingId ?? null) : null}

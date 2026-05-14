@@ -1,6 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useTask, useDeleteTask, useUpdateTask } from '../hooks/use-tasks';
+import {
+  useTask,
+  useDeleteTask,
+  useUpdateTask,
+  useCreateTask,
+} from '../hooks/use-tasks';
+import { buildDuplicateInput } from '../utils/task.utils';
+import { useArchiveTask, useUnarchiveTask } from '../hooks/use-archive-task';
+import type { TaskStatus } from '../types';
 import {
   useChecklist,
   useCreateChecklistItem,
@@ -31,6 +39,9 @@ export function TaskDetailContainer() {
 
   const { mutate: deleteTask, isPending: isDeleting } = useDeleteTask();
   const { mutate: updateTask, isPending: isUpdating } = useUpdateTask();
+  const { mutate: createTask } = useCreateTask();
+  const { mutate: archiveTask } = useArchiveTask();
+  const { mutate: unarchiveTask } = useUnarchiveTask();
 
   const [showConfirm, setShowConfirm] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -131,6 +142,46 @@ export function TaskDetailContainer() {
     setShowConfirm(false);
   }
 
+  function handleDuplicate(): void {
+    if (!task) return;
+    createTask(buildDuplicateInput(task), {
+      onSuccess: () => addToast('Task duplicated', 'success'),
+      onError: () => addToast('Failed to duplicate task', 'error'),
+    });
+  }
+
+  function handleArchive(): void {
+    if (!task) return;
+    if (task.isArchived) {
+      unarchiveTask(task.id, {
+        onSuccess: () => addToast('Task unarchived', 'success'),
+        onError: () => addToast('Failed to unarchive task', 'error'),
+      });
+    } else {
+      archiveTask(task.id, {
+        onSuccess: () => addToast('Task archived', 'success'),
+        onError: () => addToast('Failed to archive task', 'error'),
+      });
+    }
+  }
+
+  function handleStatusChange(newStatus: TaskStatus): void {
+    if (!task || task.status === newStatus) return;
+    const previousStatus = task.status;
+    updateTask(
+      { id: task.id, input: { status: newStatus } },
+      {
+        onSuccess: () => {
+          addToast('Status updated', 'success');
+          if (newStatus === 'done' && previousStatus !== 'done') {
+            celebrateTaskDone();
+          }
+        },
+        onError: () => addToast('Failed to update status', 'error'),
+      },
+    );
+  }
+
   function renderContent() {
     if (isLoading) {
       return (
@@ -181,6 +232,11 @@ export function TaskDetailContainer() {
           onChecklistDelete={handleChecklistDelete}
           onChecklistUpdate={handleChecklistUpdate}
           onChecklistReorder={handleChecklistReorder}
+          onDuplicate={handleDuplicate}
+          onArchive={task.status === 'done' ? handleArchive : undefined}
+          isArchived={task.isArchived}
+          onStatusChange={handleStatusChange}
+          isStatusUpdating={isUpdating}
         />
       );
     }

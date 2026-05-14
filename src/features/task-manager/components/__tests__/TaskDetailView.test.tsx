@@ -260,6 +260,171 @@ describe('TaskDetailView — inline editing', () => {
   });
 });
 
+describe('TaskDetailView — status selector', () => {
+  const baseTask: Task = {
+    id: 'status-sel-uuid',
+    title: 'Status Selector Task',
+    status: 'todo',
+    priority: 'medium',
+    isArchived: false,
+    position: 0,
+    createdAt: '2026-04-01T10:00:00.000Z',
+    updatedAt: '2026-04-01T10:00:00.000Z',
+  };
+
+  it('renders StatusSelector when onStatusChange provided', () => {
+    render(
+      <TaskDetailView
+        task={baseTask}
+        onEdit={vi.fn()}
+        onDelete={vi.fn()}
+        onStatusChange={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByRole('button', { name: /todo/i })).toHaveAttribute(
+      'aria-haspopup',
+      'listbox',
+    );
+  });
+
+  it('renders StatusBadge when onStatusChange not provided', () => {
+    render(
+      <TaskDetailView task={baseTask} onEdit={vi.fn()} onDelete={vi.fn()} />,
+    );
+
+    expect(
+      screen.queryByRole('button', { name: /todo/i }),
+    ).not.toBeInTheDocument();
+    expect(screen.getByText('Todo')).toBeInTheDocument();
+  });
+
+  it('does not show StatusSelector in edit mode', () => {
+    render(
+      <TaskDetailView
+        task={baseTask}
+        onEdit={vi.fn()}
+        onDelete={vi.fn()}
+        isEditing={true}
+        onSave={vi.fn()}
+        onCancel={vi.fn()}
+        onStatusChange={vi.fn()}
+      />,
+    );
+
+    expect(
+      screen.queryByRole('button', { name: /todo/i }),
+    ).not.toBeInTheDocument();
+  });
+});
+
+describe('TaskDetailView — duplicate and archive actions', () => {
+  const baseTask: Task = {
+    id: 'dup-arch-uuid',
+    title: 'Action Task',
+    status: 'done',
+    priority: 'low',
+    isArchived: false,
+    position: 0,
+    createdAt: '2026-04-01T10:00:00.000Z',
+    updatedAt: '2026-04-01T10:00:00.000Z',
+  };
+
+  it('shows Duplicate button when onDuplicate provided', () => {
+    render(
+      <TaskDetailView
+        task={baseTask}
+        onEdit={vi.fn()}
+        onDelete={vi.fn()}
+        onDuplicate={vi.fn()}
+      />,
+    );
+
+    expect(
+      screen.getByRole('button', { name: /duplicate/i }),
+    ).toBeInTheDocument();
+  });
+
+  it('shows Archive button when onArchive provided and isArchived=false', () => {
+    render(
+      <TaskDetailView
+        task={baseTask}
+        onEdit={vi.fn()}
+        onDelete={vi.fn()}
+        onArchive={vi.fn()}
+        isArchived={false}
+      />,
+    );
+
+    expect(
+      screen.getByRole('button', { name: /^archive$/i }),
+    ).toBeInTheDocument();
+  });
+
+  it('shows Unarchive button when onArchive provided and isArchived=true', () => {
+    render(
+      <TaskDetailView
+        task={baseTask}
+        onEdit={vi.fn()}
+        onDelete={vi.fn()}
+        onArchive={vi.fn()}
+        isArchived={true}
+      />,
+    );
+
+    expect(
+      screen.getByRole('button', { name: /unarchive/i }),
+    ).toBeInTheDocument();
+  });
+
+  it('does not show Archive when onArchive not provided', () => {
+    render(
+      <TaskDetailView task={baseTask} onEdit={vi.fn()} onDelete={vi.fn()} />,
+    );
+
+    expect(
+      screen.queryByRole('button', { name: /archive/i }),
+    ).not.toBeInTheDocument();
+  });
+
+  it('calls onDuplicate when Duplicate clicked', async () => {
+    const user = userEvent.setup();
+    const onDuplicate = vi.fn();
+
+    render(
+      <TaskDetailView
+        task={baseTask}
+        onEdit={vi.fn()}
+        onDelete={vi.fn()}
+        onDuplicate={onDuplicate}
+      />,
+    );
+
+    await user.click(screen.getByRole('button', { name: /duplicate/i }));
+
+    expect(onDuplicate).toHaveBeenCalledOnce();
+  });
+
+  it('calls onArchive when Archive clicked', async () => {
+    const user = userEvent.setup();
+    const onArchive = vi.fn();
+
+    render(
+      <TaskDetailView
+        task={baseTask}
+        onEdit={vi.fn()}
+        onDelete={vi.fn()}
+        onArchive={onArchive}
+        isArchived={false}
+      />,
+    );
+
+    await user.click(screen.getByRole('button', { name: /^archive$/i }));
+
+    expect(onArchive).toHaveBeenCalledOnce();
+  });
+});
+
 describe('TaskDetailView — recurrence info', () => {
   const recurringTask: Task = {
     id: 'recur-uuid-123',

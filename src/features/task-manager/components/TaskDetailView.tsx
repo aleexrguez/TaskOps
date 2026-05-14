@@ -1,6 +1,7 @@
 import type {
   CreateTaskInput,
   Task,
+  TaskStatus,
   ChecklistItem,
   ReorderChecklistItem,
 } from '../types';
@@ -9,6 +10,7 @@ import { Checklist } from './Checklist';
 import { DueDateDisplay } from './DueDateDisplay';
 import { PriorityIndicator } from './PriorityIndicator';
 import { StatusBadge } from './StatusBadge';
+import { StatusSelector } from './StatusSelector';
 import { TaskForm } from './TaskForm';
 
 interface TaskDetailViewProps {
@@ -28,6 +30,11 @@ interface TaskDetailViewProps {
   onChecklistDelete?: (id: string) => void;
   onChecklistUpdate?: (id: string, title: string) => void;
   onChecklistReorder?: (items: ReorderChecklistItem[]) => void;
+  onDuplicate?: () => void;
+  onArchive?: () => void;
+  isArchived?: boolean;
+  onStatusChange?: (status: TaskStatus) => void;
+  isStatusUpdating?: boolean;
 }
 
 export function TaskDetailView({
@@ -47,6 +54,11 @@ export function TaskDetailView({
   onChecklistDelete,
   onChecklistUpdate,
   onChecklistReorder,
+  onDuplicate,
+  onArchive,
+  isArchived = false,
+  onStatusChange,
+  isStatusUpdating = false,
 }: TaskDetailViewProps) {
   const createdDate = formatDate(task.createdAt);
   const updatedDate = formatDate(task.updatedAt);
@@ -90,6 +102,22 @@ export function TaskDetailView({
               >
                 Edit
               </button>
+              {onDuplicate && (
+                <button
+                  onClick={onDuplicate}
+                  className="cursor-pointer rounded-md min-h-[44px] px-4 py-2 text-sm font-medium text-indigo-600 hover:bg-indigo-50 dark:text-indigo-400 dark:hover:bg-indigo-900/40 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
+                >
+                  Duplicate
+                </button>
+              )}
+              {onArchive && (
+                <button
+                  onClick={onArchive}
+                  className="cursor-pointer rounded-md min-h-[44px] px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
+                >
+                  {isArchived ? 'Unarchive' : 'Archive'}
+                </button>
+              )}
               <button
                 onClick={onDelete}
                 className="cursor-pointer rounded-md min-h-[44px] px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/40 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
@@ -116,7 +144,15 @@ export function TaskDetailView({
           )}
 
           <div className="flex flex-wrap items-center gap-3">
-            <StatusBadge status={task.status} />
+            {onStatusChange ? (
+              <StatusSelector
+                status={task.status}
+                onStatusChange={onStatusChange}
+                disabled={isStatusUpdating}
+              />
+            ) : (
+              <StatusBadge status={task.status} />
+            )}
             <PriorityIndicator priority={task.priority} />
             {isRecurring && (
               <span className="inline-flex items-center rounded-full bg-indigo-100 px-2.5 py-0.5 text-xs font-medium text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300">

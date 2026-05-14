@@ -15,6 +15,7 @@ interface TaskCardProps {
   onDuplicate?: (id: string) => void;
   isDeleting?: boolean;
   checklistSummary?: ChecklistSummary;
+  compact?: boolean;
 }
 
 export function TaskCard({
@@ -25,6 +26,7 @@ export function TaskCard({
   onDuplicate,
   isDeleting = false,
   checklistSummary,
+  compact = false,
 }: TaskCardProps) {
   const formattedDate = formatDate(task.createdAt);
   const recurring = isGeneratedTask(task);
@@ -35,7 +37,9 @@ export function TaskCard({
         <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
           {task.title}
         </h3>
-        <div className="pointer-events-auto flex shrink-0 gap-1 opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-within:opacity-100 touch-show-actions">
+        <div
+          className={`pointer-events-auto flex shrink-0 gap-1 opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-within:opacity-100 touch-show-actions${compact ? ' hidden sm:flex' : ''}`}
+        >
           {onDuplicate && (
             <button
               onClick={(e) => {
@@ -74,7 +78,9 @@ export function TaskCard({
       </div>
 
       {task.description && (
-        <p className="mb-3 line-clamp-2 text-xs text-gray-500 dark:text-gray-400">
+        <p
+          className={`mb-3 line-clamp-2 text-xs text-gray-500 dark:text-gray-400${compact ? ' hidden sm:block' : ''}`}
+        >
           {task.description}
         </p>
       )}
@@ -93,7 +99,9 @@ export function TaskCard({
       </div>
 
       {checklistSummary && checklistSummary.total > 0 && (
-        <div className="mt-2 flex items-center gap-1.5">
+        <div
+          className={`mt-2 flex items-center gap-1.5${compact ? ' hidden sm:flex' : ''}`}
+        >
           <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
             Checklist
           </span>
@@ -104,11 +112,15 @@ export function TaskCard({
         </div>
       )}
 
-      <div className="mt-3 flex items-center justify-between border-t border-gray-100 pt-3 text-xs text-gray-400 dark:border-gray-700 dark:text-gray-500">
+      <div
+        className={`mt-3 flex items-center justify-between border-t border-gray-100 pt-3 text-xs text-gray-400 dark:border-gray-700 dark:text-gray-500${compact ? ' hidden sm:flex' : ''}`}
+      >
         <span className="shrink-0">Created {formattedDate}</span>
       </div>
       {task.status === 'done' && task.completedAt && (
-        <div className="mt-1 text-xs text-gray-400 dark:text-gray-500">
+        <div
+          className={`mt-1 text-xs text-gray-400 dark:text-gray-500${compact ? ' hidden sm:block' : ''}`}
+        >
           <span className="font-medium">Completed</span>{' '}
           {formatDateTime(task.completedAt)}
         </div>
@@ -120,7 +132,7 @@ export function TaskCard({
     return (
       <div
         data-task-id={task.id}
-        className="group relative cursor-pointer rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-indigo-200 hover:shadow-md dark:border-gray-700 dark:bg-gray-800 dark:hover:border-indigo-700"
+        className={`group relative cursor-pointer rounded-lg border border-gray-200 bg-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-indigo-200 hover:shadow-md dark:border-gray-700 dark:bg-gray-800 dark:hover:border-indigo-700 ${compact ? 'p-3 sm:p-4' : 'p-4'}`}
       >
         <button
           type="button"
@@ -136,7 +148,7 @@ export function TaskCard({
   return (
     <div
       data-task-id={task.id}
-      className="group rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-indigo-200 hover:shadow-md dark:border-gray-700 dark:bg-gray-800 dark:hover:border-indigo-700"
+      className={`group rounded-lg border border-gray-200 bg-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-indigo-200 hover:shadow-md dark:border-gray-700 dark:bg-gray-800 dark:hover:border-indigo-700 ${compact ? 'p-3 sm:p-4' : 'p-4'}`}
     >
       {cardContent}
     </div>

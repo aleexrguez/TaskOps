@@ -13,6 +13,7 @@ interface TaskListProps {
   emptyMessage?: string;
   onCreateNew?: () => void;
   checklistSummaries?: ChecklistSummaries;
+  compact?: boolean;
 }
 
 export function TaskList({
@@ -26,6 +27,7 @@ export function TaskList({
   emptyMessage = 'No tasks yet',
   onCreateNew,
   checklistSummaries,
+  compact,
 }: TaskListProps) {
   if (isLoading) {
     return (
@@ -90,6 +92,7 @@ export function TaskList({
           onDuplicate={onDuplicate}
           isDeleting={deletingId === task.id}
           checklistSummary={checklistSummaries?.[task.id]}
+          compact={compact}
         />
       ))}
     </div>
