@@ -12,6 +12,18 @@ vi.mock('../../hooks/use-tasks', () => ({
   }),
 }));
 
+vi.mock('../../hooks/use-activity-recorder', () => ({
+  useActivityRecorder: () => ({
+    recordTaskCreated: vi.fn(),
+    recordTaskUpdate: vi.fn(),
+    recordArchive: vi.fn(),
+    recordUnarchive: vi.fn(),
+    recordChecklistItemCreated: vi.fn(),
+    recordChecklistItemCompleted: vi.fn(),
+    recordChecklistItemDeleted: vi.fn(),
+  }),
+}));
+
 vi.mock('../../store/toast.store', () => ({
   useToastStore: vi.fn(
     (selector: (s: { addToast: ReturnType<typeof vi.fn> }) => unknown) =>

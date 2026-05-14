@@ -20,6 +20,9 @@ vi.mock('@/features/task-manager/api', () => ({
   createTask: vi.fn(),
   updateTask: vi.fn(),
   deleteTask: vi.fn(),
+  fetchActivityEvents: vi.fn().mockResolvedValue([]),
+  createActivityEvent: vi.fn().mockResolvedValue(undefined),
+  createActivityEvents: vi.fn().mockResolvedValue(undefined),
 }));
 
 import { fetchTaskById } from '@/features/task-manager/api';

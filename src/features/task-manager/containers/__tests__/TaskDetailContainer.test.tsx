@@ -26,6 +26,9 @@ vi.mock('@/features/task-manager/api', () => ({
   updateChecklistItem: vi.fn(),
   deleteChecklistItem: vi.fn(),
   reorderChecklistItems: vi.fn(),
+  fetchActivityEvents: vi.fn().mockResolvedValue([]),
+  createActivityEvent: vi.fn().mockResolvedValue(undefined),
+  createActivityEvents: vi.fn().mockResolvedValue(undefined),
 }));
 
 vi.mock('@/features/recurrences/hooks/use-recurrences', () => ({

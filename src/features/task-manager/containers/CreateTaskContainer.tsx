@@ -4,12 +4,14 @@ import { useTaskUIStore } from '../store/task-ui.store';
 import { useToastStore } from '../store/toast.store';
 import { TaskForm } from '../components';
 import type { CreateTaskInput } from '../types';
+import { useActivityRecorder } from '../hooks/use-activity-recorder';
 
 export function CreateTaskContainer() {
   const isOpen = useTaskUIStore((s) => s.isCreateModalOpen);
   const closeCreateModal = useTaskUIStore((s) => s.closeCreateModal);
   const addToast = useToastStore((s) => s.addToast);
   const { mutate: createTask, isPending, isError, error } = useCreateTask();
+  const recorder = useActivityRecorder();
 
   useEffect(() => {
     if (!isOpen) return;
@@ -27,9 +29,10 @@ export function CreateTaskContainer() {
 
   function handleSubmit(data: CreateTaskInput): void {
     createTask(data, {
-      onSuccess: () => {
+      onSuccess: (createdTask) => {
         addToast('Task created', 'success');
         closeCreateModal();
+        recorder.recordTaskCreated(createdTask.id);
       },
       onError: () => {
         addToast('Failed to create task', 'error');

@@ -18,6 +18,8 @@ import {
 } from '../hooks/use-checklist';
 import { useToastStore } from '../store/toast.store';
 import { TaskDetailView } from '../components/TaskDetailView';
+import { useActivityEvents } from '../hooks/use-activity';
+import { useActivityRecorder } from '../hooks/use-activity-recorder';
 import { TaskNotFound } from '../components/TaskNotFound';
 import { TaskErrorState } from '../components/TaskErrorState';
 import { ConfirmDialog } from '../components/ConfirmDialog';
@@ -66,16 +68,41 @@ export function TaskDetailContainer() {
   const { mutate: deleteChecklistItemMut } = useDeleteChecklistItem(id);
   const { mutate: reorderChecklistItemsMut } = useReorderChecklistItems(id);
 
+  // Activity hooks
+  const { data: activityEvents, isLoading: activityLoading } =
+    useActivityEvents(id);
+  const recorder = useActivityRecorder();
+
   function handleChecklistToggle(itemId: string, isCompleted: boolean): void {
-    updateChecklistItemMut({ id: itemId, input: { isCompleted } });
+    const item = checklistItems?.find((i) => i.id === itemId);
+    updateChecklistItemMut(
+      { id: itemId, input: { isCompleted } },
+      {
+        onSuccess: () => {
+          if (isCompleted && item) {
+            recorder.recordChecklistItemCompleted(id, item.title);
+          }
+        },
+      },
+    );
   }
 
   function handleChecklistCreate(title: string): void {
-    createChecklistItemMut({ title });
+    createChecklistItemMut(
+      { title },
+      {
+        onSuccess: () => recorder.recordChecklistItemCreated(id, title),
+      },
+    );
   }
 
   function handleChecklistDelete(itemId: string): void {
-    deleteChecklistItemMut(itemId);
+    const item = checklistItems?.find((i) => i.id === itemId);
+    deleteChecklistItemMut(itemId, {
+      onSuccess: () => {
+        if (item) recorder.recordChecklistItemDeleted(id, item.title);
+      },
+    });
   }
 
   function handleChecklistUpdate(itemId: string, title: string): void {
@@ -105,6 +132,7 @@ export function TaskDetailContainer() {
         onSuccess: () => {
           addToast('Task updated', 'success');
           setIsEditing(false);
+          recorder.recordTaskUpdate(task.id, task, data);
           if (data.status === 'done' && previousStatus !== 'done') {
             celebrateTaskDone();
           }
@@ -145,7 +173,10 @@ export function TaskDetailContainer() {
   function handleDuplicate(): void {
     if (!task) return;
     createTask(buildDuplicateInput(task), {
-      onSuccess: () => addToast('Task duplicated', 'success'),
+      onSuccess: (createdTask) => {
+        addToast('Task duplicated', 'success');
+        recorder.recordTaskCreated(createdTask.id);
+      },
       onError: () => addToast('Failed to duplicate task', 'error'),
     });
   }
@@ -154,12 +185,18 @@ export function TaskDetailContainer() {
     if (!task) return;
     if (task.isArchived) {
       unarchiveTask(task.id, {
-        onSuccess: () => addToast('Task unarchived', 'success'),
+        onSuccess: () => {
+          addToast('Task unarchived', 'success');
+          recorder.recordUnarchive(task.id);
+        },
         onError: () => addToast('Failed to unarchive task', 'error'),
       });
     } else {
       archiveTask(task.id, {
-        onSuccess: () => addToast('Task archived', 'success'),
+        onSuccess: () => {
+          addToast('Task archived', 'success');
+          recorder.recordArchive(task.id);
+        },
         onError: () => addToast('Failed to archive task', 'error'),
       });
     }
@@ -173,6 +210,7 @@ export function TaskDetailContainer() {
       {
         onSuccess: () => {
           addToast('Status updated', 'success');
+          recorder.recordTaskUpdate(task.id, task, { status: newStatus });
           if (newStatus === 'done' && previousStatus !== 'done') {
             celebrateTaskDone();
           }
@@ -237,6 +275,8 @@ export function TaskDetailContainer() {
           isArchived={task.isArchived}
           onStatusChange={handleStatusChange}
           isStatusUpdating={isUpdating}
+          activityEvents={activityEvents}
+          activityLoading={activityLoading}
         />
       );
     }

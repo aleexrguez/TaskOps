@@ -12,6 +12,8 @@ import { PriorityIndicator } from './PriorityIndicator';
 import { StatusBadge } from './StatusBadge';
 import { StatusSelector } from './StatusSelector';
 import { TaskForm } from './TaskForm';
+import { ActivityTimeline } from './ActivityTimeline';
+import type { ActivityEvent } from '../types/activity.types';
 
 interface TaskDetailViewProps {
   task: Task;
@@ -35,6 +37,8 @@ interface TaskDetailViewProps {
   isArchived?: boolean;
   onStatusChange?: (status: TaskStatus) => void;
   isStatusUpdating?: boolean;
+  activityEvents?: ActivityEvent[];
+  activityLoading?: boolean;
 }
 
 export function TaskDetailView({
@@ -59,6 +63,8 @@ export function TaskDetailView({
   isArchived = false,
   onStatusChange,
   isStatusUpdating = false,
+  activityEvents,
+  activityLoading,
 }: TaskDetailViewProps) {
   const createdDate = formatDate(task.createdAt);
   const updatedDate = formatDate(task.updatedAt);
@@ -204,6 +210,13 @@ export function TaskDetailView({
               </div>
             )}
           </div>
+
+          {activityEvents !== undefined && (
+            <ActivityTimeline
+              events={activityEvents}
+              isLoading={activityLoading}
+            />
+          )}
         </div>
       )}
     </div>

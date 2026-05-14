@@ -5,3 +5,6 @@ export * from './use-auto-purge';
 export * from './use-due-reminders';
 export * from './checklist.keys';
 export * from './use-checklist';
+export * from './activity.keys';
+export * from './use-activity';
+export * from './use-activity-recorder';

@@ -85,6 +85,30 @@ export interface Database {
         };
         Relationships: [];
       };
+      task_activity_events: {
+        Row: {
+          id: string;
+          task_id: string;
+          user_id: string;
+          event_type: string;
+          from_value: string | null;
+          to_value: string | null;
+          metadata: Record<string, unknown>;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          task_id: string;
+          user_id: string;
+          event_type: string;
+          from_value?: string | null;
+          to_value?: string | null;
+          metadata?: Record<string, unknown>;
+          created_at?: string;
+        };
+        Update: Record<string, never>;
+        Relationships: [];
+      };
       recurrence_templates: {
         Row: {
           id: string;
