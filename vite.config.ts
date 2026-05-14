@@ -11,7 +11,7 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: 'prompt',
-      includeAssets: ['favicon.svg'],
+      includeAssets: [],
       manifest: {
         name: 'TaskOps',
         short_name: 'TaskOps',

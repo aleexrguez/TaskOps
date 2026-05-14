@@ -320,6 +320,94 @@ describe('TaskCard — duplicate button', () => {
   });
 });
 
+describe('TaskCard — compact mode', () => {
+  const baseTask: Task = {
+    id: 'task-compact-001',
+    title: 'Compact Task',
+    description: 'A description that should be hidden in compact mode',
+    status: 'in-progress',
+    priority: 'medium',
+    isArchived: false,
+    position: 0,
+    createdAt: '2026-04-01T10:00:00.000Z',
+    updatedAt: '2026-04-01T10:00:00.000Z',
+  };
+
+  it('compact=true hides description (has hidden class)', () => {
+    render(<TaskCard task={baseTask} compact={true} />);
+
+    const description = screen.getByText(
+      'A description that should be hidden in compact mode',
+    );
+    expect(description).toHaveClass('hidden');
+  });
+
+  it('compact=true hides action buttons (has hidden class)', () => {
+    render(
+      <TaskCard
+        task={baseTask}
+        compact={true}
+        onDelete={vi.fn()}
+        onDuplicate={vi.fn()}
+      />,
+    );
+
+    const deleteButton = screen.getByRole('button', { name: /delete/i });
+    expect(deleteButton.parentElement).toHaveClass('hidden');
+  });
+
+  it('compact=true hides checklist progress (has hidden class)', () => {
+    render(
+      <TaskCard
+        task={baseTask}
+        compact={true}
+        checklistSummary={{ total: 5, completed: 2 }}
+      />,
+    );
+
+    const progressbar = screen.getByRole('progressbar');
+    expect(progressbar.closest('.hidden')).toBeInTheDocument();
+  });
+
+  it('compact=true hides created date footer (has hidden class)', () => {
+    render(<TaskCard task={baseTask} compact={true} />);
+
+    const createdLabel = screen.getByText(/Created/);
+    expect(createdLabel.closest('.hidden')).toBeInTheDocument();
+  });
+
+  it('compact=true still shows badges (status, priority)', () => {
+    render(<TaskCard task={baseTask} compact={true} />);
+
+    expect(screen.getByText('In Progress')).toBeInTheDocument();
+    expect(screen.getByText('Medium')).toBeInTheDocument();
+  });
+
+  it('compact=true still calls onClick when card is clicked', async () => {
+    const user = userEvent.setup();
+    const onClick = vi.fn();
+
+    render(<TaskCard task={baseTask} compact={true} onClick={onClick} />);
+
+    await user.click(screen.getByRole('button', { name: 'Compact Task' }));
+
+    expect(onClick).toHaveBeenCalledOnce();
+    expect(onClick).toHaveBeenCalledWith('task-compact-001');
+  });
+
+  it('compact=false (default) does not add hidden classes', () => {
+    render(<TaskCard task={baseTask} compact={false} onDelete={vi.fn()} />);
+
+    const deleteButton = screen.getByRole('button', { name: /delete/i });
+    expect(deleteButton.parentElement).not.toHaveClass('hidden');
+
+    const description = screen.getByText(
+      'A description that should be hidden in compact mode',
+    );
+    expect(description).not.toHaveClass('hidden');
+  });
+});
+
 describe('TaskCard — checklist progress', () => {
   const baseTask: Task = {
     id: 'task-cl-001',
