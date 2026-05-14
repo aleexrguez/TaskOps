@@ -9,6 +9,7 @@ import {
 } from '../hooks/use-tasks';
 import { useChecklistSummaries } from '../hooks/use-checklist';
 import { useArchiveTask, useUnarchiveTask } from '../hooks/use-archive-task';
+import { useActivityRecorder } from '../hooks/use-activity-recorder';
 import { useTaskUIStore } from '../store/task-ui.store';
 import {
   applyAllFilters,
@@ -52,6 +53,7 @@ export function TaskListContainer() {
   const { mutate: unarchiveTask } = useUnarchiveTask();
   const { mutate: reorderMutation } = useReorderTasks();
   const { mutate: createTask } = useCreateTask();
+  const recorder = useActivityRecorder();
 
   const [taskToDelete, setTaskToDelete] = useState<string | null>(null);
 
@@ -132,16 +134,22 @@ export function TaskListContainer() {
   function handleArchive(id: string): void {
     const task = data?.tasks.find((t) => t.id === id);
     if (task?.isArchived) {
-      unarchiveTask(id);
+      unarchiveTask(id, {
+        onSuccess: () => recorder.recordUnarchive(id),
+      });
     } else {
-      archiveTask(id);
+      archiveTask(id, {
+        onSuccess: () => recorder.recordArchive(id),
+      });
     }
   }
 
   function handleDuplicate(id: string): void {
     const task = data?.tasks.find((t) => t.id === id);
     if (!task) return;
-    createTask(buildDuplicateInput(task));
+    createTask(buildDuplicateInput(task), {
+      onSuccess: (createdTask) => recorder.recordTaskCreated(createdTask.id),
+    });
   }
 
   function handleBoardChange(newBoard: TaskBoard): void {
@@ -186,6 +194,16 @@ export function TaskListContainer() {
             `[data-task-id="${CSS.escape(firstNewDone.id)}"]`,
           );
           celebrateTaskDone(getConfettiOriginFromElement(el));
+        }
+
+        // Record activity for status changes
+        for (const update of updates) {
+          if (update.status === undefined) continue;
+          const oldTask = previousTaskMap.get(update.id);
+          if (!oldTask || oldTask.status === update.status) continue;
+          recorder.recordTaskUpdate(update.id, oldTask, {
+            status: update.status,
+          });
         }
       },
       onError: () => {
