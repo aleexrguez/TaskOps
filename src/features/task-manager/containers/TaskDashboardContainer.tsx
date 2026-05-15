@@ -1,13 +1,16 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useTasks } from '../hooks/use-tasks';
 import { useAutoPurge } from '../hooks/use-auto-purge';
+import { useCleanupDoneTasks } from '../hooks/use-cleanup-done-tasks';
 import { useTaskUIStore } from '../store/task-ui.store';
+import { useToastStore } from '../store/toast.store';
 import {
   getTaskStats,
+  getCleanupCandidates,
   filterVisibleTasks,
   applyAllFilters,
 } from '../utils/task.utils';
-import { TaskStats, ViewToggle } from '../components';
+import { TaskStats, ViewToggle, ConfirmDialog } from '../components';
 import { TaskListContainer } from './TaskListContainer';
 import { CreateTaskContainer } from './CreateTaskContainer';
 import { EditTaskContainer } from './EditTaskContainer';
@@ -21,6 +24,10 @@ export function TaskDashboardContainer() {
   const statusFilter = useTaskUIStore((s) => s.statusFilter);
   const priorityFilter = useTaskUIStore((s) => s.priorityFilter);
   const searchQuery = useTaskUIStore((s) => s.searchQuery);
+
+  const { mutate: cleanupDone, isPending: isCleaning } = useCleanupDoneTasks();
+  const addToast = useToastStore((s) => s.addToast);
+  const [showCleanupConfirm, setShowCleanupConfirm] = useState(false);
 
   const allVisible = useMemo(
     () => filterVisibleTasks(data?.tasks ?? [], showArchived),
@@ -37,8 +44,31 @@ export function TaskDashboardContainer() {
       }).length,
     [data, showArchived, statusFilter, priorityFilter, searchQuery],
   );
+  const cleanupCount = useMemo(
+    () => getCleanupCandidates(data?.tasks ?? []).length,
+    [data],
+  );
 
   useAutoPurge(data?.tasks ?? []);
+
+  function handleCleanup(): void {
+    const candidateIds = getCleanupCandidates(data?.tasks ?? []).map(
+      (t) => t.id,
+    );
+    cleanupDone(candidateIds, {
+      onSuccess: ({ archivedCount }) => {
+        addToast(
+          `${archivedCount} task${archivedCount === 1 ? '' : 's'} archived`,
+          'success',
+        );
+        setShowCleanupConfirm(false);
+      },
+      onError: () => {
+        addToast('Failed to archive tasks', 'error');
+        setShowCleanupConfirm(false);
+      },
+    });
+  }
 
   return (
     <>
@@ -55,6 +85,15 @@ export function TaskDashboardContainer() {
         </div>
         <div className="flex items-center gap-3">
           <ViewToggle viewMode={viewMode} onViewModeChange={setViewMode} />
+          {cleanupCount > 0 && (
+            <button
+              type="button"
+              onClick={() => setShowCleanupConfirm(true)}
+              className="cursor-pointer rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
+            >
+              Clean up done ({cleanupCount})
+            </button>
+          )}
           <button
             type="button"
             onClick={openCreateModal}
@@ -73,6 +112,17 @@ export function TaskDashboardContainer() {
 
       <CreateTaskContainer />
       <EditTaskContainer />
+
+      <ConfirmDialog
+        isOpen={showCleanupConfirm}
+        title="Clean up done tasks"
+        description={`Archive ${cleanupCount} completed task${cleanupCount === 1 ? '' : 's'} from previous days? They'll be hidden from the board but kept for reports.`}
+        confirmLabel="Archive"
+        variant="default"
+        isLoading={isCleaning}
+        onConfirm={handleCleanup}
+        onCancel={() => setShowCleanupConfirm(false)}
+      />
     </>
   );
 }

@@ -1,0 +1,25 @@
+- generic [ref=e2]:
+  - generic [ref=e38]:
+    - link "← Back to home" [ref=e39] [cursor=pointer]:
+      - /url: /
+    - generic [ref=e40]:
+      - heading "TaskOps" [level=1] [ref=e41]
+      - generic [ref=e42]:
+        - generic [ref=e43]:
+          - generic [ref=e44]: Email *
+          - textbox "Email *" [ref=e45]:
+            - /placeholder: you@example.com
+        - generic [ref=e46]:
+          - generic [ref=e47]: Password *
+          - generic [ref=e48]:
+            - textbox "Password *" [ref=e49]:
+              - /placeholder: ••••••
+            - button "Show password" [ref=e50]
+          - link "Forgot password?" [ref=e52] [cursor=pointer]:
+            - /url: /forgot-password
+        - button "Sign In" [ref=e53] [cursor=pointer]
+        - paragraph [ref=e54]:
+          - text: Don't have an account?
+          - link "Register" [ref=e55] [cursor=pointer]:
+            - /url: /register
+  - region "Notifications"

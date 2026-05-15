@@ -4,6 +4,8 @@ import {
   groupTasksByStatus,
   groupTasksByPosition,
   getExpiredTaskIds,
+  getStartOfDay,
+  getCleanupCandidates,
   filterVisibleTasks,
   applyAllFilters,
   isDueDateOverdue,
@@ -826,7 +828,131 @@ describe('extractReorderUpdates', () => {
 });
 
 // ---------------------------------------------------------------------------
-// 9. buildDuplicateInput
+// 9. getStartOfDay
+// ---------------------------------------------------------------------------
+
+describe('getStartOfDay', () => {
+  it('returns midnight of the same day', () => {
+    const date = new Date(2026, 4, 15, 0, 0, 0); // May 15, 2026 00:00
+    const result = getStartOfDay(date);
+
+    expect(result.getHours()).toBe(0);
+    expect(result.getMinutes()).toBe(0);
+    expect(result.getSeconds()).toBe(0);
+    expect(result.getMilliseconds()).toBe(0);
+    expect(result.getDate()).toBe(15);
+  });
+
+  it('returns midnight when given an arbitrary time', () => {
+    const date = new Date(2026, 4, 15, 15, 30, 45, 123); // 3:30:45.123 PM
+    const result = getStartOfDay(date);
+
+    expect(result.getHours()).toBe(0);
+    expect(result.getMinutes()).toBe(0);
+    expect(result.getSeconds()).toBe(0);
+    expect(result.getMilliseconds()).toBe(0);
+    expect(result.getFullYear()).toBe(2026);
+    expect(result.getMonth()).toBe(4);
+    expect(result.getDate()).toBe(15);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// 10. getCleanupCandidates
+// ---------------------------------------------------------------------------
+
+describe('getCleanupCandidates', () => {
+  // May 15, 2026 at 10:00 AM local
+  const NOW = new Date(2026, 4, 15, 10, 0, 0);
+
+  it('returns done + not-archived tasks with completedAt before today', () => {
+    const yesterday = makeTask({
+      status: 'done',
+      isArchived: false,
+      completedAt: new Date(2026, 4, 14, 23, 0, 0).toISOString(),
+    });
+
+    const result = getCleanupCandidates([yesterday], NOW);
+
+    expect(result).toHaveLength(1);
+    expect(result[0].id).toBe(yesterday.id);
+  });
+
+  it('excludes tasks completed today (even at 00:01)', () => {
+    const todayEarly = makeTask({
+      status: 'done',
+      isArchived: false,
+      completedAt: new Date(2026, 4, 15, 0, 1, 0).toISOString(),
+    });
+
+    const result = getCleanupCandidates([todayEarly], NOW);
+
+    expect(result).toEqual([]);
+  });
+
+  it('excludes tasks that are already archived', () => {
+    const alreadyArchived = makeTask({
+      status: 'done',
+      isArchived: true,
+      completedAt: new Date(2026, 4, 10, 12, 0, 0).toISOString(),
+    });
+
+    const result = getCleanupCandidates([alreadyArchived], NOW);
+
+    expect(result).toEqual([]);
+  });
+
+  it('excludes tasks with status other than done', () => {
+    const todo = makeTask({
+      status: 'todo',
+      completedAt: new Date(2026, 4, 10, 12, 0, 0).toISOString(),
+    });
+    const inProgress = makeTask({
+      status: 'in-progress',
+      completedAt: new Date(2026, 4, 10, 12, 0, 0).toISOString(),
+    });
+
+    const result = getCleanupCandidates([todo, inProgress], NOW);
+
+    expect(result).toEqual([]);
+  });
+
+  it('excludes done tasks without completedAt', () => {
+    const noCompletedAt = makeTask({ status: 'done', isArchived: false });
+
+    const result = getCleanupCandidates([noCompletedAt], NOW);
+
+    expect(result).toEqual([]);
+  });
+
+  it('returns empty array for empty input', () => {
+    expect(getCleanupCandidates([], NOW)).toEqual([]);
+  });
+
+  it('includes task completed at 23:59 yesterday but excludes task completed at 00:00 today', () => {
+    const lastMinuteYesterday = makeTask({
+      status: 'done',
+      isArchived: false,
+      completedAt: new Date(2026, 4, 14, 23, 59, 59).toISOString(),
+    });
+    const midnightToday = makeTask({
+      status: 'done',
+      isArchived: false,
+      completedAt: new Date(2026, 4, 15, 0, 0, 0).toISOString(),
+    });
+
+    const result = getCleanupCandidates(
+      [lastMinuteYesterday, midnightToday],
+      NOW,
+    );
+
+    expect(result).toHaveLength(1);
+    expect(result[0].id).toBe(lastMinuteYesterday.id);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// 11. buildDuplicateInput
 // ---------------------------------------------------------------------------
 
 describe('buildDuplicateInput', () => {

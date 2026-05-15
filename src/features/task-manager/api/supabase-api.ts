@@ -191,6 +191,27 @@ export async function purgeTasks(taskIds: string[]): Promise<void> {
   if (error) throw new Error(error.message);
 }
 
+export async function bulkArchiveTasks(
+  taskIds: string[],
+  completedBefore: string,
+): Promise<string[]> {
+  if (taskIds.length === 0) return [];
+
+  await requireAuthenticatedUser();
+
+  const { data, error } = await supabase
+    .from('tasks')
+    .update({ is_archived: true })
+    .in('id', taskIds)
+    .eq('status', 'done')
+    .eq('is_archived', false)
+    .lt('completed_at', completedBefore)
+    .select('id');
+
+  if (error) throw new Error(error.message);
+  return (data ?? []).map((row) => row.id);
+}
+
 export async function reorderTasks(updates: ReorderUpdate[]): Promise<void> {
   if (updates.length === 0) return;
   await requireAuthenticatedUser();
