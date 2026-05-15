@@ -116,6 +116,24 @@ export function getExpiredTaskIds(
     .map((t) => t.id);
 }
 
+export function getStartOfDay(date: Date = new Date()): Date {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+}
+
+export function getCleanupCandidates(
+  tasks: Task[],
+  now: Date = new Date(),
+): Task[] {
+  const startOfToday = getStartOfDay(now);
+  return tasks.filter(
+    (t) =>
+      t.status === 'done' &&
+      !t.isArchived &&
+      t.completedAt !== undefined &&
+      new Date(t.completedAt) < startOfToday,
+  );
+}
+
 export function buildDuplicateInput(task: Task): CreateTaskInput {
   return {
     title: `${task.title} (copy)`,
