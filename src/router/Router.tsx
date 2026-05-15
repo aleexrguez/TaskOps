@@ -28,6 +28,11 @@ const RecurrenceDashboardContainer = lazy(() =>
     (m) => ({ default: m.RecurrenceDashboardContainer }),
   ),
 );
+const ReportDashboardContainer = lazy(() =>
+  import('@/features/task-manager/containers/ReportDashboardContainer').then(
+    (m) => ({ default: m.ReportDashboardContainer }),
+  ),
+);
 const SettingsContainer = lazy(() =>
   import('@/features/settings/containers/SettingsContainer').then((m) => ({
     default: m.SettingsContainer,
@@ -89,6 +94,7 @@ export function Router() {
             path="recurrences"
             element={<RecurrenceDashboardContainer />}
           />
+          <Route path="reports" element={<ReportDashboardContainer />} />
           <Route path="settings" element={<SettingsContainer />} />
         </Route>
 

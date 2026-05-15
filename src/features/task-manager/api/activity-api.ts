@@ -46,6 +46,24 @@ export async function fetchActivityEvents(
   return (data ?? []).map(fromDbRow);
 }
 
+export async function fetchActivityEventsByDateRange(
+  startIso: string,
+  endIso: string,
+): Promise<ActivityEvent[]> {
+  const userId = await requireAuthenticatedUser();
+
+  const { data, error } = await supabase
+    .from('task_activity_events')
+    .select('*')
+    .eq('user_id', userId)
+    .gte('created_at', startIso)
+    .lte('created_at', endIso)
+    .order('created_at', { ascending: true });
+
+  if (error) throw new Error(error.message);
+  return (data ?? []).map(fromDbRow);
+}
+
 export async function createActivityEvent(
   input: CreateActivityEventInput,
 ): Promise<void> {
