@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useTask, useUpdateTask } from '../hooks/use-tasks';
 import { useTaskUIStore } from '../store/task-ui.store';
-import { useToastStore } from '../store/toast.store';
+import { useToastStore } from '@/shared/store/toast.store';
 import { TaskForm } from '../components';
 import type { CreateTaskInput } from '../types';
 import {

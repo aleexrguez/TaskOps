@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useRecurrences, useDeleteRecurrence } from '../hooks/use-recurrences';
 import { useRecurrenceUIStore } from '../store/recurrence-ui.store';
-import { useToastStore } from '@/features/task-manager/store/toast.store';
+import { useToastStore } from '@/shared/store/toast.store';
 import { RecurrenceGroupedLayout } from '../components/RecurrenceGroupedLayout';
 import { ConfirmDialog } from '@/features/task-manager/components/ConfirmDialog';
 import { CreateRecurrenceContainer } from './CreateRecurrenceContainer';

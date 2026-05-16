@@ -3,7 +3,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { vi, type MockedFunction } from 'vitest';
 import { useTaskUIStore } from '../../store/task-ui.store';
-import { useToastStore } from '../../store/toast.store';
+import { useToastStore } from '@/shared/store/toast.store';
 import { TaskDetailContainer } from '../TaskDetailContainer';
 
 vi.mock('@/features/auth/hooks', () => ({

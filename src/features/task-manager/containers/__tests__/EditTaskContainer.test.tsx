@@ -23,7 +23,7 @@ vi.mock('../../hooks/use-tasks', () => ({
   }),
 }));
 
-vi.mock('../../store/toast.store', () => ({
+vi.mock('@/shared/store/toast.store', () => ({
   useToastStore: vi.fn(
     (selector: (s: { addToast: ReturnType<typeof vi.fn> }) => unknown) =>
       selector({ addToast: vi.fn() }),

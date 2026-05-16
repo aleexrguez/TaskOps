@@ -16,7 +16,7 @@ import {
   useDeleteChecklistItem,
   useReorderChecklistItems,
 } from '../hooks/use-checklist';
-import { useToastStore } from '../store/toast.store';
+import { useToastStore } from '@/shared/store/toast.store';
 import { TaskDetailView } from '../components/TaskDetailView';
 import { useActivityEvents } from '../hooks/use-activity';
 import { useActivityRecorder } from '../hooks/use-activity-recorder';

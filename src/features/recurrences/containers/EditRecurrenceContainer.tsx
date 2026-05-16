@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useRecurrence, useUpdateRecurrence } from '../hooks/use-recurrences';
 import { useRecurrenceUIStore } from '../store/recurrence-ui.store';
-import { useToastStore } from '@/features/task-manager/store/toast.store';
+import { useToastStore } from '@/shared/store/toast.store';
 import { RecurrenceForm } from '../components/RecurrenceForm';
 import type {
   CreateRecurrenceInput,

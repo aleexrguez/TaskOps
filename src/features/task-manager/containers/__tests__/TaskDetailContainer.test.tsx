@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { vi, type MockedFunction } from 'vitest';
-import { useToastStore } from '../../store/toast.store';
+import { useToastStore } from '@/shared/store/toast.store';
 import type { Task } from '../../types';
 import { TaskDetailContainer } from '../TaskDetailContainer';
 
