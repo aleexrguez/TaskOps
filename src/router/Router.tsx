@@ -11,6 +11,11 @@ import { AppShellContainer } from '@/shared/components/app-shell';
 import { ProtectedRoute } from './ProtectedRoute';
 import { PublicOnlyRoute } from './PublicOnlyRoute';
 
+const InboxDashboardContainer = lazy(() =>
+  import('@/features/inbox/containers/InboxDashboardContainer').then((m) => ({
+    default: m.InboxDashboardContainer,
+  })),
+);
 const TaskDashboardContainer = lazy(() =>
   import('@/features/task-manager/containers/TaskDashboardContainer').then(
     (m) => ({ default: m.TaskDashboardContainer }),
@@ -88,6 +93,7 @@ export function Router() {
           }
         >
           <Route index element={<Navigate to="tasks" replace />} />
+          <Route path="inbox" element={<InboxDashboardContainer />} />
           <Route path="tasks" element={<TaskDashboardContainer />} />
           <Route path="tasks/:id" element={<TaskDetailContainer />} />
           <Route

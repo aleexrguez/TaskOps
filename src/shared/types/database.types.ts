@@ -109,6 +109,36 @@ export interface Database {
         Update: Record<string, never>;
         Relationships: [];
       };
+      inbox_items: {
+        Row: {
+          id: string;
+          user_id: string;
+          title: string;
+          notes: string | null;
+          created_at: string;
+          converted_task_id: string | null;
+          converted_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          title: string;
+          notes?: string | null;
+          created_at?: string;
+          converted_task_id?: string | null;
+          converted_at?: string | null;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          title?: string;
+          notes?: string | null;
+          created_at?: string;
+          converted_task_id?: string | null;
+          converted_at?: string | null;
+        };
+        Relationships: [];
+      };
       recurrence_templates: {
         Row: {
           id: string;
