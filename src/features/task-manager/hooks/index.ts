@@ -9,3 +9,4 @@ export * from './use-checklist';
 export * from './activity.keys';
 export * from './use-activity';
 export * from './use-activity-recorder';
+export * from './use-report';

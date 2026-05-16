@@ -71,6 +71,7 @@ function renderContainer(initialEntry = '/app') {
       <Routes>
         <Route path="/app" element={<AppShellContainer />}>
           <Route index element={<Navigate to="tasks" replace />} />
+          <Route path="inbox" element={<div>Inbox Page</div>} />
           <Route path="tasks" element={<div>Tasks Page</div>} />
           <Route path="recurrences" element={<div>Recurrences Page</div>} />
           <Route path="settings" element={<div>Settings Page</div>} />
@@ -121,6 +122,7 @@ describe('AppShellContainer — nav items', () => {
   it('renders all nav items', () => {
     renderContainer();
 
+    expect(screen.getByRole('link', { name: /inbox/i })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /tasks/i })).toBeInTheDocument();
     expect(
       screen.getByRole('link', { name: /recurrences/i }),

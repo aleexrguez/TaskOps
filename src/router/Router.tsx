@@ -11,6 +11,11 @@ import { AppShellContainer } from '@/shared/components/app-shell';
 import { ProtectedRoute } from './ProtectedRoute';
 import { PublicOnlyRoute } from './PublicOnlyRoute';
 
+const InboxDashboardContainer = lazy(() =>
+  import('@/features/inbox/containers/InboxDashboardContainer').then((m) => ({
+    default: m.InboxDashboardContainer,
+  })),
+);
 const TaskDashboardContainer = lazy(() =>
   import('@/features/task-manager/containers/TaskDashboardContainer').then(
     (m) => ({ default: m.TaskDashboardContainer }),
@@ -26,6 +31,11 @@ const TaskDetailContainer = lazy(() =>
 const RecurrenceDashboardContainer = lazy(() =>
   import('@/features/recurrences/containers/RecurrenceDashboardContainer').then(
     (m) => ({ default: m.RecurrenceDashboardContainer }),
+  ),
+);
+const ReportDashboardContainer = lazy(() =>
+  import('@/features/task-manager/containers/ReportDashboardContainer').then(
+    (m) => ({ default: m.ReportDashboardContainer }),
   ),
 );
 const SettingsContainer = lazy(() =>
@@ -83,12 +93,14 @@ export function Router() {
           }
         >
           <Route index element={<Navigate to="tasks" replace />} />
+          <Route path="inbox" element={<InboxDashboardContainer />} />
           <Route path="tasks" element={<TaskDashboardContainer />} />
           <Route path="tasks/:id" element={<TaskDetailContainer />} />
           <Route
             path="recurrences"
             element={<RecurrenceDashboardContainer />}
           />
+          <Route path="reports" element={<ReportDashboardContainer />} />
           <Route path="settings" element={<SettingsContainer />} />
         </Route>
 

@@ -1,4 +1,4 @@
-import { ToastContainer } from '@/features/task-manager/components/ToastContainer';
+import { ToastContainer } from '@/shared/components/ToastContainer';
 import { QueryProvider, AuthProvider } from '@/providers';
 import { Router } from '@/router/Router';
 

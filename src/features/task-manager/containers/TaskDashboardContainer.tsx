@@ -3,7 +3,7 @@ import { useTasks } from '../hooks/use-tasks';
 import { useAutoPurge } from '../hooks/use-auto-purge';
 import { useCleanupDoneTasks } from '../hooks/use-cleanup-done-tasks';
 import { useTaskUIStore } from '../store/task-ui.store';
-import { useToastStore } from '../store/toast.store';
+import { useToastStore } from '@/shared/store/toast.store';
 import {
   getTaskStats,
   getCleanupCandidates,

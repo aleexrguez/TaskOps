@@ -24,7 +24,7 @@ vi.mock('../../api/recurrence-api', () => ({
   generateTasks: vi.fn(),
 }));
 
-vi.mock('@/features/task-manager/store/toast.store', () => ({
+vi.mock('@/shared/store/toast.store', () => ({
   useToastStore: vi.fn(
     (selector: (s: { addToast: ReturnType<typeof vi.fn> }) => unknown) =>
       selector({ addToast: mockAddToast }),
