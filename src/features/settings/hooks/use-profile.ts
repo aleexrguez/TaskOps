@@ -46,6 +46,9 @@ export function useUploadAvatar() {
         profileKeys.detail(user!.id),
         (old) => (old ? { ...old, avatar_path: result.avatarPath } : old),
       );
+      queryClient.invalidateQueries({
+        queryKey: profileKeys.detail(user!.id),
+      });
     },
   });
 }
@@ -61,6 +64,9 @@ export function useRemoveAvatar() {
         profileKeys.detail(user!.id),
         updatedProfile,
       );
+      queryClient.invalidateQueries({
+        queryKey: profileKeys.detail(user!.id),
+      });
     },
   });
 }
