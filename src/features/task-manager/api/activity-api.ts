@@ -1,6 +1,6 @@
 import { supabase } from '../../../shared/services/supabase';
 import { requireAuthenticatedUser } from '../../../shared/services/auth.guard';
-import type { Database } from '../../../shared/types/database.types';
+import type { Database, Json } from '../../../shared/types/database.types';
 import type {
   ActivityEvent,
   CreateActivityEventInput,
@@ -20,7 +20,7 @@ function fromDbRow(row: DbActivityEventRow): ActivityEvent {
     eventType: row.event_type as ActivityEvent['eventType'],
     fromValue: row.from_value,
     toValue: row.to_value,
-    metadata: row.metadata,
+    metadata: row.metadata as Record<string, unknown>,
     createdAt: row.created_at,
   };
 }
@@ -75,7 +75,7 @@ export async function createActivityEvent(
     event_type: input.eventType,
     from_value: input.fromValue ?? null,
     to_value: input.toValue ?? null,
-    metadata: input.metadata ?? {},
+    metadata: (input.metadata ?? {}) as Json,
   });
 
   if (error) throw new Error(error.message);
@@ -93,7 +93,7 @@ export async function createActivityEvents(
     event_type: input.eventType,
     from_value: input.fromValue ?? null,
     to_value: input.toValue ?? null,
-    metadata: input.metadata ?? {},
+    metadata: (input.metadata ?? {}) as Json,
   }));
 
   const { error } = await supabase.from('task_activity_events').insert(rows);

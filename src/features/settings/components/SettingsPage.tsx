@@ -4,6 +4,8 @@ import type {
 } from '@/shared/types/preferences.types';
 import { RetentionPolicySelect } from '@/shared/components/RetentionPolicySelect';
 import { ThemeSelector } from './ThemeSelector';
+import { AccountSection } from './AccountSection';
+import { ChangePasswordForm } from './ChangePasswordForm';
 
 interface SettingsPageProps {
   theme: ThemePreference;
@@ -15,6 +17,22 @@ interface SettingsPageProps {
   isSigningOut: boolean;
   remindersEnabled: boolean;
   onToggleReminders: () => void;
+  displayName: string | null;
+  avatarUrl: string | null;
+  hasCustomAvatar: boolean;
+  onSaveDisplayName: (name: string) => void;
+  isSavingName: boolean;
+  saveNameError: string | null;
+  onUploadAvatar: (file: File) => void;
+  isUploadingAvatar: boolean;
+  onRemoveAvatar: () => void;
+  isRemovingAvatar: boolean;
+  uploadAvatarError: string | null;
+  onChangePassword: (password: string) => void;
+  isChangingPassword: boolean;
+  changePasswordError: string | null;
+  changePasswordSuccess: boolean;
+  onResetChangePassword: () => void;
 }
 
 const CARD = 'bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm';
@@ -29,6 +47,22 @@ export function SettingsPage({
   isSigningOut,
   remindersEnabled,
   onToggleReminders,
+  displayName,
+  avatarUrl,
+  hasCustomAvatar,
+  onSaveDisplayName,
+  isSavingName,
+  saveNameError,
+  onUploadAvatar,
+  isUploadingAvatar,
+  onRemoveAvatar,
+  isRemovingAvatar,
+  uploadAvatarError,
+  onChangePassword,
+  isChangingPassword,
+  changePasswordError,
+  changePasswordSuccess,
+  onResetChangePassword,
 }: SettingsPageProps) {
   return (
     <div className="space-y-6">
@@ -86,30 +120,36 @@ export function SettingsPage({
         <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
           Account
         </h2>
+        <AccountSection
+          email={userEmail}
+          displayName={displayName}
+          avatarUrl={avatarUrl}
+          hasCustomAvatar={hasCustomAvatar}
+          onSaveDisplayName={onSaveDisplayName}
+          isSavingName={isSavingName}
+          saveNameError={saveNameError}
+          onUploadAvatar={onUploadAvatar}
+          isUploadingAvatar={isUploadingAvatar}
+          uploadAvatarError={uploadAvatarError}
+          onRemoveAvatar={onRemoveAvatar}
+          isRemovingAvatar={isRemovingAvatar}
+          onSignOut={onSignOut}
+          isSigningOut={isSigningOut}
+        />
+      </section>
 
-        <div className="space-y-4">
-          <div>
-            <p className="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-1">
-              Email
-            </p>
-            <p className="text-sm text-gray-900 dark:text-gray-100">
-              {userEmail}
-            </p>
-          </div>
-
-          <button
-            type="button"
-            onClick={onSignOut}
-            disabled={isSigningOut}
-            className="cursor-pointer rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            {isSigningOut ? 'Signing out...' : 'Sign out'}
-          </button>
-
-          <p className="text-sm text-gray-500 dark:text-gray-400">
-            Password management coming soon.
-          </p>
-        </div>
+      {/* Section 5 — Change Password */}
+      <section className={CARD}>
+        <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
+          Change Password
+        </h2>
+        <ChangePasswordForm
+          onSubmit={onChangePassword}
+          isPending={isChangingPassword}
+          error={changePasswordError}
+          isSuccess={changePasswordSuccess}
+          onReset={onResetChangePassword}
+        />
       </section>
     </div>
   );

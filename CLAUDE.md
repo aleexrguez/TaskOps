@@ -84,3 +84,15 @@ Run before every commit:
 - `due_date` column is DATE — always cast with `::date` in SQL
 - `recurrence_date_key` is TEXT — cast with `::date` for comparisons
 - API layer lives in `features/{name}/api/` — separated from domain
+
+### Supabase database changes
+
+If a task touches Supabase database schema, migrations, RLS policies, Storage buckets/policies, or profile-related tables, run:
+
+`npx supabase db push`
+
+as part of the final verification before marking the task as complete.
+
+If the command cannot run because the Supabase CLI/session/project is not configured, report the exact error and do not claim the database changes are fully applied.
+
+Do not run `db push` for pure frontend-only changes or Supabase Auth client usage that does not require schema/policy/migration changes.
