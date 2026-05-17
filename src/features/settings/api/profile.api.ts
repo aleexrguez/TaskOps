@@ -2,6 +2,7 @@ import { supabase } from '@/shared/services/supabase';
 import {
   AVATAR_ACCEPTED_TYPES,
   AVATAR_MAX_SIZE_BYTES,
+  profileSchema,
 } from '../types/profile.types';
 import type { Profile } from '../types/profile.types';
 
@@ -14,7 +15,7 @@ export async function fetchProfile(userId: string): Promise<Profile | null> {
 
   if (error && error.code === 'PGRST116') return null; // Not found
   if (error) throw new Error(error.message);
-  return data;
+  return profileSchema.parse(data);
 }
 
 export async function updateProfile(
@@ -78,10 +79,11 @@ export async function uploadAvatar(
 
   if (uploadError) throw new Error(uploadError.message);
 
-  // Upsert avatar_path in profile
+  // Update avatar_path in profile (row already exists via signup trigger)
   const { error: updateError } = await supabase
     .from('profiles')
-    .upsert({ id: userId, avatar_path: newPath }, { onConflict: 'id' })
+    .update({ avatar_path: newPath })
+    .eq('id', userId)
     .select()
     .single();
 
@@ -126,7 +128,8 @@ export async function removeAvatar(userId: string): Promise<Profile> {
   // Update profile first (DB consistency > Storage cleanup)
   const { data, error } = await supabase
     .from('profiles')
-    .upsert({ id: userId, avatar_path: null }, { onConflict: 'id' })
+    .update({ avatar_path: null })
+    .eq('id', userId)
     .select()
     .single();
 

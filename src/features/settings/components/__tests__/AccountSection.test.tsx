@@ -63,6 +63,8 @@ describe('AccountSection', () => {
 
     const img = screen.getByAltText('User avatar');
     expect(img).toHaveAttribute('src', '/image-noPhotoPerfil.png');
+    // Vite serves public/ at root — never use /public/ prefix
+    expect(img.getAttribute('src')).not.toContain('/public/');
   });
 
   it('shows custom avatar when avatarUrl provided', () => {
