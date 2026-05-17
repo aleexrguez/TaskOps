@@ -16,8 +16,6 @@ interface AccountSectionProps {
   uploadAvatarError: string | null;
   onRemoveAvatar: () => void;
   isRemovingAvatar: boolean;
-  onSignOut: () => void;
-  isSigningOut: boolean;
 }
 
 export function AccountSection({
@@ -33,8 +31,6 @@ export function AccountSection({
   uploadAvatarError,
   onRemoveAvatar,
   isRemovingAvatar,
-  onSignOut,
-  isSigningOut,
 }: AccountSectionProps) {
   // Track only user edits — null means "use prop value"
   const [editValue, setEditValue] = useState<string | null>(null);
@@ -111,16 +107,6 @@ export function AccountSection({
         </p>
         <p className="text-sm text-gray-900 dark:text-gray-100">{email}</p>
       </div>
-
-      {/* Sign out */}
-      <button
-        type="button"
-        onClick={onSignOut}
-        disabled={isSigningOut}
-        className="cursor-pointer rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-      >
-        {isSigningOut ? 'Signing out...' : 'Sign out'}
-      </button>
     </div>
   );
 }

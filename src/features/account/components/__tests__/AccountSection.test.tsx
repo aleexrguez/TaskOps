@@ -16,8 +16,6 @@ const defaultProps = {
   uploadAvatarError: null,
   onRemoveAvatar: vi.fn(),
   isRemovingAvatar: false,
-  onSignOut: vi.fn(),
-  isSigningOut: false,
 };
 
 describe('AccountSection', () => {
@@ -77,24 +75,6 @@ describe('AccountSection', () => {
 
     const img = screen.getByAltText('User avatar');
     expect(img).toHaveAttribute('src', 'https://example.com/avatar.jpg');
-  });
-
-  it('renders sign out button', () => {
-    render(<AccountSection {...defaultProps} />);
-
-    expect(
-      screen.getByRole('button', { name: /sign out/i }),
-    ).toBeInTheDocument();
-  });
-
-  it('calls onSignOut when clicked', async () => {
-    const user = userEvent.setup();
-    const onSignOut = vi.fn();
-    render(<AccountSection {...defaultProps} onSignOut={onSignOut} />);
-
-    await user.click(screen.getByRole('button', { name: /sign out/i }));
-
-    expect(onSignOut).toHaveBeenCalledOnce();
   });
 
   it('disables save button when name has not changed', () => {

@@ -12,27 +12,8 @@ const defaultProps = {
   onThemeChange: vi.fn(),
   retentionPolicy: 'never' as RetentionPolicy,
   onRetentionPolicyChange: vi.fn(),
-  userEmail: 'test@example.com',
-  onSignOut: vi.fn(),
-  isSigningOut: false,
   remindersEnabled: true,
   onToggleReminders: vi.fn(),
-  displayName: 'John Doe',
-  avatarUrl: null,
-  hasCustomAvatar: false,
-  onSaveDisplayName: vi.fn(),
-  isSavingName: false,
-  saveNameError: null,
-  onUploadAvatar: vi.fn(),
-  isUploadingAvatar: false,
-  onRemoveAvatar: vi.fn(),
-  isRemovingAvatar: false,
-  uploadAvatarError: null,
-  onChangePassword: vi.fn(),
-  isChangingPassword: false,
-  changePasswordError: null,
-  changePasswordSuccess: false,
-  onResetChangePassword: vi.fn(),
 };
 
 describe('SettingsPage', () => {
@@ -65,50 +46,6 @@ describe('SettingsPage', () => {
       screen.getByText(/automatically archive completed tasks after/i),
     ).toBeInTheDocument();
     expect(screen.getByRole('combobox')).toBeInTheDocument();
-  });
-
-  it('renders the Account section with user email', () => {
-    render(<SettingsPage {...defaultProps} />);
-
-    expect(
-      screen.getByRole('heading', { level: 2, name: /account/i }),
-    ).toBeInTheDocument();
-    expect(screen.getByText('test@example.com')).toBeInTheDocument();
-  });
-
-  it('renders the sign out button', () => {
-    render(<SettingsPage {...defaultProps} />);
-
-    expect(
-      screen.getByRole('button', { name: /sign out/i }),
-    ).toBeInTheDocument();
-  });
-
-  it('shows "Signing out..." and disables the button when isSigningOut is true', () => {
-    render(<SettingsPage {...defaultProps} isSigningOut={true} />);
-
-    const button = screen.getByRole('button', { name: /signing out/i });
-    expect(button).toBeInTheDocument();
-    expect(button).toBeDisabled();
-  });
-
-  it('calls onSignOut when sign out button is clicked', async () => {
-    const user = userEvent.setup();
-    const onSignOut = vi.fn();
-
-    render(<SettingsPage {...defaultProps} onSignOut={onSignOut} />);
-
-    await user.click(screen.getByRole('button', { name: /sign out/i }));
-
-    expect(onSignOut).toHaveBeenCalledOnce();
-  });
-
-  it('renders the Change Password section', () => {
-    render(<SettingsPage {...defaultProps} />);
-
-    expect(
-      screen.getByRole('heading', { level: 2, name: /change password/i }),
-    ).toBeInTheDocument();
   });
 
   it('renders the Notifications section heading', () => {
@@ -166,5 +103,16 @@ describe('SettingsPage', () => {
         /show popup reminders for tasks that are overdue or due soon/i,
       ),
     ).toBeInTheDocument();
+  });
+
+  it('does not render Account or Change Password sections', () => {
+    render(<SettingsPage {...defaultProps} />);
+
+    expect(
+      screen.queryByRole('heading', { level: 2, name: /account/i }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('heading', { level: 2, name: /change password/i }),
+    ).not.toBeInTheDocument();
   });
 });
