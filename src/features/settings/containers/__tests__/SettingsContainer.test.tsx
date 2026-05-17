@@ -18,6 +18,55 @@ vi.mock('@/features/auth/hooks', () => ({
 
 vi.mock('@tanstack/react-query', () => ({
   useQueryClient: vi.fn(),
+  useQuery: vi.fn(() => ({ data: null, isLoading: false })),
+  useMutation: vi.fn(() => ({
+    mutate: vi.fn(),
+    isPending: false,
+    isError: false,
+    error: null,
+  })),
+}));
+
+vi.mock('@/shared/store/toast.store', () => ({
+  useToastStore: vi.fn((selector) =>
+    selector({ addToast: vi.fn(), removeToast: vi.fn(), toasts: [] }),
+  ),
+}));
+
+vi.mock('../../hooks/use-profile', () => ({
+  useProfile: vi.fn(() => ({ data: null, isLoading: false })),
+  useUpdateProfile: vi.fn(() => ({
+    mutate: vi.fn(),
+    isPending: false,
+    isError: false,
+    error: null,
+  })),
+  useUploadAvatar: vi.fn(() => ({
+    mutate: vi.fn(),
+    isPending: false,
+    isError: false,
+    error: null,
+  })),
+  useRemoveAvatar: vi.fn(() => ({
+    mutate: vi.fn(),
+    isPending: false,
+    isError: false,
+    error: null,
+  })),
+}));
+
+vi.mock('../../hooks/use-change-password', () => ({
+  useChangePassword: vi.fn(() => ({
+    changePassword: vi.fn(),
+    isPending: false,
+    error: null,
+    isSuccess: false,
+    reset: vi.fn(),
+  })),
+}));
+
+vi.mock('../../api/profile.api', () => ({
+  getAvatarPublicUrl: vi.fn(() => 'https://example.com/avatar.jpg'),
 }));
 
 const mockSetTheme = vi.fn();

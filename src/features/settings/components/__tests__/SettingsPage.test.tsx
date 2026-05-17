@@ -17,6 +17,22 @@ const defaultProps = {
   isSigningOut: false,
   remindersEnabled: true,
   onToggleReminders: vi.fn(),
+  displayName: 'John Doe',
+  avatarUrl: null,
+  hasCustomAvatar: false,
+  onSaveDisplayName: vi.fn(),
+  isSavingName: false,
+  saveNameError: null,
+  onUploadAvatar: vi.fn(),
+  isUploadingAvatar: false,
+  onRemoveAvatar: vi.fn(),
+  isRemovingAvatar: false,
+  uploadAvatarError: null,
+  onChangePassword: vi.fn(),
+  isChangingPassword: false,
+  changePasswordError: null,
+  changePasswordSuccess: false,
+  onResetChangePassword: vi.fn(),
 };
 
 describe('SettingsPage', () => {
@@ -87,11 +103,11 @@ describe('SettingsPage', () => {
     expect(onSignOut).toHaveBeenCalledOnce();
   });
 
-  it('renders password management placeholder text', () => {
+  it('renders the Change Password section', () => {
     render(<SettingsPage {...defaultProps} />);
 
     expect(
-      screen.getByText(/password management coming soon/i),
+      screen.getByRole('heading', { level: 2, name: /change password/i }),
     ).toBeInTheDocument();
   });
 
