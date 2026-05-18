@@ -43,6 +43,11 @@ const SettingsContainer = lazy(() =>
     default: m.SettingsContainer,
   })),
 );
+const AccountContainer = lazy(() =>
+  import('@/features/account/containers/AccountContainer').then((m) => ({
+    default: m.AccountContainer,
+  })),
+);
 
 export function Router() {
   return (
@@ -101,6 +106,7 @@ export function Router() {
             element={<RecurrenceDashboardContainer />}
           />
           <Route path="reports" element={<ReportDashboardContainer />} />
+          <Route path="account" element={<AccountContainer />} />
           <Route path="settings" element={<SettingsContainer />} />
         </Route>
 

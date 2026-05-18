@@ -2,12 +2,14 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAppPreferencesStore } from '@/shared/store/app-preferences.store';
-import { useSignOut } from '@/features/auth/hooks';
+import { useSignOut, useAuth } from '@/features/auth/hooks';
 import { useApplyTheme } from '@/shared/hooks/use-apply-theme';
 import { usePWAUpdate } from '@/shared/hooks/use-pwa-update';
 import { useTasks } from '@/features/task-manager/hooks/use-tasks';
 import { useRecurrences } from '@/features/recurrences/hooks/use-recurrences';
 import { useAutoGenerate } from '@/features/recurrences/hooks/use-auto-generate';
+import { useProfile } from '@/features/account/hooks/use-profile';
+import { getAvatarPublicUrl } from '@/features/account/api/profile.api';
 import { AppShellLayout } from './AppShellLayout';
 import { ReminderContainerCtrl } from '@/features/task-manager/containers/ReminderContainerCtrl';
 import type { NavItem } from './app-shell.types';
@@ -18,11 +20,15 @@ const INBOX_ICON =
 const REPORTS_ICON =
   "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%236366f1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 3v18h18'/%3E%3Cpath d='M7 16l4-8 4 4 4-8'/%3E%3C/svg%3E";
 
+const ACCOUNT_ICON =
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%236366f1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'/%3E%3Ccircle cx='12' cy='7' r='4'/%3E%3C/svg%3E";
+
 const NAV_ITEMS: NavItem[] = [
   { label: 'Inbox', to: '/app/inbox', icon: INBOX_ICON },
   { label: 'Tasks', to: '/app/tasks', icon: '/TaskIcon.png' },
   { label: 'Recurrences', to: '/app/recurrences', icon: '/RecurrenceIcon.png' },
   { label: 'Reports', to: '/app/reports', icon: REPORTS_ICON },
+  { label: 'Account', to: '/app/account', icon: ACCOUNT_ICON },
   { label: 'Settings', to: '/app/settings', icon: '/SettingsIcon.png' },
 ];
 
@@ -40,6 +46,11 @@ export function AppShellContainer() {
   const toggleSidebar = useAppPreferencesStore((s) => s.toggleSidebar);
 
   const { signOut, isPending: isSigningOut } = useSignOut();
+  const { user } = useAuth();
+  const { data: profile } = useProfile();
+  const avatarUrl = profile?.avatar_path
+    ? getAvatarPublicUrl(profile.avatar_path)
+    : null;
 
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -59,6 +70,13 @@ export function AppShellContainer() {
           appName: 'TaskOps',
           isCollapsed: isSidebarCollapsed,
           onToggleMobileSidebar: () => setIsMobileSidebarOpen(true),
+          userMenu: {
+            displayName: profile?.display_name ?? null,
+            email: user?.email ?? '',
+            avatarUrl,
+            onSignOut: handleSignOut,
+            isSigningOut,
+          },
         }}
         pwaUpdateProps={
           needRefresh

@@ -4,9 +4,15 @@ interface InboxPageProps {
   itemCount: number;
   quickInput: ReactNode;
   children: ReactNode;
+  hero?: ReactNode;
 }
 
-export function InboxPage({ itemCount, quickInput, children }: InboxPageProps) {
+export function InboxPage({
+  itemCount,
+  quickInput,
+  children,
+  hero,
+}: InboxPageProps) {
   return (
     <div className="mx-auto max-w-2xl px-4 py-6">
       <div className="mb-6 flex items-center gap-3">
@@ -19,6 +25,8 @@ export function InboxPage({ itemCount, quickInput, children }: InboxPageProps) {
           </span>
         )}
       </div>
+
+      {hero && <div className="mb-6">{hero}</div>}
 
       <div className="mb-6">{quickInput}</div>
 

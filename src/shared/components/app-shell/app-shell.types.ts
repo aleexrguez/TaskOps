@@ -4,10 +4,19 @@ export interface NavItem {
   icon: string;
 }
 
+export interface UserMenuProps {
+  displayName: string | null;
+  email: string;
+  avatarUrl: string | null;
+  onSignOut: () => void;
+  isSigningOut: boolean;
+}
+
 export interface HeaderProps {
   appName: string;
   isCollapsed: boolean;
   onToggleMobileSidebar: () => void;
+  userMenu: UserMenuProps;
 }
 
 export interface SidebarProps {

@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { AppShellLayout } from '../AppShellLayout';
-import type { AppShellLayoutProps } from '../app-shell.types';
+import type { AppShellLayoutProps, UserMenuProps } from '../app-shell.types';
 
 const defaultNavItems = [
   { label: 'Tasks', to: '/app/tasks', icon: '/TaskIcon.png' },
@@ -10,11 +10,20 @@ const defaultNavItems = [
   { label: 'Settings', to: '/app/settings', icon: '/SettingsIcon.png' },
 ];
 
+const defaultUserMenu: UserMenuProps = {
+  displayName: 'Test User',
+  email: 'test@example.com',
+  avatarUrl: null,
+  onSignOut: vi.fn(),
+  isSigningOut: false,
+};
+
 const defaultProps: AppShellLayoutProps = {
   headerProps: {
     appName: 'TaskOps',
     isCollapsed: false,
     onToggleMobileSidebar: vi.fn(),
+    userMenu: defaultUserMenu,
   },
   sidebarProps: {
     navItems: defaultNavItems,

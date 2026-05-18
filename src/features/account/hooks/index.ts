@@ -1,3 +1,8 @@
-export { useProfile, useUpdateProfile, useUploadAvatar } from './use-profile';
+export {
+  useProfile,
+  useUpdateProfile,
+  useUploadAvatar,
+  useRemoveAvatar,
+} from './use-profile';
 export { useChangePassword } from './use-change-password';
 export { profileKeys } from './profile.keys';

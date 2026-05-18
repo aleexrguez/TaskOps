@@ -4,7 +4,7 @@ import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { MemoryRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AppShellContainer } from '../AppShellContainer';
 import { useAppPreferencesStore } from '@/shared/store/app-preferences.store';
-import { useSignOut } from '@/features/auth/hooks';
+import { useSignOut, useAuth } from '@/features/auth/hooks';
 import { useApplyTheme } from '@/shared/hooks/use-apply-theme';
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -14,6 +14,24 @@ vi.mock('@/shared/store/app-preferences.store', () => ({
 
 vi.mock('@/features/auth/hooks', () => ({
   useSignOut: vi.fn(),
+  useAuth: vi.fn(() => ({
+    user: { id: 'user-1', email: 'test@example.com' },
+    session: null,
+    isLoading: false,
+  })),
+}));
+
+vi.mock('@/features/account/hooks/use-profile', () => ({
+  useProfile: () => ({
+    data: { display_name: 'Test User', avatar_path: null },
+    isLoading: false,
+  }),
+}));
+
+vi.mock('@/features/account/api/profile.api', () => ({
+  getAvatarPublicUrl: vi.fn(
+    (path: string) => `https://cdn.example.com/${path}`,
+  ),
 }));
 
 vi.mock('@/shared/hooks/use-apply-theme', () => ({
@@ -103,6 +121,12 @@ beforeEach(() => {
     isPending: false,
   });
 
+  vi.mocked(useAuth).mockReturnValue({
+    user: { id: 'user-1', email: 'test@example.com' },
+    session: null,
+    isLoading: false,
+  } as unknown as ReturnType<typeof useAuth>);
+
   vi.mocked(useApplyTheme).mockReturnValue(undefined);
 
   vi.mocked(useQueryClient).mockReturnValue({
@@ -135,9 +159,8 @@ describe('AppShellContainer — sign out button', () => {
   it('renders sign out button in sidebar', () => {
     renderContainer();
 
-    expect(
-      screen.getByRole('button', { name: /sign out/i }),
-    ).toBeInTheDocument();
+    const signOutButtons = screen.getAllByRole('button', { name: /sign out/i });
+    expect(signOutButtons.length).toBeGreaterThan(0);
   });
 });
 
@@ -149,7 +172,9 @@ describe('AppShellContainer — sign out action', () => {
 
     renderContainer();
 
-    await user.click(screen.getByRole('button', { name: /sign out/i }));
+    // Use the sidebar sign-out button (aria-label="Sign out")
+    const signOutButtons = screen.getAllByRole('button', { name: /sign out/i });
+    await user.click(signOutButtons[0]);
 
     expect(mockSignOut).toHaveBeenCalledOnce();
     expect(mockClearQueryClient).toHaveBeenCalledOnce();
@@ -190,5 +215,15 @@ describe('AppShellContainer — sidebar collapsed state', () => {
 
     // When collapsed, the main element uses md:ml-16 (verified via AppShellLayout internals)
     expect(screen.getByRole('main')).toHaveClass('md:ml-16');
+  });
+});
+
+describe('AppShellContainer — user menu', () => {
+  it('renders user menu button in header', () => {
+    renderContainer();
+
+    expect(
+      screen.getByRole('button', { name: /user menu/i }),
+    ).toBeInTheDocument();
   });
 });
