@@ -2,12 +2,14 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAppPreferencesStore } from '@/shared/store/app-preferences.store';
-import { useSignOut } from '@/features/auth/hooks';
+import { useSignOut, useAuth } from '@/features/auth/hooks';
 import { useApplyTheme } from '@/shared/hooks/use-apply-theme';
 import { usePWAUpdate } from '@/shared/hooks/use-pwa-update';
 import { useTasks } from '@/features/task-manager/hooks/use-tasks';
 import { useRecurrences } from '@/features/recurrences/hooks/use-recurrences';
 import { useAutoGenerate } from '@/features/recurrences/hooks/use-auto-generate';
+import { useProfile } from '@/features/account/hooks/use-profile';
+import { getAvatarPublicUrl } from '@/features/account/api/profile.api';
 import { AppShellLayout } from './AppShellLayout';
 import { ReminderContainerCtrl } from '@/features/task-manager/containers/ReminderContainerCtrl';
 import type { NavItem } from './app-shell.types';
@@ -44,6 +46,11 @@ export function AppShellContainer() {
   const toggleSidebar = useAppPreferencesStore((s) => s.toggleSidebar);
 
   const { signOut, isPending: isSigningOut } = useSignOut();
+  const { user } = useAuth();
+  const { data: profile } = useProfile();
+  const avatarUrl = profile?.avatar_path
+    ? getAvatarPublicUrl(profile.avatar_path)
+    : null;
 
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -63,6 +70,13 @@ export function AppShellContainer() {
           appName: 'TaskOps',
           isCollapsed: isSidebarCollapsed,
           onToggleMobileSidebar: () => setIsMobileSidebarOpen(true),
+          userMenu: {
+            displayName: profile?.display_name ?? null,
+            email: user?.email ?? '',
+            avatarUrl,
+            onSignOut: handleSignOut,
+            isSigningOut,
+          },
         }}
         pwaUpdateProps={
           needRefresh
