@@ -2,6 +2,7 @@ import { Suspense } from 'react';
 import { Outlet } from 'react-router-dom';
 import { RouteSpinner } from '@/shared/components/RouteSpinner';
 import { UpdateBanner } from '@/shared/components/UpdateBanner';
+import { ParticleBackground } from '@/shared/components/ParticleBackground';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 import type { AppShellLayoutProps } from './app-shell.types';
@@ -10,6 +11,7 @@ export function AppShellLayout({
   headerProps,
   sidebarProps,
   pwaUpdateProps,
+  animatedBackground,
 }: AppShellLayoutProps) {
   const { isCollapsed } = sidebarProps;
 
@@ -17,6 +19,7 @@ export function AppShellLayout({
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      {animatedBackground && <ParticleBackground />}
       <Sidebar {...sidebarProps} />
       <Header {...headerProps} />
       {pwaUpdateProps && <UpdateBanner {...pwaUpdateProps} />}

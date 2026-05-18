@@ -44,6 +44,9 @@ export function AppShellContainer() {
     (s) => s.isSidebarCollapsed,
   );
   const toggleSidebar = useAppPreferencesStore((s) => s.toggleSidebar);
+  const animatedBackground = useAppPreferencesStore(
+    (s) => s.animatedBackground,
+  );
 
   const { signOut, isPending: isSigningOut } = useSignOut();
   const { user } = useAuth();
@@ -66,6 +69,7 @@ export function AppShellContainer() {
   return (
     <>
       <AppShellLayout
+        animatedBackground={animatedBackground}
         headerProps={{
           appName: 'TaskOps',
           isCollapsed: isSidebarCollapsed,

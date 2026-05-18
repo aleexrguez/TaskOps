@@ -10,6 +10,12 @@ export function SettingsContainer() {
   );
   const remindersEnabled = useAppPreferencesStore((s) => s.remindersEnabled);
   const toggleReminders = useAppPreferencesStore((s) => s.toggleReminders);
+  const animatedBackground = useAppPreferencesStore(
+    (s) => s.animatedBackground,
+  );
+  const toggleAnimatedBackground = useAppPreferencesStore(
+    (s) => s.toggleAnimatedBackground,
+  );
 
   return (
     <SettingsPage
@@ -19,6 +25,8 @@ export function SettingsContainer() {
       onRetentionPolicyChange={setRetentionPolicy}
       remindersEnabled={remindersEnabled}
       onToggleReminders={toggleReminders}
+      animatedBackground={animatedBackground}
+      onToggleAnimatedBackground={toggleAnimatedBackground}
     />
   );
 }

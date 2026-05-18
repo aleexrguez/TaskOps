@@ -25,6 +25,8 @@ beforeEach(() => {
       toggleSidebar: vi.fn(),
       remindersEnabled: true,
       toggleReminders: mockToggleReminders,
+      animatedBackground: false,
+      toggleAnimatedBackground: vi.fn(),
     }),
   );
 });
