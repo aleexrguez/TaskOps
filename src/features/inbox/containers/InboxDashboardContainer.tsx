@@ -15,8 +15,17 @@ import {
   InboxEmptyState,
 } from '../components';
 import { ConvertToTaskContainer } from './ConvertToTaskContainer';
+import { useAuth } from '@/features/auth/hooks';
+import { useProfile } from '@/features/account/hooks/use-profile';
+import { getGreeting, getDisplayName } from '../utils/greeting.utils';
+import { InboxHero } from '../components/InboxHero';
 
 export function InboxDashboardContainer() {
+  const { user } = useAuth();
+  const { data: profile } = useProfile();
+  const greeting = getGreeting(new Date().getHours());
+  const displayName = getDisplayName(profile, user?.email);
+
   const { data, isLoading, isError } = useInboxItems();
   const items = data?.items ?? [];
   const createMutation = useCreateInboxItem();
@@ -91,6 +100,7 @@ export function InboxDashboardContainer() {
     <>
       <InboxPage
         itemCount={items.length}
+        hero={<InboxHero greeting={greeting} displayName={displayName} />}
         quickInput={
           <InboxQuickInput
             onSubmit={handleCreate}

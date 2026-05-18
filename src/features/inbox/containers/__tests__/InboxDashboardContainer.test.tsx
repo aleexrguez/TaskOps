@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { vi, describe, it, expect, beforeEach } from 'vitest';
+import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { InboxDashboardContainer } from '../InboxDashboardContainer';
 import { useInboxUIStore } from '../../store/inbox-ui.store';
 import { useToastStore } from '@/shared/store/toast.store';
@@ -16,11 +16,15 @@ vi.mock('../../api', () => ({
 }));
 
 vi.mock('@/features/auth/hooks', () => ({
-  useAuth: () => ({
-    user: { id: 'test-user' },
+  useAuth: vi.fn(() => ({
+    user: { id: 'test-user', email: 'testuser@example.com' },
     session: null,
     isLoading: false,
-  }),
+  })),
+}));
+
+vi.mock('@/features/account/hooks/use-profile', () => ({
+  useProfile: vi.fn(() => ({ data: null })),
 }));
 
 import {
@@ -30,6 +34,8 @@ import {
   deleteInboxItem,
   convertInboxItemToTask,
 } from '../../api';
+import { useProfile } from '@/features/account/hooks/use-profile';
+import { useAuth } from '@/features/auth/hooks';
 
 function makeItem(overrides: Partial<InboxItem> = {}): InboxItem {
   return {
@@ -341,5 +347,77 @@ describe('InboxDashboardContainer', () => {
     });
     // Modal stays open
     expect(screen.getByRole('dialog')).toBeInTheDocument();
+  });
+
+  describe('hero greeting', () => {
+    beforeEach(() => {
+      vi.useFakeTimers({ shouldAdvanceTime: true });
+      vi.setSystemTime(new Date('2026-05-18T09:00:00'));
+      (fetchInboxItems as ReturnType<typeof vi.fn>).mockResolvedValue({
+        items: [],
+        total: 0,
+      });
+    });
+
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    it('shows first word of display_name in hero', async () => {
+      (useProfile as ReturnType<typeof vi.fn>).mockReturnValue({
+        data: { display_name: 'Alessandro Rodriguez' },
+      });
+
+      render(<InboxDashboardContainer />, { wrapper: createWrapper() });
+
+      await waitFor(() => {
+        expect(
+          screen.getByText('Good morning, Alessandro'),
+        ).toBeInTheDocument();
+      });
+    });
+
+    it('shows email username when display_name is null', async () => {
+      (useProfile as ReturnType<typeof vi.fn>).mockReturnValue({
+        data: { display_name: null },
+      });
+
+      render(<InboxDashboardContainer />, { wrapper: createWrapper() });
+
+      await waitFor(() => {
+        expect(screen.getByText('Good morning, testuser')).toBeInTheDocument();
+      });
+    });
+
+    it('shows "there" when both profile and email are absent', async () => {
+      (useAuth as ReturnType<typeof vi.fn>).mockReturnValue({
+        user: null,
+        session: null,
+        isLoading: false,
+      });
+      (useProfile as ReturnType<typeof vi.fn>).mockReturnValue({
+        data: null,
+      });
+
+      render(<InboxDashboardContainer />, { wrapper: createWrapper() });
+
+      await waitFor(() => {
+        expect(screen.getByText('Good morning, there')).toBeInTheDocument();
+      });
+    });
+
+    it('renders the hero subtitle', async () => {
+      (useProfile as ReturnType<typeof vi.fn>).mockReturnValue({
+        data: { display_name: 'Alex' },
+      });
+
+      render(<InboxDashboardContainer />, { wrapper: createWrapper() });
+
+      await waitFor(() => {
+        expect(
+          screen.getByText('What do you want to capture today?'),
+        ).toBeInTheDocument();
+      });
+    });
   });
 });

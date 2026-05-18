@@ -66,4 +66,28 @@ describe('InboxPage', () => {
 
     expect(screen.getByTestId('item-list')).toBeInTheDocument();
   });
+
+  it('renders hero slot when provided', () => {
+    render(
+      <InboxPage
+        itemCount={0}
+        quickInput={<div>input</div>}
+        hero={<div data-testid="inbox-hero">hero content</div>}
+      >
+        <div>content</div>
+      </InboxPage>,
+    );
+
+    expect(screen.getByTestId('inbox-hero')).toBeInTheDocument();
+  });
+
+  it('does not render hero slot when not provided', () => {
+    render(
+      <InboxPage itemCount={0} quickInput={<div>input</div>}>
+        <div>content</div>
+      </InboxPage>,
+    );
+
+    expect(screen.queryByTestId('inbox-hero')).not.toBeInTheDocument();
+  });
 });
