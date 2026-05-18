@@ -38,4 +38,5 @@ export interface AppShellLayoutProps {
   headerProps: HeaderProps;
   sidebarProps: SidebarProps;
   pwaUpdateProps?: PWAUpdateProps;
+  animatedBackground?: boolean;
 }

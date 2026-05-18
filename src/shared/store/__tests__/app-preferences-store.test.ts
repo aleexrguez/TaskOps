@@ -4,6 +4,7 @@ const THEME_KEY = 'task-manager-theme';
 const RETENTION_KEY = 'task-manager-retention-policy';
 const SIDEBAR_KEY = 'task-manager-sidebar-collapsed';
 const REMINDERS_KEY = 'task-manager-reminders-enabled';
+const ANIMATED_BG_KEY = 'task-manager-animated-bg';
 
 describe('useAppPreferencesStore', () => {
   beforeEach(() => {
@@ -13,6 +14,7 @@ describe('useAppPreferencesStore', () => {
       retentionPolicy: 'never',
       isSidebarCollapsed: false,
       remindersEnabled: true,
+      animatedBackground: false,
     });
   });
 
@@ -116,6 +118,30 @@ describe('useAppPreferencesStore', () => {
     it('persists remindersEnabled to localStorage', () => {
       useAppPreferencesStore.getState().toggleReminders();
       expect(localStorage.getItem(REMINDERS_KEY)).toBe('false');
+    });
+  });
+
+  // ─── animatedBackground ─────────────────────────────────────────────────
+
+  describe('animatedBackground', () => {
+    it('defaults to false', () => {
+      expect(useAppPreferencesStore.getState().animatedBackground).toBe(false);
+    });
+
+    it('toggleAnimatedBackground() flips to true', () => {
+      useAppPreferencesStore.getState().toggleAnimatedBackground();
+      expect(useAppPreferencesStore.getState().animatedBackground).toBe(true);
+    });
+
+    it('toggleAnimatedBackground() called twice returns to false', () => {
+      useAppPreferencesStore.getState().toggleAnimatedBackground();
+      useAppPreferencesStore.getState().toggleAnimatedBackground();
+      expect(useAppPreferencesStore.getState().animatedBackground).toBe(false);
+    });
+
+    it('persists animatedBackground to localStorage', () => {
+      useAppPreferencesStore.getState().toggleAnimatedBackground();
+      expect(localStorage.getItem(ANIMATED_BG_KEY)).toBe('true');
     });
   });
 });

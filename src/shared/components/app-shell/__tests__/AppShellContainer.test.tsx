@@ -113,6 +113,8 @@ beforeEach(() => {
       setRetentionPolicy: vi.fn(),
       remindersEnabled: true,
       toggleReminders: vi.fn(),
+      animatedBackground: false,
+      toggleAnimatedBackground: vi.fn(),
     }),
   );
 
@@ -208,6 +210,8 @@ describe('AppShellContainer — sidebar collapsed state', () => {
         setRetentionPolicy: vi.fn(),
         remindersEnabled: true,
         toggleReminders: vi.fn(),
+        animatedBackground: false,
+        toggleAnimatedBackground: vi.fn(),
       }),
     );
 

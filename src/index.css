@@ -45,3 +45,50 @@
     opacity: 1 !important;
   }
 }
+
+/* Animated particle background */
+@keyframes particle-float {
+  0%,
+  100% {
+    transform: translateY(0) translateX(0);
+  }
+  25% {
+    transform: translateY(-50px) translateX(18px);
+  }
+  50% {
+    transform: translateY(-25px) translateX(-20px);
+  }
+  75% {
+    transform: translateY(-60px) translateX(12px);
+  }
+}
+
+@keyframes particle-fade {
+  0%,
+  100% {
+    opacity: 0.18;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.particle-bg-dot {
+  position: absolute;
+  border-radius: 50%;
+  background-color: rgba(99, 102, 241, 0.18);
+  animation:
+    particle-float var(--particle-duration, 16s) ease-in-out infinite,
+    particle-fade var(--particle-fade-duration, 9s) ease-in-out infinite;
+}
+
+.dark .particle-bg-dot {
+  background-color: rgba(165, 180, 252, 0.15);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .particle-bg-dot {
+    animation: none !important;
+    opacity: 0 !important;
+  }
+}

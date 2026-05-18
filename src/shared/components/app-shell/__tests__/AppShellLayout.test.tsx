@@ -93,3 +93,23 @@ describe('AppShellLayout — main element margin', () => {
     expect(main).toHaveClass('md:ml-16');
   });
 });
+
+describe('AppShellLayout — ParticleBackground', () => {
+  it('renders ParticleBackground when animatedBackground is true', () => {
+    renderWithRouter({ ...defaultProps, animatedBackground: true });
+
+    expect(screen.getByTestId('particle-background')).toBeInTheDocument();
+  });
+
+  it('does not render ParticleBackground when animatedBackground is false', () => {
+    renderWithRouter({ ...defaultProps, animatedBackground: false });
+
+    expect(screen.queryByTestId('particle-background')).not.toBeInTheDocument();
+  });
+
+  it('does not render ParticleBackground by default', () => {
+    renderWithRouter(defaultProps);
+
+    expect(screen.queryByTestId('particle-background')).not.toBeInTheDocument();
+  });
+});

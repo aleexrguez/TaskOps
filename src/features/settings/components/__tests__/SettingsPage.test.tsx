@@ -14,6 +14,8 @@ const defaultProps = {
   onRetentionPolicyChange: vi.fn(),
   remindersEnabled: true,
   onToggleReminders: vi.fn(),
+  animatedBackground: false,
+  onToggleAnimatedBackground: vi.fn(),
 };
 
 describe('SettingsPage', () => {
@@ -102,6 +104,56 @@ describe('SettingsPage', () => {
       screen.getByText(
         /show popup reminders for tasks that are overdue or due soon/i,
       ),
+    ).toBeInTheDocument();
+  });
+
+  it('renders the "Animated background" checkbox', () => {
+    render(<SettingsPage {...defaultProps} />);
+
+    expect(
+      screen.getByRole('checkbox', { name: /animated background/i }),
+    ).toBeInTheDocument();
+  });
+
+  it('animated background checkbox is checked when animatedBackground is true', () => {
+    render(<SettingsPage {...defaultProps} animatedBackground={true} />);
+
+    expect(
+      screen.getByRole('checkbox', { name: /animated background/i }),
+    ).toBeChecked();
+  });
+
+  it('animated background checkbox is unchecked when animatedBackground is false', () => {
+    render(<SettingsPage {...defaultProps} animatedBackground={false} />);
+
+    expect(
+      screen.getByRole('checkbox', { name: /animated background/i }),
+    ).not.toBeChecked();
+  });
+
+  it('calls onToggleAnimatedBackground when checkbox is clicked', async () => {
+    const user = userEvent.setup();
+    const onToggleAnimatedBackground = vi.fn();
+
+    render(
+      <SettingsPage
+        {...defaultProps}
+        onToggleAnimatedBackground={onToggleAnimatedBackground}
+      />,
+    );
+
+    await user.click(
+      screen.getByRole('checkbox', { name: /animated background/i }),
+    );
+
+    expect(onToggleAnimatedBackground).toHaveBeenCalledOnce();
+  });
+
+  it('renders the description text about floating particles', () => {
+    render(<SettingsPage {...defaultProps} />);
+
+    expect(
+      screen.getByText(/show subtle floating particles behind app content/i),
     ).toBeInTheDocument();
   });
 

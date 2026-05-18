@@ -12,6 +12,8 @@ interface SettingsPageProps {
   onRetentionPolicyChange: (policy: RetentionPolicy) => void;
   remindersEnabled: boolean;
   onToggleReminders: () => void;
+  animatedBackground: boolean;
+  onToggleAnimatedBackground: () => void;
 }
 
 const CARD = 'bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm';
@@ -23,6 +25,8 @@ export function SettingsPage({
   onRetentionPolicyChange,
   remindersEnabled,
   onToggleReminders,
+  animatedBackground,
+  onToggleAnimatedBackground,
 }: SettingsPageProps) {
   return (
     <div className="space-y-6">
@@ -36,6 +40,18 @@ export function SettingsPage({
           Appearance
         </h2>
         <ThemeSelector theme={theme} onThemeChange={onThemeChange} />
+        <label className="flex items-center gap-3 text-sm text-gray-700 dark:text-gray-300 cursor-pointer mt-4">
+          <input
+            type="checkbox"
+            checked={animatedBackground}
+            onChange={onToggleAnimatedBackground}
+            className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+          />
+          Animated background
+        </label>
+        <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+          Show subtle floating particles behind app content.
+        </p>
       </section>
 
       {/* Section 2 — Data Retention */}
