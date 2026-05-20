@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/features/auth/hooks';
 import { useToastStore } from '@/shared/store/toast.store';
 import {
@@ -11,6 +12,7 @@ import { getAvatarPublicUrl } from '../api/profile.api';
 import { AccountPage } from '../components/AccountPage';
 
 export function AccountContainer() {
+  const { t } = useTranslation('account');
   const { user } = useAuth();
   const addToast = useToastStore((s) => s.addToast);
 
@@ -30,10 +32,10 @@ export function AccountContainer() {
     updateProfile.mutate(
       { display_name: name },
       {
-        onSuccess: () => addToast('Display name updated', 'success'),
+        onSuccess: () => addToast(t('toast.nameUpdated'), 'success'),
         onError: (err) =>
           addToast(
-            err instanceof Error ? err.message : 'Update failed',
+            err instanceof Error ? err.message : t('toast.updateFailed'),
             'error',
           ),
       },
@@ -42,17 +44,23 @@ export function AccountContainer() {
 
   function handleUploadAvatar(file: File) {
     uploadAvatar.mutate(file, {
-      onSuccess: () => addToast('Avatar updated', 'success'),
+      onSuccess: () => addToast(t('toast.avatarUpdated'), 'success'),
       onError: (err) =>
-        addToast(err instanceof Error ? err.message : 'Upload failed', 'error'),
+        addToast(
+          err instanceof Error ? err.message : t('toast.uploadFailed'),
+          'error',
+        ),
     });
   }
 
   function handleRemoveAvatar() {
     removeAvatarMutation.mutate(undefined, {
-      onSuccess: () => addToast('Avatar removed', 'success'),
+      onSuccess: () => addToast(t('toast.avatarRemoved'), 'success'),
       onError: (err) =>
-        addToast(err instanceof Error ? err.message : 'Remove failed', 'error'),
+        addToast(
+          err instanceof Error ? err.message : t('toast.removeFailed'),
+          'error',
+        ),
     });
   }
 
@@ -72,7 +80,7 @@ export function AccountContainer() {
         updateProfile.isError
           ? updateProfile.error instanceof Error
             ? updateProfile.error.message
-            : 'Update failed'
+            : t('toast.updateFailed')
           : null
       }
       onUploadAvatar={handleUploadAvatar}
@@ -83,7 +91,7 @@ export function AccountContainer() {
         uploadAvatar.isError
           ? uploadAvatar.error instanceof Error
             ? uploadAvatar.error.message
-            : 'Upload failed'
+            : t('toast.uploadFailed')
           : null
       }
       onChangePassword={changePassword}

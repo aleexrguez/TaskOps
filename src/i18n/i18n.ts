@@ -9,6 +9,8 @@ import inboxEN from './locales/en/inbox.json';
 import inboxES from './locales/es/inbox.json';
 import taskEN from './locales/en/task.json';
 import taskES from './locales/es/task.json';
+import accountEN from './locales/en/account.json';
+import accountES from './locales/es/account.json';
 
 i18n.use(initReactI18next).init({
   resources: {
@@ -17,12 +19,14 @@ i18n.use(initReactI18next).init({
       settings: settingsEN,
       inbox: inboxEN,
       task: taskEN,
+      account: accountEN,
     },
     es: {
       common: commonES,
       settings: settingsES,
       inbox: inboxES,
       task: taskES,
+      account: accountES,
     },
   },
   lng: 'en',

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { changePasswordInputSchema } from '../types/profile.types';
 
 interface ChangePasswordFormProps {
@@ -16,6 +17,7 @@ export function ChangePasswordForm({
   isSuccess,
   onReset,
 }: ChangePasswordFormProps) {
+  const { t } = useTranslation('account');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [validationErrors, setValidationErrors] = useState<
@@ -58,7 +60,7 @@ export function ChangePasswordForm({
           htmlFor="new-password"
           className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
         >
-          New password
+          {t('password.newPassword')}
         </label>
         <input
           id="new-password"
@@ -88,7 +90,7 @@ export function ChangePasswordForm({
           htmlFor="confirm-password"
           className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
         >
-          Confirm password
+          {t('password.confirmPassword')}
         </label>
         <input
           id="confirm-password"
@@ -123,7 +125,7 @@ export function ChangePasswordForm({
 
       {isSuccess && (
         <p className="text-sm text-green-600 dark:text-green-400" role="status">
-          Password changed successfully.
+          {t('password.success')}
         </p>
       )}
 
@@ -132,7 +134,7 @@ export function ChangePasswordForm({
         disabled={isPending}
         className="cursor-pointer rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
       >
-        {isPending ? 'Changing...' : 'Change password'}
+        {isPending ? t('password.changing') : t('password.submit')}
       </button>
     </form>
   );

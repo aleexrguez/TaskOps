@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { AccountSection } from './AccountSection';
 import { ChangePasswordForm } from './ChangePasswordForm';
 
@@ -42,16 +43,18 @@ export function AccountPage({
   changePasswordSuccess,
   onResetChangePassword,
 }: AccountPageProps) {
+  const { t } = useTranslation('account');
+
   return (
     <div className="space-y-6">
       <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
-        Account
+        {t('heading')}
       </h1>
 
       {/* Section 1 — Profile */}
       <section className={CARD}>
         <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
-          Profile
+          {t('profile.heading')}
         </h2>
         <AccountSection
           email={email}
@@ -72,7 +75,7 @@ export function AccountPage({
       {/* Section 2 — Change Password */}
       <section className={CARD}>
         <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
-          Change Password
+          {t('password.heading')}
         </h2>
         <ChangePasswordForm
           onSubmit={onChangePassword}

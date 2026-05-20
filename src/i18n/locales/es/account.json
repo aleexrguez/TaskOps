@@ -1,0 +1,35 @@
+{
+  "heading": "Cuenta",
+  "profile": {
+    "heading": "Perfil",
+    "displayName": "Nombre para mostrar",
+    "namePlaceholder": "Tu nombre",
+    "email": "Email"
+  },
+  "avatar": {
+    "alt": "Avatar del usuario",
+    "noAvatar": "Sin avatar",
+    "changeAvatar": "Cambiar avatar",
+    "uploading": "Subiendo...",
+    "removePhoto": "Eliminar foto",
+    "removing": "Eliminando...",
+    "uploadLabel": "Subir imagen de avatar",
+    "constraints": "JPEG, PNG o WebP. Maximo 2MB."
+  },
+  "password": {
+    "heading": "Cambiar contraseña",
+    "newPassword": "Nueva contraseña",
+    "confirmPassword": "Confirmar contraseña",
+    "submit": "Cambiar contraseña",
+    "changing": "Cambiando...",
+    "success": "Contraseña cambiada exitosamente."
+  },
+  "toast": {
+    "nameUpdated": "Nombre actualizado",
+    "avatarUpdated": "Avatar actualizado",
+    "avatarRemoved": "Avatar eliminado",
+    "updateFailed": "Error al actualizar",
+    "uploadFailed": "Error al subir",
+    "removeFailed": "Error al eliminar"
+  }
+}

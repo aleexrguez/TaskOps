@@ -1,0 +1,35 @@
+{
+  "heading": "Account",
+  "profile": {
+    "heading": "Profile",
+    "displayName": "Display name",
+    "namePlaceholder": "Your name",
+    "email": "Email"
+  },
+  "avatar": {
+    "alt": "User avatar",
+    "noAvatar": "No avatar",
+    "changeAvatar": "Change avatar",
+    "uploading": "Uploading...",
+    "removePhoto": "Remove photo",
+    "removing": "Removing...",
+    "uploadLabel": "Upload avatar image",
+    "constraints": "JPEG, PNG or WebP. Max 2MB."
+  },
+  "password": {
+    "heading": "Change Password",
+    "newPassword": "New password",
+    "confirmPassword": "Confirm password",
+    "submit": "Change password",
+    "changing": "Changing...",
+    "success": "Password changed successfully."
+  },
+  "toast": {
+    "nameUpdated": "Display name updated",
+    "avatarUpdated": "Avatar updated",
+    "avatarRemoved": "Avatar removed",
+    "updateFailed": "Update failed",
+    "uploadFailed": "Upload failed",
+    "removeFailed": "Remove failed"
+  }
+}
