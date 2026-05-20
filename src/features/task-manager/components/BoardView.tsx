@@ -17,6 +17,7 @@ import type {
   DragStartEvent,
 } from '@dnd-kit/core';
 import { arrayMove, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
+import { useTranslation } from 'react-i18next';
 import type { Task, TaskStatus } from '../types';
 import type { TaskBoard } from '../utils';
 import type { ChecklistSummaries } from '../api/checklist-api';
@@ -112,6 +113,7 @@ export function BoardView({
   onBoardChange,
   checklistSummaries,
 }: BoardViewProps) {
+  const { t } = useTranslation('common');
   const [localBoard, setLocalBoard] = useState<TaskBoard>(board);
   const [activeTask, setActiveTask] = useState<Task | null>(null);
   const isDraggingRef = useRef(false);
@@ -275,7 +277,7 @@ export function BoardView({
     >
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <BoardColumn
-          title="Todo"
+          title={t('status.todo')}
           tasks={localBoard.todo}
           status="todo"
           onDelete={onDelete}
@@ -286,7 +288,7 @@ export function BoardView({
           checklistSummaries={checklistSummaries}
         />
         <BoardColumn
-          title="In Progress"
+          title={t('status.inProgress')}
           tasks={localBoard['in-progress']}
           status="in-progress"
           onDelete={onDelete}
@@ -297,7 +299,7 @@ export function BoardView({
           checklistSummaries={checklistSummaries}
         />
         <BoardColumn
-          title="Done"
+          title={t('status.done')}
           tasks={localBoard.done}
           status="done"
           onDelete={onDelete}

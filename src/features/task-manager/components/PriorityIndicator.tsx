@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import type { TaskPriority } from '../types';
 
 interface PriorityIndicatorProps {
@@ -10,20 +11,16 @@ const PRIORITY_DOT: Record<TaskPriority, string> = {
   high: 'bg-red-500',
 };
 
-const PRIORITY_LABELS: Record<TaskPriority, string> = {
-  low: 'Low',
-  medium: 'Medium',
-  high: 'High',
-};
-
 export function PriorityIndicator({ priority }: PriorityIndicatorProps) {
+  const { t } = useTranslation('common');
+
   return (
     <span className="inline-flex items-center gap-1.5 text-xs text-gray-600 dark:text-gray-400">
       <span
         className={`h-2 w-2 rounded-full ${PRIORITY_DOT[priority]}`}
         aria-hidden="true"
       />
-      {PRIORITY_LABELS[priority]}
+      {t(`priority.${priority}`)}
     </span>
   );
 }

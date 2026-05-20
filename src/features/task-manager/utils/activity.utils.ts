@@ -1,46 +1,67 @@
-import { STATUS_LABELS } from '../components/status.constants';
+import type { TFunction } from 'i18next';
 import { formatDate } from './date.utils';
+import type { DateLang } from './date.utils';
 import type { ActivityEvent } from '../types/activity.types';
-import type { TaskStatus } from '../types/task.types';
 
-function statusLabel(value: string | null): string {
-  if (!value) return 'unknown';
-  return STATUS_LABELS[value as TaskStatus] ?? value;
-}
-
-export function formatEventDescription(event: ActivityEvent): string {
+export function formatEventDescription(
+  event: ActivityEvent,
+  t: TFunction,
+  lang: DateLang = 'en',
+): string {
   switch (event.eventType) {
     case 'task_created':
-      return 'Task created';
+      return t('task:activity.taskCreated');
     case 'task_status_changed':
-      return `Moved from ${statusLabel(event.fromValue)} to ${statusLabel(event.toValue)}`;
+      return t('task:activity.statusChanged', {
+        from: event.fromValue
+          ? t(`common:status.${statusKey(event.fromValue)}`)
+          : t('task:activity.unknownStatus'),
+        to: event.toValue
+          ? t(`common:status.${statusKey(event.toValue)}`)
+          : t('task:activity.unknownStatus'),
+      });
     case 'task_priority_changed':
-      return `Priority changed from ${event.fromValue ?? 'none'} to ${event.toValue ?? 'none'}`;
+      return t('task:activity.priorityChanged', {
+        from: event.fromValue
+          ? t(`common:priority.${event.fromValue}`)
+          : t('task:activity.noneValue'),
+        to: event.toValue
+          ? t(`common:priority.${event.toValue}`)
+          : t('task:activity.noneValue'),
+      });
     case 'task_due_date_changed':
       return event.toValue
-        ? `Due date changed to ${formatDate(event.toValue)}`
-        : 'Due date removed';
+        ? t('task:activity.dueDateChanged', {
+            date: formatDate(event.toValue, lang),
+          })
+        : t('task:activity.dueDateRemoved');
     case 'task_completed':
-      return 'Task completed';
+      return t('task:activity.taskCompleted');
     case 'task_archived':
-      return 'Task archived';
+      return t('task:activity.taskArchived');
     case 'task_unarchived':
-      return 'Task restored';
+      return t('task:activity.taskUnarchived');
     case 'checklist_item_created': {
       const title = (event.metadata?.title as string) ?? 'item';
-      return `Added checklist item "${title}"`;
+      return t('task:activity.checklistItemCreated', { title });
     }
     case 'checklist_item_completed': {
       const title = (event.metadata?.title as string) ?? 'item';
-      return `Completed checklist item "${title}"`;
+      return t('task:activity.checklistItemCompleted', { title });
     }
     case 'checklist_item_deleted': {
       const title = (event.metadata?.title as string) ?? 'item';
-      return `Removed checklist item "${title}"`;
+      return t('task:activity.checklistItemDeleted', { title });
     }
     case 'recurrence_generated_task':
-      return 'Auto-generated from recurrence';
+      return t('task:activity.recurrenceGenerated');
     default:
-      return 'Activity recorded';
+      return t('task:activity.default');
   }
+}
+
+/** Map status values (with hyphens) to i18n keys (camelCase). */
+function statusKey(value: string): string {
+  if (value === 'in-progress') return 'inProgress';
+  return value;
 }

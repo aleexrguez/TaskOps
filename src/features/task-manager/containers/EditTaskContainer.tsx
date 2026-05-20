@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useTask, useUpdateTask } from '../hooks/use-tasks';
 import { useTaskUIStore } from '../store/task-ui.store';
 import { useToastStore } from '@/shared/store/toast.store';
@@ -10,6 +11,7 @@ import {
 } from '../utils/confetti';
 
 export function EditTaskContainer() {
+  const { t } = useTranslation('task');
   const isOpen = useTaskUIStore((s) => s.isEditModalOpen);
   const selectedTaskId = useTaskUIStore((s) => s.selectedTaskId);
   const closeEditModal = useTaskUIStore((s) => s.closeEditModal);
@@ -39,7 +41,7 @@ export function EditTaskContainer() {
       { id: selectedTaskId, input: data },
       {
         onSuccess: () => {
-          addToast('Task updated', 'success');
+          addToast(t('toast.updated'), 'success');
           closeEditModal();
           if (
             data.status === 'done' &&
@@ -53,7 +55,7 @@ export function EditTaskContainer() {
           }
         },
         onError: () => {
-          addToast('Failed to update task', 'error');
+          addToast(t('toast.updateFailed'), 'error');
         },
       },
     );
@@ -74,11 +76,11 @@ export function EditTaskContainer() {
             id="edit-task-title"
             className="text-lg font-semibold text-gray-900 dark:text-gray-100"
           >
-            Edit Task
+            {t('modal.editTitle')}
           </h2>
           <button
             type="button"
-            aria-label="Close"
+            aria-label={t('common:action.close')}
             onClick={closeEditModal}
             className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
           >
@@ -102,7 +104,7 @@ export function EditTaskContainer() {
               onSubmit={handleSubmit}
               initialValues={task}
               isSubmitting={isPending}
-              submitLabel="Save Changes"
+              submitLabel={t('modal.submitSave')}
             />
           </>
         )}

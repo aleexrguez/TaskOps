@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { ChangeEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { TaskStatus, TaskPriority } from '../types';
 
 interface TaskFiltersProps {
@@ -25,6 +26,7 @@ export function TaskFilters({
   onReset,
   onToggleArchived,
 }: TaskFiltersProps) {
+  const { t } = useTranslation();
   const [isFiltersExpanded, setIsFiltersExpanded] = useState(false);
 
   const activeFilterCount = [
@@ -58,7 +60,7 @@ export function TaskFilters({
         aria-controls="task-filters-panel"
         className="flex min-h-[44px] items-center gap-2 rounded-md border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 md:hidden dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
       >
-        Filters
+        {t('task:filter.button')}
         {activeFilterCount > 0 && (
           <span className="inline-flex h-5 min-w-[20px] items-center justify-center rounded-full bg-indigo-100 px-1.5 text-xs font-semibold text-indigo-700 dark:bg-indigo-900 dark:text-indigo-300">
             {activeFilterCount}
@@ -68,13 +70,13 @@ export function TaskFilters({
 
       {showArchived && !isFiltersExpanded && (
         <div className="flex items-center gap-2 rounded-md bg-indigo-50 px-3 py-2 text-sm text-indigo-700 md:hidden dark:bg-indigo-900/30 dark:text-indigo-300">
-          <span>Viewing archived tasks</span>
+          <span>{t('task:filter.viewingArchived')}</span>
           <button
             type="button"
             onClick={onToggleArchived}
             className="ml-auto cursor-pointer text-xs font-medium underline"
           >
-            Hide
+            {t('task:filter.hide')}
           </button>
         </div>
       )}
@@ -87,33 +89,33 @@ export function TaskFilters({
           type="text"
           value={searchQuery}
           onChange={handleSearchChange}
-          placeholder="Search tasks..."
-          aria-label="Search tasks"
+          placeholder={t('task:filter.searchPlaceholder')}
+          aria-label={t('task:filter.searchLabel')}
           className={controlClass}
         />
 
         <select
           value={statusFilter}
           onChange={handleStatusChange}
-          aria-label="Filter by status"
+          aria-label={t('task:filter.statusLabel')}
           className={controlClass}
         >
-          <option value="all">All Statuses</option>
-          <option value="todo">Todo</option>
-          <option value="in-progress">In Progress</option>
-          <option value="done">Done</option>
+          <option value="all">{t('task:filter.allStatuses')}</option>
+          <option value="todo">{t('common:status.todo')}</option>
+          <option value="in-progress">{t('common:status.inProgress')}</option>
+          <option value="done">{t('common:status.done')}</option>
         </select>
 
         <select
           value={priorityFilter}
           onChange={handlePriorityChange}
-          aria-label="Filter by priority"
+          aria-label={t('task:filter.priorityLabel')}
           className={controlClass}
         >
-          <option value="all">All Priorities</option>
-          <option value="low">Low</option>
-          <option value="medium">Medium</option>
-          <option value="high">High</option>
+          <option value="all">{t('task:filter.allPriorities')}</option>
+          <option value="low">{t('common:priority.low')}</option>
+          <option value="medium">{t('common:priority.medium')}</option>
+          <option value="high">{t('common:priority.high')}</option>
         </select>
 
         <button
@@ -121,7 +123,7 @@ export function TaskFilters({
           onClick={onReset}
           className="min-h-[44px] cursor-pointer rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
         >
-          Reset
+          {t('task:filter.reset')}
         </button>
 
         <button
@@ -134,7 +136,9 @@ export function TaskFilters({
               : 'min-h-[44px] cursor-pointer rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900'
           }
         >
-          {showArchived ? 'Hide archived' : 'Show archived'}
+          {showArchived
+            ? t('task:filter.hideArchived')
+            : t('task:filter.showArchived')}
         </button>
       </div>
     </div>

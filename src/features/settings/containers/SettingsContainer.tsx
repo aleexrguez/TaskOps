@@ -16,6 +16,8 @@ export function SettingsContainer() {
   const toggleAnimatedBackground = useAppPreferencesStore(
     (s) => s.toggleAnimatedBackground,
   );
+  const language = useAppPreferencesStore((s) => s.language);
+  const setLanguage = useAppPreferencesStore((s) => s.setLanguage);
 
   return (
     <SettingsPage
@@ -27,6 +29,8 @@ export function SettingsContainer() {
       onToggleReminders={toggleReminders}
       animatedBackground={animatedBackground}
       onToggleAnimatedBackground={toggleAnimatedBackground}
+      language={language}
+      onLanguageChange={setLanguage}
     />
   );
 }

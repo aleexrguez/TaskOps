@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import type { TaskStatus } from '../types';
 import { getDueDateDaysRemaining } from '../utils';
 
@@ -15,20 +16,24 @@ const RED = 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300';
 const RED_OVERDUE =
   'bg-red-100 text-red-700 font-semibold dark:bg-red-900/40 dark:text-red-300';
 
-function getBadgeConfig(days: number): { label: string; colorClass: string } {
+function getBadgeConfig(days: number): {
+  labelKey: string;
+  colorClass: string;
+  count?: number;
+} {
   if (days < 0) {
-    return { label: 'Overdue', colorClass: RED_OVERDUE };
+    return { labelKey: 'date.overdue', colorClass: RED_OVERDUE };
   }
   if (days === 0) {
-    return { label: 'Due today', colorClass: RED };
+    return { labelKey: 'date.dueToday', colorClass: RED };
   }
   if (days === 1) {
-    return { label: 'Tomorrow', colorClass: AMBER };
+    return { labelKey: 'date.tomorrow', colorClass: AMBER };
   }
   if (days <= 3) {
-    return { label: `${days} days left`, colorClass: AMBER };
+    return { labelKey: 'date.daysLeft', colorClass: AMBER, count: days };
   }
-  return { label: `${days} days left`, colorClass: GREEN };
+  return { labelKey: 'date.daysLeft', colorClass: GREEN, count: days };
 }
 
 export function DueDateDisplay({
@@ -36,11 +41,14 @@ export function DueDateDisplay({
   status,
   today,
 }: DueDateDisplayProps) {
+  const { t } = useTranslation('common');
+
   if (!dueDate) return null;
   if (status === 'done') return null;
 
   const days = getDueDateDaysRemaining(dueDate, today);
-  const { label, colorClass } = getBadgeConfig(days);
+  const { labelKey, colorClass, count } = getBadgeConfig(days);
+  const label = count !== undefined ? t(labelKey, { count }) : t(labelKey);
 
   return (
     <span

@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import type {
   ThemePreference,
   RetentionPolicy,
+  Language,
 } from '@/shared/types/preferences.types';
 
 const THEME_KEY = 'task-manager-theme';
@@ -9,6 +10,7 @@ const RETENTION_KEY = 'task-manager-retention-policy';
 const SIDEBAR_KEY = 'task-manager-sidebar-collapsed';
 const REMINDERS_KEY = 'task-manager-reminders-enabled';
 const ANIMATED_BG_KEY = 'task-manager-animated-bg';
+const LANGUAGE_KEY = 'task-manager-language';
 
 interface AppPreferencesState {
   theme: ThemePreference;
@@ -16,12 +18,14 @@ interface AppPreferencesState {
   isSidebarCollapsed: boolean;
   remindersEnabled: boolean;
   animatedBackground: boolean;
+  language: Language;
 
   setTheme: (theme: ThemePreference) => void;
   setRetentionPolicy: (policy: RetentionPolicy) => void;
   toggleSidebar: () => void;
   toggleReminders: () => void;
   toggleAnimatedBackground: () => void;
+  setLanguage: (lang: Language) => void;
 }
 
 function getInitialTheme(): ThemePreference {
@@ -83,12 +87,25 @@ function getInitialAnimatedBackground(): boolean {
   }
 }
 
+function getInitialLanguage(): Language {
+  try {
+    const stored = localStorage.getItem(LANGUAGE_KEY);
+    if (stored === 'en' || stored === 'es') {
+      return stored;
+    }
+    return 'en';
+  } catch {
+    return 'en';
+  }
+}
+
 export const useAppPreferencesStore = create<AppPreferencesState>((set) => ({
   theme: getInitialTheme(),
   retentionPolicy: getInitialRetentionPolicy(),
   isSidebarCollapsed: getInitialSidebarCollapsed(),
   remindersEnabled: getInitialRemindersEnabled(),
   animatedBackground: getInitialAnimatedBackground(),
+  language: getInitialLanguage(),
 
   setTheme: (theme) =>
     set(() => {
@@ -141,5 +158,15 @@ export const useAppPreferencesStore = create<AppPreferencesState>((set) => ({
         // ignore
       }
       return { animatedBackground: next };
+    }),
+
+  setLanguage: (lang) =>
+    set(() => {
+      try {
+        localStorage.setItem(LANGUAGE_KEY, lang);
+      } catch {
+        // ignore
+      }
+      return { language: lang };
     }),
 }));

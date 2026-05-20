@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type {
   ChecklistItem,
   ReorderChecklistItem,
@@ -24,6 +25,7 @@ export function Checklist({
   onReorder,
   isLoading = false,
 }: ChecklistProps) {
+  const { t } = useTranslation('task');
   const [newItemTitle, setNewItemTitle] = useState('');
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingTitle, setEditingTitle] = useState('');
@@ -110,10 +112,10 @@ export function Checklist({
   const completedCount = items.filter((i) => i.isCompleted).length;
 
   return (
-    <section aria-label="Checklist">
+    <section aria-label={t('checklist.heading')}>
       <div className="mb-3 flex items-center justify-between">
         <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-          Checklist
+          {t('checklist.heading')}
         </h3>
         <ChecklistProgress completed={completedCount} total={items.length} />
       </div>
@@ -138,7 +140,11 @@ export function Checklist({
                 type="checkbox"
                 checked={item.isCompleted}
                 onChange={() => onToggle(item.id, !item.isCompleted)}
-                aria-label={`Mark "${item.title}" as ${item.isCompleted ? 'incomplete' : 'complete'}`}
+                aria-label={
+                  item.isCompleted
+                    ? t('checklist.markIncomplete', { title: item.title })
+                    : t('checklist.markComplete', { title: item.title })
+                }
                 className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
               />
 
@@ -151,7 +157,7 @@ export function Checklist({
                   onKeyDown={handleEditKeyDown}
                   onBlur={handleEditBlur}
                   className="flex-1 rounded border border-gray-300 px-2 py-0.5 text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
-                  aria-label="Edit item title"
+                  aria-label={t('checklist.editTitle')}
                 />
               ) : (
                 <span
@@ -176,7 +182,7 @@ export function Checklist({
                   type="button"
                   onClick={() => handleMoveUp(index)}
                   disabled={index === 0}
-                  aria-label={`Move "${item.title}" up`}
+                  aria-label={t('checklist.moveUp', { title: item.title })}
                   className="rounded p-1 text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus-visible:opacity-100 disabled:cursor-not-allowed disabled:opacity-30 dark:hover:text-gray-300"
                 >
                   ↑
@@ -185,7 +191,7 @@ export function Checklist({
                   type="button"
                   onClick={() => handleMoveDown(index)}
                   disabled={index === items.length - 1}
-                  aria-label={`Move "${item.title}" down`}
+                  aria-label={t('checklist.moveDown', { title: item.title })}
                   className="rounded p-1 text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus-visible:opacity-100 disabled:cursor-not-allowed disabled:opacity-30 dark:hover:text-gray-300"
                 >
                   ↓
@@ -193,7 +199,7 @@ export function Checklist({
                 <button
                   type="button"
                   onClick={() => onDelete(item.id)}
-                  aria-label={`Delete "${item.title}"`}
+                  aria-label={t('checklist.deleteItem', { title: item.title })}
                   className="rounded p-1 text-gray-400 hover:text-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus-visible:opacity-100 dark:hover:text-red-400"
                 >
                   ×
@@ -210,8 +216,8 @@ export function Checklist({
           value={newItemTitle}
           onChange={(e) => setNewItemTitle(e.target.value)}
           onKeyDown={handleCreateKeyDown}
-          placeholder="Add item..."
-          aria-label="Add checklist item"
+          placeholder={t('checklist.addPlaceholder')}
+          aria-label={t('checklist.addItem')}
           className="w-full rounded-md border border-dashed border-gray-300 px-3 py-1.5 text-sm placeholder-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700/50 dark:text-gray-100 dark:placeholder-gray-500"
         />
       </div>

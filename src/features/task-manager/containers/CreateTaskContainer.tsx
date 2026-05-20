@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useCreateTask } from '../hooks/use-tasks';
 import { useTaskUIStore } from '../store/task-ui.store';
 import { useToastStore } from '@/shared/store/toast.store';
@@ -7,6 +8,7 @@ import type { CreateTaskInput } from '../types';
 import { useActivityRecorder } from '../hooks/use-activity-recorder';
 
 export function CreateTaskContainer() {
+  const { t } = useTranslation('task');
   const isOpen = useTaskUIStore((s) => s.isCreateModalOpen);
   const closeCreateModal = useTaskUIStore((s) => s.closeCreateModal);
   const addToast = useToastStore((s) => s.addToast);
@@ -30,12 +32,12 @@ export function CreateTaskContainer() {
   function handleSubmit(data: CreateTaskInput): void {
     createTask(data, {
       onSuccess: (createdTask) => {
-        addToast('Task created', 'success');
+        addToast(t('toast.created'), 'success');
         closeCreateModal();
         recorder.recordTaskCreated(createdTask.id);
       },
       onError: () => {
-        addToast('Failed to create task', 'error');
+        addToast(t('toast.createFailed'), 'error');
       },
     });
   }
@@ -55,11 +57,11 @@ export function CreateTaskContainer() {
             id="create-task-title"
             className="text-lg font-semibold text-gray-900 dark:text-gray-100"
           >
-            New Task
+            {t('modal.createTitle')}
           </h2>
           <button
             type="button"
-            aria-label="Close"
+            aria-label={t('common:action.close')}
             onClick={closeCreateModal}
             className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
           >
@@ -76,7 +78,7 @@ export function CreateTaskContainer() {
         <TaskForm
           onSubmit={handleSubmit}
           isSubmitting={isPending}
-          submitLabel="Create Task"
+          submitLabel={t('modal.submitCreate')}
           autoFocusTitle
         />
       </div>

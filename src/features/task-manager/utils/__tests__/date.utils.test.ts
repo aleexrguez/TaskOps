@@ -19,6 +19,10 @@ describe('formatDate', () => {
   it('handles a datetime with positive UTC offset', () => {
     expect(formatDate('2026-07-04T23:59:59.000Z')).toMatch(/Jul [45], 2026/);
   });
+
+  it('formatDate with es locale returns Spanish month', () => {
+    expect(formatDate('2026-05-18', 'es')).toMatch(/may/i);
+  });
 });
 
 describe('formatDateTime', () => {
@@ -37,5 +41,9 @@ describe('formatDateTime', () => {
     const result = formatDateTime('2026-01-01T00:00:00.000Z');
     expect(result).toContain('2026');
     expect(result).toMatch(/\d{1,2}:\d{2}\s[AP]M$/);
+  });
+
+  it('formatDateTime with es locale returns Spanish month', () => {
+    expect(formatDateTime('2026-05-18T15:30:00.000Z', 'es')).toMatch(/may/i);
   });
 });

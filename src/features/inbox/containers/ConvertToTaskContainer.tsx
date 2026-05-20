@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useConvertInboxItem } from '../hooks/use-inbox';
 import { useInboxUIStore } from '../store/inbox-ui.store';
 import { useToastStore } from '@/shared/store/toast.store';
@@ -11,6 +12,7 @@ interface ConvertToTaskContainerProps {
 }
 
 export function ConvertToTaskContainer({ item }: ConvertToTaskContainerProps) {
+  const { t } = useTranslation(['inbox', 'common']);
   const setConvertingItem = useInboxUIStore((s) => s.setConvertingItem);
   const addToast = useToastStore((s) => s.addToast);
   const { mutate: convert, isPending } = useConvertInboxItem();
@@ -35,11 +37,11 @@ export function ConvertToTaskContainer({ item }: ConvertToTaskContainerProps) {
       },
       {
         onSuccess: () => {
-          addToast('Idea converted to task', 'success');
+          addToast(t('inbox:toast.converted'), 'success');
           setConvertingItem(null);
         },
         onError: () => {
-          addToast('Failed to convert idea', 'error');
+          addToast(t('inbox:toast.convertFailed'), 'error');
         },
       },
     );
@@ -62,11 +64,11 @@ export function ConvertToTaskContainer({ item }: ConvertToTaskContainerProps) {
             id="convert-task-title"
             className="text-lg font-semibold text-gray-900 dark:text-gray-100"
           >
-            Convert to Task
+            {t('inbox:convertForm.dialogTitle')}
           </h2>
           <button
             type="button"
-            aria-label="Close"
+            aria-label={t('common:action.close')}
             onClick={handleCancel}
             className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
           >

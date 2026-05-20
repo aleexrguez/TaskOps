@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface InboxPageProps {
   itemCount: number;
@@ -13,11 +14,13 @@ export function InboxPage({
   children,
   hero,
 }: InboxPageProps) {
+  const { t } = useTranslation('inbox');
+
   return (
     <div className="mx-auto max-w-2xl px-4 py-6">
       <div className="mb-6 flex items-center gap-3">
         <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100">
-          Inbox
+          {t('heading')}
         </h1>
         {itemCount > 0 && (
           <span className="inline-flex items-center rounded-full bg-indigo-100 px-2.5 py-0.5 text-xs font-medium text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300">

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import type { InboxItem } from '../types/inbox.types';
 
 interface InboxItemCardProps {
@@ -8,19 +9,23 @@ interface InboxItemCardProps {
   disabled?: boolean;
 }
 
-function relativeTime(dateStr: string): string {
-  const now = Date.now();
-  const then = new Date(dateStr).getTime();
-  const diffMs = now - then;
-  const diffMins = Math.floor(diffMs / 60000);
+function useRelativeTime() {
+  const { t } = useTranslation('inbox');
 
-  if (diffMins < 1) return 'just now';
-  if (diffMins < 60) return `${diffMins}m ago`;
-  const diffHours = Math.floor(diffMins / 60);
-  if (diffHours < 24) return `${diffHours}h ago`;
-  const diffDays = Math.floor(diffHours / 24);
-  if (diffDays < 7) return `${diffDays}d ago`;
-  return new Date(dateStr).toLocaleDateString();
+  return function relativeTime(dateStr: string): string {
+    const now = Date.now();
+    const then = new Date(dateStr).getTime();
+    const diffMs = now - then;
+    const diffMins = Math.floor(diffMs / 60000);
+
+    if (diffMins < 1) return t('card.justNow');
+    if (diffMins < 60) return t('card.minutesAgo', { count: diffMins });
+    const diffHours = Math.floor(diffMins / 60);
+    if (diffHours < 24) return t('card.hoursAgo', { count: diffHours });
+    const diffDays = Math.floor(diffHours / 24);
+    if (diffDays < 7) return t('card.daysAgo', { count: diffDays });
+    return new Date(dateStr).toLocaleDateString();
+  };
 }
 
 export function InboxItemCard({
@@ -30,6 +35,9 @@ export function InboxItemCard({
   onDelete,
   disabled = false,
 }: InboxItemCardProps) {
+  const { t } = useTranslation(['inbox', 'common']);
+  const relativeTime = useRelativeTime();
+
   return (
     <div
       data-testid={`inbox-item-${item.id}`}
@@ -56,27 +64,27 @@ export function InboxItemCard({
             onClick={() => onEdit(item.id)}
             disabled={disabled}
             className="rounded-md px-2 py-1 text-xs font-medium text-gray-600 hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50 dark:text-gray-400 dark:hover:bg-gray-700"
-            aria-label={`Edit ${item.title}`}
+            aria-label={t('inbox:card.editItem', { title: item.title })}
           >
-            Edit
+            {t('common:action.edit')}
           </button>
           <button
             type="button"
             onClick={() => onConvert(item.id)}
             disabled={disabled}
             className="rounded-md px-2 py-1 text-xs font-medium text-indigo-600 hover:bg-indigo-50 disabled:cursor-not-allowed disabled:opacity-50 dark:text-indigo-400 dark:hover:bg-indigo-900/40"
-            aria-label={`Convert ${item.title} to task`}
+            aria-label={t('inbox:card.convertItem', { title: item.title })}
           >
-            Convert
+            {t('common:action.convert')}
           </button>
           <button
             type="button"
             onClick={() => onDelete(item.id)}
             disabled={disabled}
             className="rounded-md px-2 py-1 text-xs font-medium text-red-600 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50 dark:text-red-400 dark:hover:bg-red-900/40"
-            aria-label={`Delete ${item.title}`}
+            aria-label={t('inbox:card.deleteItem', { title: item.title })}
           >
-            Delete
+            {t('common:action.delete')}
           </button>
         </div>
       </div>

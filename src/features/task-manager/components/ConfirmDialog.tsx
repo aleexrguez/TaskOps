@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface ConfirmDialogProps {
   isOpen: boolean;
@@ -21,6 +22,7 @@ export function ConfirmDialog({
   isLoading = false,
   variant = 'default',
 }: ConfirmDialogProps) {
+  const { t } = useTranslation('common');
   const dialogRef = useRef<HTMLDivElement>(null);
   const cancelButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -95,7 +97,7 @@ export function ConfirmDialog({
           </h2>
           <button
             type="button"
-            aria-label="Close"
+            aria-label={t('action.close')}
             onClick={onCancel}
             className="flex min-h-[44px] min-w-[44px] items-center justify-center cursor-pointer text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
           >
@@ -116,7 +118,7 @@ export function ConfirmDialog({
             disabled={isLoading}
             className="min-h-[44px] cursor-pointer rounded-md bg-gray-100 px-4 py-2 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
           >
-            Cancel
+            {t('action.cancel')}
           </button>
           <button
             type="button"

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   useTask,
@@ -32,6 +33,7 @@ import type { CreateTaskInput } from '../types';
 import { celebrateTaskDone } from '../utils/confetti';
 
 export function TaskDetailContainer() {
+  const { t } = useTranslation('task');
   const { id = '' } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
@@ -130,7 +132,7 @@ export function TaskDetailContainer() {
       { id: task.id, input: data },
       {
         onSuccess: () => {
-          addToast('Task updated', 'success');
+          addToast(t('toast.updated'), 'success');
           setIsEditing(false);
           recorder.recordTaskUpdate(task.id, task, data);
           if (data.status === 'done' && previousStatus !== 'done') {
@@ -138,7 +140,7 @@ export function TaskDetailContainer() {
           }
         },
         onError: () => {
-          addToast('Failed to update task', 'error');
+          addToast(t('toast.updateFailed'), 'error');
         },
       },
     );
@@ -156,11 +158,11 @@ export function TaskDetailContainer() {
     if (!task) return;
     deleteTask(task.id, {
       onSuccess: () => {
-        addToast('Task deleted', 'success');
+        addToast(t('toast.deleted'), 'success');
         navigate('/app');
       },
       onError: () => {
-        addToast('Failed to delete task', 'error');
+        addToast(t('toast.deleteFailed'), 'error');
         setShowConfirm(false);
       },
     });
@@ -174,10 +176,10 @@ export function TaskDetailContainer() {
     if (!task) return;
     createTask(buildDuplicateInput(task), {
       onSuccess: (createdTask) => {
-        addToast('Task duplicated', 'success');
+        addToast(t('toast.duplicated'), 'success');
         recorder.recordTaskCreated(createdTask.id);
       },
-      onError: () => addToast('Failed to duplicate task', 'error'),
+      onError: () => addToast(t('toast.duplicateFailed'), 'error'),
     });
   }
 
@@ -186,18 +188,18 @@ export function TaskDetailContainer() {
     if (task.isArchived) {
       unarchiveTask(task.id, {
         onSuccess: () => {
-          addToast('Task unarchived', 'success');
+          addToast(t('toast.unarchived'), 'success');
           recorder.recordUnarchive(task.id);
         },
-        onError: () => addToast('Failed to unarchive task', 'error'),
+        onError: () => addToast(t('toast.unarchiveFailed'), 'error'),
       });
     } else {
       archiveTask(task.id, {
         onSuccess: () => {
-          addToast('Task archived', 'success');
+          addToast(t('toast.archived'), 'success');
           recorder.recordArchive(task.id);
         },
-        onError: () => addToast('Failed to archive task', 'error'),
+        onError: () => addToast(t('toast.archiveFailed'), 'error'),
       });
     }
   }
@@ -209,13 +211,13 @@ export function TaskDetailContainer() {
       { id: task.id, input: { status: newStatus } },
       {
         onSuccess: () => {
-          addToast('Status updated', 'success');
+          addToast(t('toast.statusUpdated'), 'success');
           recorder.recordTaskUpdate(task.id, task, { status: newStatus });
           if (newStatus === 'done' && previousStatus !== 'done') {
             celebrateTaskDone();
           }
         },
-        onError: () => addToast('Failed to update status', 'error'),
+        onError: () => addToast(t('toast.statusUpdateFailed'), 'error'),
       },
     );
   }
@@ -225,7 +227,7 @@ export function TaskDetailContainer() {
       return (
         <div
           role="status"
-          aria-label="Loading task details"
+          aria-label={t('a11y.loadingTaskDetails')}
           aria-live="polite"
           className="mx-auto max-w-2xl space-y-4 rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800"
         >
@@ -291,15 +293,15 @@ export function TaskDetailContainer() {
           onClick={handleBack}
           className="mb-4 inline-flex items-center text-sm font-medium text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
         >
-          &larr; Back to tasks
+          &larr; {t('confirm.backToTasks')}
         </button>
         {renderContent()}
       </div>
       <ConfirmDialog
         isOpen={showConfirm}
-        title="Delete task"
-        description="Are you sure you want to delete this task? This action cannot be undone."
-        confirmLabel="Delete"
+        title={t('confirm.deleteTitle')}
+        description={t('confirm.deleteDescription')}
+        confirmLabel={t('common:action.delete')}
         variant="danger"
         isLoading={isDeleting}
         onConfirm={handleConfirmDelete}

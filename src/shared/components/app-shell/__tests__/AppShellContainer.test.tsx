@@ -115,6 +115,8 @@ beforeEach(() => {
       toggleReminders: vi.fn(),
       animatedBackground: false,
       toggleAnimatedBackground: vi.fn(),
+      language: 'en',
+      setLanguage: vi.fn(),
     }),
   );
 
@@ -212,6 +214,8 @@ describe('AppShellContainer — sidebar collapsed state', () => {
         toggleReminders: vi.fn(),
         animatedBackground: false,
         toggleAnimatedBackground: vi.fn(),
+        language: 'en',
+        setLanguage: vi.fn(),
       }),
     );
 

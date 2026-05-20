@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import type {
   CreateTaskInput,
   Task,
@@ -6,6 +7,7 @@ import type {
   ReorderChecklistItem,
 } from '../types';
 import { formatDate, formatDateTime } from '../utils/date.utils';
+import type { DateLang } from '../utils/date.utils';
 import { Checklist } from './Checklist';
 import { DueDateDisplay } from './DueDateDisplay';
 import { PriorityIndicator } from './PriorityIndicator';
@@ -66,8 +68,10 @@ export function TaskDetailView({
   activityEvents,
   activityLoading,
 }: TaskDetailViewProps) {
-  const createdDate = formatDate(task.createdAt);
-  const updatedDate = formatDate(task.updatedAt);
+  const { t, i18n } = useTranslation();
+  const lang = (i18n.resolvedLanguage ?? 'en') as DateLang;
+  const createdDate = formatDate(task.createdAt, lang);
+  const updatedDate = formatDate(task.updatedAt, lang);
 
   const initialValues: Partial<CreateTaskInput> = {
     title: task.title,
@@ -85,14 +89,14 @@ export function TaskDetailView({
             initialValues={initialValues}
             onSubmit={onSave ?? (() => {})}
             isSubmitting={isSubmitting}
-            submitLabel="Save Changes"
+            submitLabel={t('task:detail.saveChanges')}
           />
           <button
             type="button"
             onClick={onCancel}
             className="cursor-pointer rounded-md px-3 py-1.5 text-sm font-medium text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
           >
-            Cancel
+            {t('common:action.cancel')}
           </button>
         </div>
       ) : (
@@ -106,14 +110,14 @@ export function TaskDetailView({
                 onClick={onEdit}
                 className="cursor-pointer rounded-md min-h-[44px] px-4 py-2 text-sm font-medium text-indigo-600 hover:bg-indigo-50 dark:text-indigo-400 dark:hover:bg-indigo-900/40 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
               >
-                Edit
+                {t('common:action.edit')}
               </button>
               {onDuplicate && (
                 <button
                   onClick={onDuplicate}
                   className="cursor-pointer rounded-md min-h-[44px] px-4 py-2 text-sm font-medium text-indigo-600 hover:bg-indigo-50 dark:text-indigo-400 dark:hover:bg-indigo-900/40 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
                 >
-                  Duplicate
+                  {t('common:action.duplicate')}
                 </button>
               )}
               {onArchive && (
@@ -121,20 +125,22 @@ export function TaskDetailView({
                   onClick={onArchive}
                   className="cursor-pointer rounded-md min-h-[44px] px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
                 >
-                  {isArchived ? 'Unarchive' : 'Archive'}
+                  {isArchived
+                    ? t('common:action.unarchive')
+                    : t('common:action.archive')}
                 </button>
               )}
               <button
                 onClick={onDelete}
                 className="cursor-pointer rounded-md min-h-[44px] px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/40 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
               >
-                Delete
+                {t('common:action.delete')}
               </button>
             </div>
           </div>
 
           <p className="text-sm text-gray-600 dark:text-gray-400">
-            {task.description ?? 'No description'}
+            {task.description ?? t('task:detail.noDescription')}
           </p>
 
           {onChecklistCreate && (
@@ -162,7 +168,7 @@ export function TaskDetailView({
             <PriorityIndicator priority={task.priority} />
             {isRecurring && (
               <span className="inline-flex items-center rounded-full bg-indigo-100 px-2.5 py-0.5 text-xs font-medium text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300">
-                Recurring
+                {t('task:card.recurring')}
               </span>
             )}
             {isRecurring && frequencyLabel && (
@@ -175,7 +181,7 @@ export function TaskDetailView({
           <div className="grid grid-cols-2 gap-4 border-t border-gray-100 pt-4 text-sm dark:border-gray-700">
             <div>
               <span className="font-medium text-gray-500 dark:text-gray-400">
-                Created
+                {t('task:detail.created')}
               </span>
               <p className="mt-1 text-gray-900 dark:text-gray-100">
                 {createdDate}
@@ -183,7 +189,7 @@ export function TaskDetailView({
             </div>
             <div>
               <span className="font-medium text-gray-500 dark:text-gray-400">
-                Updated
+                {t('task:detail.updated')}
               </span>
               <p className="mt-1 text-gray-900 dark:text-gray-100">
                 {updatedDate}
@@ -192,7 +198,7 @@ export function TaskDetailView({
             {task.dueDate && (
               <div>
                 <span className="font-medium text-gray-500 dark:text-gray-400">
-                  Due Date
+                  {t('common:form.dueDate')}
                 </span>
                 <p className="mt-1 text-gray-900 dark:text-gray-100">
                   <DueDateDisplay dueDate={task.dueDate} status={task.status} />
@@ -202,10 +208,10 @@ export function TaskDetailView({
             {task.status === 'done' && task.completedAt && (
               <div>
                 <span className="font-medium text-gray-500 dark:text-gray-400">
-                  Completed
+                  {t('task:detail.completedAt')}
                 </span>
                 <p className="mt-1 text-gray-900 dark:text-gray-100">
-                  {formatDateTime(task.completedAt)}
+                  {formatDateTime(task.completedAt, lang)}
                 </p>
               </div>
             )}

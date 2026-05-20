@@ -1,0 +1,122 @@
+{
+  "toast": {
+    "created": "Tarea creada",
+    "updated": "Tarea actualizada",
+    "deleted": "Tarea eliminada",
+    "duplicated": "Tarea duplicada",
+    "archived": "Tarea archivada",
+    "unarchived": "Tarea desarchivada",
+    "statusUpdated": "Estado actualizado",
+    "createFailed": "Error al crear la tarea",
+    "updateFailed": "Error al actualizar la tarea",
+    "deleteFailed": "Error al eliminar la tarea",
+    "duplicateFailed": "Error al duplicar la tarea",
+    "archiveFailed": "Error al archivar la tarea",
+    "unarchiveFailed": "Error al desarchivar la tarea",
+    "statusUpdateFailed": "Error al actualizar el estado"
+  },
+  "modal": {
+    "createTitle": "Nueva tarea",
+    "editTitle": "Editar tarea",
+    "submitCreate": "Crear tarea",
+    "submitSave": "Guardar cambios"
+  },
+  "filter": {
+    "button": "Filtros",
+    "searchPlaceholder": "Buscar tareas...",
+    "searchLabel": "Buscar tareas",
+    "statusLabel": "Filtrar por estado",
+    "priorityLabel": "Filtrar por prioridad",
+    "allStatuses": "Todos los estados",
+    "allPriorities": "Todas las prioridades",
+    "viewingArchived": "Viendo tareas archivadas",
+    "reset": "Restablecer",
+    "showArchived": "Mostrar archivadas",
+    "hideArchived": "Ocultar archivadas",
+    "hide": "Ocultar"
+  },
+  "board": {
+    "emptyColumn": "Sin tareas"
+  },
+  "empty": {
+    "noTasks": "No hay tareas aun",
+    "createFirst": "Crea tu primera tarea para comenzar",
+    "notFound": "Tarea no encontrada",
+    "backToDashboard": "Volver al panel",
+    "noActivity": "Sin actividad aun"
+  },
+  "card": {
+    "recurring": "Recurrente",
+    "created": "Creada",
+    "completed": "Completada",
+    "checklist": "Lista de tareas"
+  },
+  "checklist": {
+    "heading": "Lista de tareas",
+    "addPlaceholder": "Agregar item...",
+    "addItem": "Agregar item a la lista",
+    "editTitle": "Editar titulo del item",
+    "markComplete": "Marcar \"{{title}}\" como completo",
+    "markIncomplete": "Marcar \"{{title}}\" como incompleto",
+    "moveUp": "Mover \"{{title}}\" arriba",
+    "moveDown": "Mover \"{{title}}\" abajo",
+    "deleteItem": "Eliminar \"{{title}}\""
+  },
+  "detail": {
+    "noDescription": "Sin descripcion",
+    "saveChanges": "Guardar cambios",
+    "activity": "Actividad",
+    "created": "Creada",
+    "updated": "Actualizada",
+    "completedAt": "Completada"
+  },
+  "confirm": {
+    "deleteTitle": "Eliminar tarea",
+    "deleteDescription": "Estas seguro de que queres eliminar esta tarea? Esta accion no se puede deshacer.",
+    "backToTasks": "Volver a tareas"
+  },
+  "activity": {
+    "heading": "Actividad",
+    "empty": "Sin actividad aun",
+    "taskCreated": "Tarea creada",
+    "statusChanged": "Movida de {{from}} a {{to}}",
+    "priorityChanged": "Prioridad cambiada de {{from}} a {{to}}",
+    "dueDateChanged": "Fecha limite cambiada a {{date}}",
+    "dueDateRemoved": "Fecha limite eliminada",
+    "taskCompleted": "Tarea completada",
+    "taskArchived": "Tarea archivada",
+    "taskUnarchived": "Tarea restaurada",
+    "checklistItemCreated": "Item de lista agregado \"{{title}}\"",
+    "checklistItemCompleted": "Item de lista completado \"{{title}}\"",
+    "checklistItemDeleted": "Item de lista eliminado \"{{title}}\"",
+    "recurrenceGenerated": "Generada automaticamente desde recurrencia",
+    "default": "Actividad registrada",
+    "unknownStatus": "desconocido",
+    "noneValue": "ninguno"
+  },
+  "a11y": {
+    "loadingTasks": "Cargando tareas",
+    "loadingTaskDetails": "Cargando detalles de la tarea",
+    "dueReminders": "Recordatorios de fechas limite",
+    "columnLabel": "Columna {{title}}"
+  },
+  "view": {
+    "list": "Lista",
+    "board": "Tablero"
+  },
+  "stats": {
+    "total": "Total"
+  },
+  "dashboard": {
+    "title": "Tareas",
+    "tasksShown_one": "{{count}} tarea mostrada",
+    "tasksShown_other": "{{count}} tareas mostradas",
+    "cleanupDone": "Limpiar hechas ({{count}})",
+    "cleanupTitle": "Limpiar tareas hechas",
+    "cleanupDescription_one": "Archivar {{count}} tarea completada de dias anteriores? Se ocultaran del tablero pero se conservaran para reportes.",
+    "cleanupDescription_other": "Archivar {{count}} tareas completadas de dias anteriores? Se ocultaran del tablero pero se conservaran para reportes.",
+    "cleanupSuccess_one": "{{count}} tarea archivada",
+    "cleanupSuccess_other": "{{count}} tareas archivadas",
+    "cleanupFailed": "Error al archivar tareas"
+  }
+}

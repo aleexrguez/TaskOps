@@ -1,0 +1,31 @@
+{
+  "title": "Settings",
+  "appearance": {
+    "heading": "Appearance",
+    "animatedBg": "Animated background",
+    "animatedBgDesc": "Show subtle floating particles behind app content.",
+    "theme": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "dataRetention": {
+    "heading": "Data Retention",
+    "autoArchive": "Automatically archive completed tasks after:",
+    "5d": "5 days",
+    "7d": "7 days",
+    "30d": "30 days",
+    "never": "Never"
+  },
+  "notifications": {
+    "heading": "Notifications",
+    "reminders": "Due date reminders",
+    "remindersDesc": "Show popup reminders for tasks that are overdue or due soon."
+  },
+  "language": {
+    "heading": "Language",
+    "label": "Display language",
+    "en": "English",
+    "es": "Espanol"
+  }
+}
