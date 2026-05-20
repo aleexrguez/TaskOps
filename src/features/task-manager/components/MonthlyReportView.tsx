@@ -1,5 +1,9 @@
+import { useTranslation } from 'react-i18next';
+import { format, parse } from 'date-fns';
 import type { MonthlyReportData } from '../types';
 import { getTaskAge } from '../utils';
+import { getDateLocale } from '../utils/date.utils';
+import type { DateLang } from '../utils/date.utils';
 import { ReportSummaryCards } from './ReportSummaryCards';
 import { ReportTaskSection } from './ReportTaskSection';
 
@@ -7,47 +11,36 @@ interface MonthlyReportViewProps {
   report: MonthlyReportData;
 }
 
-function formatDateShort(dateStr: string): string {
-  const [, m, d] = dateStr.split('-');
-  const months = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec',
-  ];
-  return `${months[Number(m) - 1]} ${Number(d)}`;
+function formatDateShort(dateStr: string, lang: DateLang = 'en'): string {
+  const date = parse(dateStr, 'yyyy-MM-dd', new Date());
+  return format(date, 'MMM d', { locale: getDateLocale(lang) });
 }
 
 export function MonthlyReportView({ report }: MonthlyReportViewProps) {
+  const { t, i18n } = useTranslation('reports');
+  const lang = (i18n.resolvedLanguage ?? 'en') as DateLang;
+
   const cards = [
     {
-      label: 'Completed',
+      label: t('card.completed'),
       value: report.summary.tasksCompleted,
       className:
         'bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800',
     },
     {
-      label: 'Created',
+      label: t('card.created'),
       value: report.summary.tasksCreated,
       className:
         'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950 dark:text-blue-300 dark:border-blue-800',
     },
     {
-      label: 'Recurring',
+      label: t('card.recurring'),
       value: report.summary.recurringTasksCompleted,
       className:
         'bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-950 dark:text-purple-300 dark:border-purple-800',
     },
     {
-      label: 'Checklist',
+      label: t('card.checklist'),
       value: report.summary.checklistItemsCompleted,
       className:
         'bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-950 dark:text-indigo-300 dark:border-indigo-800',
@@ -67,11 +60,11 @@ export function MonthlyReportView({ report }: MonthlyReportViewProps) {
 
       <div className="rounded-lg border border-gray-200 p-4 dark:border-gray-700">
         <h3 className="mb-3 text-sm font-semibold text-gray-900 dark:text-gray-100">
-          Completed by Day
+          {t('section.completedByDay')}
         </h3>
         {nonZeroDays.length === 0 ? (
           <p className="text-sm text-gray-400 dark:text-gray-500">
-            No completions this month
+            {t('section.noCompletions')}
           </p>
         ) : (
           <div className="space-y-1">
@@ -80,7 +73,7 @@ export function MonthlyReportView({ report }: MonthlyReportViewProps) {
               return (
                 <div key={day.date} className="flex items-center gap-2 text-xs">
                   <span className="w-20 shrink-0 text-gray-500 dark:text-gray-400">
-                    {formatDateShort(day.date)}
+                    {formatDateShort(day.date, lang)}
                   </span>
                   <div className="flex-1">
                     <div
@@ -100,22 +93,22 @@ export function MonthlyReportView({ report }: MonthlyReportViewProps) {
 
       <div className="rounded-lg border border-gray-200 p-4 dark:border-gray-700">
         <h3 className="mb-3 text-sm font-semibold text-gray-900 dark:text-gray-100">
-          Completed by Priority
+          {t('section.completedByPriority')}
         </h3>
         <div className="flex gap-4">
           {[
             {
-              label: 'High',
+              label: t('common:priority.high'),
               value: report.completedByPriority.high,
               dot: 'bg-red-500',
             },
             {
-              label: 'Medium',
+              label: t('common:priority.medium'),
               value: report.completedByPriority.medium,
               dot: 'bg-yellow-500',
             },
             {
-              label: 'Low',
+              label: t('common:priority.low'),
               value: report.completedByPriority.low,
               dot: 'bg-green-500',
             },
@@ -137,22 +130,24 @@ export function MonthlyReportView({ report }: MonthlyReportViewProps) {
       </div>
 
       <ReportTaskSection
-        title="Longest Running Tasks"
+        title={t('section.longestRunning')}
+        emptyMessage={t('section.emptySection')}
         tasks={report.longestRunningTasks}
         renderExtra={(task) => (
           <span className="whitespace-nowrap text-xs text-amber-600 dark:text-amber-400">
-            Open for {getTaskAge(task)} days
+            {t('inline.openForDays', { days: getTaskAge(task) })}
           </span>
         )}
       />
 
       <ReportTaskSection
-        title="Stuck — Open for Many Days"
-        description="In-progress tasks created more than 14 days ago"
+        title={t('section.stuck')}
+        description={t('section.stuckDescMonthly')}
+        emptyMessage={t('section.emptySection')}
         tasks={report.stuckTasks}
         renderExtra={(task) => (
           <span className="whitespace-nowrap text-xs text-amber-600 dark:text-amber-400">
-            Open for {getTaskAge(task)} days
+            {t('inline.openForDays', { days: getTaskAge(task) })}
           </span>
         )}
       />

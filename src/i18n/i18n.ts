@@ -11,6 +11,8 @@ import taskEN from './locales/en/task.json';
 import taskES from './locales/es/task.json';
 import accountEN from './locales/en/account.json';
 import accountES from './locales/es/account.json';
+import reportsEN from './locales/en/reports.json';
+import reportsES from './locales/es/reports.json';
 
 i18n.use(initReactI18next).init({
   resources: {
@@ -20,6 +22,7 @@ i18n.use(initReactI18next).init({
       inbox: inboxEN,
       task: taskEN,
       account: accountEN,
+      reports: reportsEN,
     },
     es: {
       common: commonES,
@@ -27,6 +30,7 @@ i18n.use(initReactI18next).init({
       inbox: inboxES,
       task: taskES,
       account: accountES,
+      reports: reportsES,
     },
   },
   lng: 'en',
