@@ -3,6 +3,7 @@ import { useUpdatePassword } from '../hooks';
 import { ResetPasswordForm } from '../components';
 import { useApplyTheme } from '@/shared/hooks/use-apply-theme';
 import { LanguageToggle } from '@/shared/components/LanguageToggle';
+import { AuthPageLayout } from '@/shared/components/AuthPageLayout';
 import type { ResetPasswordInput } from '../types';
 
 export function ResetPasswordContainer() {
@@ -15,7 +16,7 @@ export function ResetPasswordContainer() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-900">
+    <AuthPageLayout>
       <div className="w-full max-w-sm">
         <div className="mb-4 flex justify-end">
           <LanguageToggle />
@@ -32,6 +33,6 @@ export function ResetPasswordContainer() {
           />
         </div>
       </div>
-    </div>
+    </AuthPageLayout>
   );
 }

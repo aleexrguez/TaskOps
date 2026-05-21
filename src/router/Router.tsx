@@ -7,6 +7,12 @@ import {
   ResetPasswordContainer,
 } from '@/features/auth';
 import { LandingPage } from '@/features/landing';
+import {
+  PrivacyPage,
+  TermsPage,
+  CookiesPage,
+  LegalNoticePage,
+} from '@/features/legal';
 import { AppShellContainer } from '@/shared/components/app-shell';
 import { ProtectedRoute } from './ProtectedRoute';
 import { PublicOnlyRoute } from './PublicOnlyRoute';
@@ -87,6 +93,12 @@ export function Router() {
           }
         />
         <Route path="/reset-password" element={<ResetPasswordContainer />} />
+
+        {/* Legal pages — universally accessible */}
+        <Route path="/privacy" element={<PrivacyPage />} />
+        <Route path="/terms" element={<TermsPage />} />
+        <Route path="/cookies" element={<CookiesPage />} />
+        <Route path="/legal" element={<LegalNoticePage />} />
 
         {/* Protected routes with App Shell */}
         <Route

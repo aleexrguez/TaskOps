@@ -19,6 +19,8 @@ import landingEN from './locales/en/landing.json';
 import landingES from './locales/es/landing.json';
 import authEN from './locales/en/auth.json';
 import authES from './locales/es/auth.json';
+import legalEN from './locales/en/legal.json';
+import legalES from './locales/es/legal.json';
 
 i18n.use(initReactI18next).init({
   resources: {
@@ -32,6 +34,7 @@ i18n.use(initReactI18next).init({
       recurrence: recurrenceEN,
       landing: landingEN,
       auth: authEN,
+      legal: legalEN,
     },
     es: {
       common: commonES,
@@ -43,6 +46,7 @@ i18n.use(initReactI18next).init({
       recurrence: recurrenceES,
       landing: landingES,
       auth: authES,
+      legal: legalES,
     },
   },
   lng: 'en',
