@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { loginInputSchema } from '../types';
 import type { LoginInput } from '../types';
 
@@ -21,6 +22,7 @@ interface FieldErrors {
 }
 
 export function LoginForm({ onSubmit, isPending, error }: LoginFormProps) {
+  const { t } = useTranslation('auth');
   const [fields, setFields] = useState<FormState>({ email: '', password: '' });
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [showPassword, setShowPassword] = useState(false);
@@ -64,7 +66,7 @@ export function LoginForm({ onSubmit, isPending, error }: LoginFormProps) {
 
       <div className="flex flex-col gap-1">
         <label htmlFor="email" className={labelClass}>
-          Email <span className="text-red-500">*</span>
+          {t('login.emailLabel')}
         </label>
         <input
           id="email"
@@ -74,7 +76,7 @@ export function LoginForm({ onSubmit, isPending, error }: LoginFormProps) {
           value={fields.email}
           onChange={handleChange}
           className={inputClass}
-          placeholder="you@example.com"
+          placeholder={t('login.emailPlaceholder')}
         />
         {fieldErrors.email && (
           <p className="text-xs text-red-600 dark:text-red-400">
@@ -85,7 +87,7 @@ export function LoginForm({ onSubmit, isPending, error }: LoginFormProps) {
 
       <div className="flex flex-col gap-1">
         <label htmlFor="password" className={labelClass}>
-          Password <span className="text-red-500">*</span>
+          {t('login.passwordLabel')}
         </label>
         <div className="relative">
           <input
@@ -97,11 +99,13 @@ export function LoginForm({ onSubmit, isPending, error }: LoginFormProps) {
             value={fields.password}
             onChange={handleChange}
             className={`${inputClass} w-full pr-10`}
-            placeholder="••••••"
+            placeholder={t('login.passwordPlaceholder')}
           />
           <button
             type="button"
-            aria-label={showPassword ? 'Hide password' : 'Show password'}
+            aria-label={
+              showPassword ? t('login.hidePassword') : t('login.showPassword')
+            }
             onClick={() => setShowPassword((prev) => !prev)}
             className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
           >
@@ -122,7 +126,7 @@ export function LoginForm({ onSubmit, isPending, error }: LoginFormProps) {
             to="/forgot-password"
             className="text-xs text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300"
           >
-            Forgot password?
+            {t('login.forgotPassword')}
           </Link>
         </div>
       </div>
@@ -132,16 +136,16 @@ export function LoginForm({ onSubmit, isPending, error }: LoginFormProps) {
         disabled={isPending}
         className="cursor-pointer rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
       >
-        {isPending ? 'Signing in...' : 'Sign In'}
+        {isPending ? t('login.submitting') : t('login.submit')}
       </button>
 
       <p className="text-center text-sm text-gray-600 dark:text-gray-400">
-        Don&apos;t have an account?{' '}
+        {t('login.noAccount')}{' '}
         <Link
           to="/register"
           className="font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300"
         >
-          Register
+          {t('login.register')}
         </Link>
       </p>
     </form>

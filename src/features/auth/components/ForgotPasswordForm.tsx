@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { forgotPasswordInputSchema } from '../types';
 import type { ForgotPasswordInput } from '../types';
 
@@ -17,6 +18,7 @@ export function ForgotPasswordForm({
   error,
   isSuccess,
 }: ForgotPasswordFormProps) {
+  const { t } = useTranslation('auth');
   const [email, setEmail] = useState('');
   const [fieldError, setFieldError] = useState<string | undefined>();
 
@@ -45,10 +47,10 @@ export function ForgotPasswordForm({
       <div className="flex flex-col gap-4">
         <div className="rounded-lg border border-green-200 bg-green-50 px-4 py-3 dark:border-green-800 dark:bg-green-900/20">
           <p className="text-sm font-medium text-green-700 dark:text-green-400">
-            Check your email
+            {t('forgotPassword.successHeading')}
           </p>
           <p className="mt-1 text-sm text-green-600 dark:text-green-400">
-            If an account exists for that email, we sent a password reset link.
+            {t('forgotPassword.successMessage')}
           </p>
         </div>
         <p className="text-center text-sm text-gray-600 dark:text-gray-400">
@@ -56,7 +58,7 @@ export function ForgotPasswordForm({
             to="/login"
             className="font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300"
           >
-            Back to login
+            {t('backToLogin')}
           </Link>
         </p>
       </div>
@@ -66,7 +68,7 @@ export function ForgotPasswordForm({
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       <p className="text-sm text-gray-600 dark:text-gray-400">
-        Enter your email and we&apos;ll send you a link to reset your password.
+        {t('forgotPassword.instruction')}
       </p>
 
       {error && (
@@ -80,7 +82,7 @@ export function ForgotPasswordForm({
 
       <div className="flex flex-col gap-1">
         <label htmlFor="email" className={labelClass}>
-          Email <span className="text-red-500">*</span>
+          {t('forgotPassword.emailLabel')}
         </label>
         <input
           id="email"
@@ -90,7 +92,7 @@ export function ForgotPasswordForm({
           value={email}
           onChange={handleChange}
           className={inputClass}
-          placeholder="you@example.com"
+          placeholder={t('forgotPassword.emailPlaceholder')}
         />
         {fieldError && (
           <p className="text-xs text-red-600 dark:text-red-400">{fieldError}</p>
@@ -102,7 +104,9 @@ export function ForgotPasswordForm({
         disabled={isPending}
         className="cursor-pointer rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
       >
-        {isPending ? 'Sending...' : 'Send Reset Link'}
+        {isPending
+          ? t('forgotPassword.submitting')
+          : t('forgotPassword.submit')}
       </button>
 
       <p className="text-center text-sm text-gray-600 dark:text-gray-400">
@@ -110,7 +114,7 @@ export function ForgotPasswordForm({
           to="/login"
           className="font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300"
         >
-          Back to login
+          {t('backToLogin')}
         </Link>
       </p>
     </form>

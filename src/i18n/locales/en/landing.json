@@ -1,0 +1,32 @@
+{
+  "nav": {
+    "login": "Login",
+    "getStarted": "Get Started",
+    "themeToggle": "Switch to {{nextTheme}} mode"
+  },
+  "hero": {
+    "title": "Ship Work, Not Chaos",
+    "subtitle": "TaskOps is a lightweight task manager built for developers and small teams. Kanban boards, recurring tasks, smart reminders — everything you need to stay on track.",
+    "cta": { "getStarted": "Get Started", "login": "Login" }
+  },
+  "features": {
+    "heading": "Everything you need, nothing you don't",
+    "kanban": {
+      "title": "Kanban Board",
+      "description": "Visualize your workflow with drag-and-drop columns. Move tasks between Todo, In Progress, and Done."
+    },
+    "recurring": {
+      "title": "Recurring Tasks",
+      "description": "Set up daily, weekly, or monthly recurring tasks that generate automatically."
+    },
+    "reminders": {
+      "title": "Smart Reminders",
+      "description": "Get notified about overdue and upcoming tasks with priority-based alerts."
+    },
+    "ordering": {
+      "title": "Persistent Ordering",
+      "description": "Your board order is saved automatically. Drag once, stay organized forever."
+    }
+  },
+  "footer": "TaskOps · Built by Alessandro Rodriguez Rojas"
+}

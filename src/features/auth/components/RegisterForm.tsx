@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { registerInputSchema } from '../types';
 import type { RegisterInput } from '../types';
 
@@ -27,6 +28,7 @@ export function RegisterForm({
   isPending,
   error,
 }: RegisterFormProps) {
+  const { t } = useTranslation('auth');
   const [fields, setFields] = useState<FormState>({
     email: '',
     password: '',
@@ -53,7 +55,10 @@ export function RegisterForm({
       const errors: FieldErrors = {};
       for (const issue of result.error.issues) {
         const field = issue.path[0] as keyof FieldErrors;
-        errors[field] = issue.message;
+        errors[field] =
+          issue.message === 'Passwords do not match'
+            ? t('validation.passwordsDoNotMatch')
+            : issue.message;
       }
       setFieldErrors(errors);
       return;
@@ -75,7 +80,7 @@ export function RegisterForm({
 
       <div className="flex flex-col gap-1">
         <label htmlFor="email" className={labelClass}>
-          Email <span className="text-red-500">*</span>
+          {t('register.emailLabel')}
         </label>
         <input
           id="email"
@@ -85,7 +90,7 @@ export function RegisterForm({
           value={fields.email}
           onChange={handleChange}
           className={inputClass}
-          placeholder="you@example.com"
+          placeholder={t('register.emailPlaceholder')}
         />
         {fieldErrors.email && (
           <p className="text-xs text-red-600 dark:text-red-400">
@@ -96,7 +101,7 @@ export function RegisterForm({
 
       <div className="flex flex-col gap-1">
         <label htmlFor="password" className={labelClass}>
-          Password <span className="text-red-500">*</span>
+          {t('register.passwordLabel')}
         </label>
         <div className="relative">
           <input
@@ -108,11 +113,15 @@ export function RegisterForm({
             value={fields.password}
             onChange={handleChange}
             className={`${inputClass} w-full pr-10`}
-            placeholder="••••••"
+            placeholder={t('register.passwordPlaceholder')}
           />
           <button
             type="button"
-            aria-label={showPassword ? 'Hide password' : 'Show password'}
+            aria-label={
+              showPassword
+                ? t('register.hidePassword')
+                : t('register.showPassword')
+            }
             onClick={() => setShowPassword((prev) => !prev)}
             className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
           >
@@ -132,7 +141,7 @@ export function RegisterForm({
 
       <div className="flex flex-col gap-1">
         <label htmlFor="confirmPassword" className={labelClass}>
-          Confirm Password <span className="text-red-500">*</span>
+          {t('register.confirmPasswordLabel')}
         </label>
         <div className="relative">
           <input
@@ -144,11 +153,15 @@ export function RegisterForm({
             value={fields.confirmPassword}
             onChange={handleChange}
             className={`${inputClass} w-full pr-10`}
-            placeholder="••••••"
+            placeholder={t('register.passwordPlaceholder')}
           />
           <button
             type="button"
-            aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+            aria-label={
+              showConfirmPassword
+                ? t('register.hidePassword')
+                : t('register.showPassword')
+            }
             onClick={() => setShowConfirmPassword((prev) => !prev)}
             className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
           >
@@ -173,16 +186,16 @@ export function RegisterForm({
         disabled={isPending}
         className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
       >
-        {isPending ? 'Creating account...' : 'Create Account'}
+        {isPending ? t('register.submitting') : t('register.submit')}
       </button>
 
       <p className="text-center text-sm text-gray-600 dark:text-gray-400">
-        Already have an account?{' '}
+        {t('register.hasAccount')}{' '}
         <Link
           to="/login"
           className="font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300"
         >
-          Login
+          {t('register.login')}
         </Link>
       </p>
     </form>
