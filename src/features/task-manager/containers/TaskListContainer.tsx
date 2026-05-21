@@ -1,4 +1,5 @@
 import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import {
@@ -39,6 +40,8 @@ const HIGHLIGHT_CLASS =
   'ring-2 ring-indigo-500 ring-offset-2 dark:ring-offset-gray-900';
 
 export function TaskListContainer() {
+  const { t } = useTranslation('task');
+  const { t: tCommon } = useTranslation('common');
   const navigate = useNavigate();
   const location = useLocation();
   const queryClient = useQueryClient();
@@ -217,7 +220,7 @@ export function TaskListContainer() {
 
   if (isError) {
     const message =
-      error instanceof Error ? error.message : 'Something went wrong.';
+      error instanceof Error ? error.message : tCommon('error.generic');
     return (
       <div className="flex flex-col gap-4">
         <TaskFilters
@@ -240,7 +243,7 @@ export function TaskListContainer() {
             onClick={() => refetch()}
             className="mt-2 rounded-md bg-red-100 px-3 py-1.5 text-xs font-medium text-red-700 hover:bg-red-200 dark:bg-red-800 dark:text-red-300 dark:hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
           >
-            Try again
+            {tCommon('error.tryAgain')}
           </button>
         </div>
       </div>
@@ -293,9 +296,9 @@ export function TaskListContainer() {
       </div>
       <ConfirmDialog
         isOpen={!!taskToDelete}
-        title="Delete task"
-        description="Are you sure you want to delete this task? This action cannot be undone."
-        confirmLabel="Delete"
+        title={t('confirm.deleteTitle')}
+        description={t('confirm.deleteDescription')}
+        confirmLabel={tCommon('action.delete')}
         variant="danger"
         isLoading={isDeleting}
         onConfirm={handleConfirmDelete}

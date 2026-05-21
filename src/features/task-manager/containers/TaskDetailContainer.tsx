@@ -245,7 +245,7 @@ export function TaskDetailContainer() {
 
     if (isError) {
       const message =
-        error instanceof Error ? error.message : 'Something went wrong.';
+        error instanceof Error ? error.message : t('common:error.generic');
 
       if (message.startsWith('Task not found')) {
         return <TaskNotFound onBack={handleBack} />;

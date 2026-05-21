@@ -1,9 +1,13 @@
+import { useTranslation } from 'react-i18next';
+
 interface UpdateBannerProps {
   onUpdate: () => void;
   onDismiss: () => void;
 }
 
 export function UpdateBanner({ onUpdate, onDismiss }: UpdateBannerProps) {
+  const { t } = useTranslation('common');
+
   return (
     <div
       role="alert"
@@ -11,20 +15,20 @@ export function UpdateBanner({ onUpdate, onDismiss }: UpdateBannerProps) {
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
         <p className="text-sm font-medium text-indigo-800 dark:text-indigo-200">
-          A new version of TaskOps is available.
+          {t('updateBanner.message')}
         </p>
         <div className="flex shrink-0 gap-2">
           <button
             onClick={onDismiss}
             className="rounded-md px-3 py-1.5 text-sm font-medium text-indigo-600 hover:bg-indigo-100 dark:text-indigo-300 dark:hover:bg-indigo-900"
           >
-            Later
+            {t('updateBanner.later')}
           </button>
           <button
             onClick={onUpdate}
             className="rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-400"
           >
-            Update now
+            {t('updateBanner.updateNow')}
           </button>
         </div>
       </div>

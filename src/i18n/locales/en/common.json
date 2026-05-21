@@ -71,6 +71,15 @@
     "more_one": "+{{count}} more",
     "more_other": "+{{count}} more"
   },
+  "error": {
+    "generic": "Something went wrong.",
+    "tryAgain": "Try again"
+  },
+  "updateBanner": {
+    "message": "A new version of TaskOps is available.",
+    "later": "Later",
+    "updateNow": "Update now"
+  },
   "a11y": {
     "openMenu": "Open menu",
     "userMenu": "User menu",

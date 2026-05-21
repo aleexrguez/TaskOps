@@ -56,7 +56,7 @@ export function RecurrenceDashboardContainer() {
 
   if (isError) {
     const message =
-      error instanceof Error ? error.message : 'Something went wrong.';
+      error instanceof Error ? error.message : t('common:error.generic');
     return (
       <div>
         <div className="mb-8 flex items-center justify-between">
