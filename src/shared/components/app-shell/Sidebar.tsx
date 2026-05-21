@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import type { NavItem, SidebarProps } from './app-shell.types';
 
 interface NavContentProps {
@@ -27,6 +28,7 @@ function NavContent({
   isSigningOut,
   onNavItemClick,
 }: NavContentProps) {
+  const { t } = useTranslation('common');
   return (
     <>
       <ul className="flex flex-col gap-1 flex-1">
@@ -63,7 +65,7 @@ function NavContent({
         <button
           type="button"
           onClick={onSignOut}
-          aria-label="Sign out"
+          aria-label={t('nav.signOut')}
           disabled={isSigningOut}
           className="flex items-center gap-3 px-4 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 transition-colors w-full cursor-pointer overflow-hidden"
         >
@@ -76,7 +78,7 @@ function NavContent({
           <span
             className={`${labelTransition} ${collapsed ? labelHidden : labelVisible}`}
           >
-            {isSigningOut ? 'Signing out...' : 'Sign out'}
+            {isSigningOut ? t('nav.signingOut') : t('nav.signOut')}
           </span>
         </button>
       </div>
@@ -93,7 +95,10 @@ export function Sidebar({
   onSignOut,
   isSigningOut,
 }: SidebarProps) {
-  const collapseLabel = isCollapsed ? 'Expand sidebar' : 'Collapse sidebar';
+  const { t } = useTranslation('common');
+  const collapseLabel = isCollapsed
+    ? t('a11y.expandSidebar')
+    : t('a11y.collapseSidebar');
 
   useEffect(() => {
     if (!isMobileOpen) return;
@@ -144,7 +149,10 @@ export function Sidebar({
           />
         </div>
 
-        <nav aria-label="Main navigation" className="flex flex-col flex-1 py-3">
+        <nav
+          aria-label={t('a11y.mainNavigation')}
+          className="flex flex-col flex-1 py-3"
+        >
           <NavContent
             navItems={navItems}
             collapsed={isCollapsed}
@@ -171,7 +179,7 @@ export function Sidebar({
         <div
           role="dialog"
           aria-modal="true"
-          aria-label="Navigation menu"
+          aria-label={t('a11y.navigationMenu')}
           className="md:hidden fixed inset-0 z-40 flex"
         >
           <div
@@ -204,7 +212,7 @@ export function Sidebar({
             </div>
 
             <nav
-              aria-label="Mobile navigation"
+              aria-label={t('a11y.mobileNavigation')}
               className="flex flex-col flex-1 p-3"
             >
               <NavContent

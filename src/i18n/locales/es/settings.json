@@ -1,0 +1,31 @@
+{
+  "title": "Ajustes",
+  "appearance": {
+    "heading": "Apariencia",
+    "animatedBg": "Fondo animado",
+    "animatedBgDesc": "Mostrar particulas flotantes sutiles detras del contenido.",
+    "theme": "Tema",
+    "light": "Claro",
+    "dark": "Oscuro",
+    "system": "Sistema"
+  },
+  "dataRetention": {
+    "heading": "Retencion de datos",
+    "autoArchive": "Archivar automaticamente tareas completadas despues de:",
+    "5d": "5 dias",
+    "7d": "7 dias",
+    "30d": "30 dias",
+    "never": "Nunca"
+  },
+  "notifications": {
+    "heading": "Notificaciones",
+    "reminders": "Recordatorios de vencimiento",
+    "remindersDesc": "Mostrar recordatorios emergentes para tareas vencidas o proximas a vencer."
+  },
+  "language": {
+    "heading": "Idioma",
+    "label": "Idioma de visualizacion",
+    "en": "English",
+    "es": "Español"
+  }
+}

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import type { ToastType } from '../store/toast.store';
 
 interface ToastProps {
@@ -16,6 +17,7 @@ const colorClasses: Record<ToastType, string> = {
 };
 
 export function Toast({ id, message, type, onDismiss }: ToastProps) {
+  const { t } = useTranslation('common');
   const role = type === 'error' ? 'alert' : 'status';
 
   return (
@@ -26,7 +28,7 @@ export function Toast({ id, message, type, onDismiss }: ToastProps) {
       <span className="flex-1 text-sm">{message}</span>
       <button
         type="button"
-        aria-label={`Dismiss notification: ${message}`}
+        aria-label={t('a11y.dismissNotification', { message })}
         onClick={() => onDismiss(id)}
         className="shrink-0 text-sm font-medium opacity-70 hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
       >

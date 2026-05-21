@@ -1,0 +1,38 @@
+{
+  "heading": "Reportes",
+  "subtitle": "Resumenes de actividad por periodo",
+  "period": {
+    "thisWeek": "Esta semana",
+    "lastWeek": "Semana pasada",
+    "thisMonth": "Este mes",
+    "lastMonth": "Mes pasado"
+  },
+  "loading": "Cargando reporte...",
+  "error": "Error al cargar los datos del reporte. Intenta de nuevo.",
+  "footer": "Las tareas completadas archivadas estan incluidas. Las tareas purgadas pueden estar excluidas.",
+  "card": {
+    "completed": "Completadas",
+    "created": "Creadas",
+    "inProgress": "En progreso",
+    "overdue": "Vencidas",
+    "recurring": "Recurrentes",
+    "checklist": "Checklist"
+  },
+  "section": {
+    "completedTasks": "Tareas completadas",
+    "createdThisWeek": "Creadas esta semana",
+    "stuck": "Estancadas — Abiertas hace muchos dias",
+    "overdueTasks": "Tareas vencidas",
+    "longestRunning": "Tareas mas antiguas",
+    "completedByDay": "Completadas por dia",
+    "completedByPriority": "Completadas por prioridad",
+    "noCompletions": "Sin completadas este mes",
+    "emptySection": "Sin tareas en esta seccion",
+    "stuckDescWeekly": "Tareas en progreso creadas hace mas de 7 dias",
+    "stuckDescMonthly": "Tareas en progreso creadas hace mas de 14 dias"
+  },
+  "inline": {
+    "openForDays": "Abierta hace {{days}} dias",
+    "dueDate": "Vence {{date}}"
+  }
+}

@@ -4,6 +4,14 @@ export function getGreeting(hour: number): string {
   return 'Good evening';
 }
 
+export function getGreetingKey(
+  hour: number,
+): 'greeting.morning' | 'greeting.afternoon' | 'greeting.evening' {
+  if (hour >= 5 && hour <= 11) return 'greeting.morning';
+  if (hour >= 12 && hour <= 17) return 'greeting.afternoon';
+  return 'greeting.evening';
+}
+
 export function getDisplayName(
   profile: { display_name: string | null } | null | undefined,
   email: string | undefined,

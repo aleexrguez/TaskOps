@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import type {
+  Language,
   RetentionPolicy,
   ThemePreference,
 } from '@/shared/types/preferences.types';
@@ -16,6 +17,8 @@ const defaultProps = {
   onToggleReminders: vi.fn(),
   animatedBackground: false,
   onToggleAnimatedBackground: vi.fn(),
+  language: 'en' as Language,
+  onLanguageChange: vi.fn(),
 };
 
 describe('SettingsPage', () => {
@@ -47,7 +50,11 @@ describe('SettingsPage', () => {
     expect(
       screen.getByText(/automatically archive completed tasks after/i),
     ).toBeInTheDocument();
-    expect(screen.getByRole('combobox')).toBeInTheDocument();
+    expect(
+      screen.getByRole('combobox', {
+        name: /automatically archive completed tasks after/i,
+      }),
+    ).toBeInTheDocument();
   });
 
   it('renders the Notifications section heading', () => {
@@ -155,6 +162,33 @@ describe('SettingsPage', () => {
     expect(
       screen.getByText(/show subtle floating particles behind app content/i),
     ).toBeInTheDocument();
+  });
+
+  it('renders the Language section with a select dropdown', () => {
+    render(<SettingsPage {...defaultProps} />);
+
+    expect(
+      screen.getByRole('heading', { level: 2, name: /language/i }),
+    ).toBeInTheDocument();
+    const select = screen.getByRole('combobox', { name: /display language/i });
+    expect(select).toBeInTheDocument();
+    expect(select).toHaveValue('en');
+  });
+
+  it('calls onLanguageChange when a language option is selected', async () => {
+    const user = userEvent.setup();
+    const onLanguageChange = vi.fn();
+
+    render(
+      <SettingsPage {...defaultProps} onLanguageChange={onLanguageChange} />,
+    );
+
+    await user.selectOptions(
+      screen.getByRole('combobox', { name: /display language/i }),
+      'es',
+    );
+
+    expect(onLanguageChange).toHaveBeenCalledWith('es');
   });
 
   it('does not render Account or Change Password sections', () => {

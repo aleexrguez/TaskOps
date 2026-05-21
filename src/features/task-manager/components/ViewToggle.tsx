@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import type { ViewMode } from '../types';
 
 interface ViewToggleProps {
@@ -12,6 +13,8 @@ const inactiveClass =
 const activeClass = 'bg-indigo-600 text-white';
 
 export function ViewToggle({ viewMode, onViewModeChange }: ViewToggleProps) {
+  const { t } = useTranslation('task');
+
   return (
     <div className="inline-flex rounded-lg border border-gray-200 dark:border-gray-700">
       <button
@@ -19,14 +22,14 @@ export function ViewToggle({ viewMode, onViewModeChange }: ViewToggleProps) {
         onClick={() => onViewModeChange('list')}
         className={`rounded-l-lg ${baseClass} ${viewMode === 'list' ? activeClass : inactiveClass}`}
       >
-        List
+        {t('view.list')}
       </button>
       <button
         aria-pressed={viewMode === 'board'}
         onClick={() => onViewModeChange('board')}
         className={`rounded-r-lg ${baseClass} ${viewMode === 'board' ? activeClass : inactiveClass}`}
       >
-        Board
+        {t('view.board')}
       </button>
     </div>
   );

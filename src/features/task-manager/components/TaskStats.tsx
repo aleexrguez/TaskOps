@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 interface TaskStatsData {
   total: number;
   todo: number;
@@ -16,27 +18,29 @@ interface StatItem {
 }
 
 export function TaskStats({ stats }: TaskStatsProps) {
+  const { t } = useTranslation();
+
   const items: StatItem[] = [
     {
-      label: 'Total',
+      label: t('task:stats.total'),
       value: stats.total,
       className:
         'bg-gray-50 text-gray-700 border-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700',
     },
     {
-      label: 'Todo',
+      label: t('common:status.todo'),
       value: stats.todo,
       className:
         'bg-gray-50 text-gray-600 border-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700',
     },
     {
-      label: 'In Progress',
+      label: t('common:status.inProgress'),
       value: stats.inProgress,
       className:
         'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950 dark:text-blue-300 dark:border-blue-800',
     },
     {
-      label: 'Done',
+      label: t('common:status.done'),
       value: stats.done,
       className:
         'bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800',

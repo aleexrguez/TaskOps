@@ -1,4 +1,5 @@
 import { useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   AVATAR_ACCEPTED_TYPES,
   AVATAR_MAX_SIZE_BYTES,
@@ -23,6 +24,7 @@ export function AvatarUpload({
   onRemove,
   isRemoving = false,
 }: AvatarUploadProps) {
+  const { t } = useTranslation('account');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -54,13 +56,13 @@ export function AvatarUpload({
         {avatarUrl ? (
           <img
             src={avatarUrl}
-            alt="User avatar"
+            alt={t('avatar.alt')}
             className="h-full w-full object-cover"
           />
         ) : (
           <div
             className="h-full w-full flex items-center justify-center text-gray-400 dark:text-gray-500"
-            aria-label="No avatar"
+            aria-label={t('avatar.noAvatar')}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -89,7 +91,7 @@ export function AvatarUpload({
             disabled={isPending || isRemoving}
             className="cursor-pointer rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
-            {isPending ? 'Uploading...' : 'Change avatar'}
+            {isPending ? t('avatar.uploading') : t('avatar.changeAvatar')}
           </button>
           {hasCustomAvatar && onRemove && (
             <button
@@ -98,7 +100,7 @@ export function AvatarUpload({
               disabled={isRemoving || isPending}
               className="cursor-pointer rounded-md border border-gray-300 dark:border-gray-600 px-3 py-1.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-              {isRemoving ? 'Removing...' : 'Remove photo'}
+              {isRemoving ? t('avatar.removing') : t('avatar.removePhoto')}
             </button>
           )}
         </div>
@@ -109,7 +111,7 @@ export function AvatarUpload({
           accept={AVATAR_ACCEPTED_TYPES.join(',')}
           onChange={handleFileChange}
           className="sr-only"
-          aria-label="Upload avatar image"
+          aria-label={t('avatar.uploadLabel')}
           aria-describedby="avatar-constraints"
         />
 
@@ -117,7 +119,7 @@ export function AvatarUpload({
           id="avatar-constraints"
           className="text-xs text-gray-500 dark:text-gray-400"
         >
-          JPEG, PNG or WebP. Max 2MB.
+          {t('avatar.constraints')}
         </p>
 
         {error && (

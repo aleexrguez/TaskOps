@@ -3,6 +3,7 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
+import { useTranslation } from 'react-i18next';
 import type { Task, TaskStatus } from '../types';
 import type { ChecklistSummaries } from '../api/checklist-api';
 import { SortableTaskCard } from './SortableTaskCard';
@@ -30,6 +31,7 @@ export function BoardColumn({
   deletingId = null,
   checklistSummaries,
 }: BoardColumnProps) {
+  const { t } = useTranslation('task');
   const { setNodeRef, isOver } = useDroppable({ id: status });
   const taskIds = tasks.map((t) => t.id);
 
@@ -37,7 +39,7 @@ export function BoardColumn({
     <div
       ref={setNodeRef}
       role="region"
-      aria-label={`${title} column`}
+      aria-label={t('a11y.columnLabel', { title })}
       className={`flex flex-col rounded-lg bg-gray-50 p-4 dark:bg-gray-900${isOver ? ' ring-2 ring-indigo-400 dark:ring-indigo-500' : ''}`}
     >
       <div className="mb-3 flex items-center gap-2">
@@ -56,7 +58,7 @@ export function BoardColumn({
         <div className="flex min-h-[80px] flex-col gap-2">
           {tasks.length === 0 ? (
             <p className="py-6 text-center text-xs text-gray-400 dark:text-gray-500">
-              No tasks
+              {t('board.emptyColumn')}
             </p>
           ) : (
             tasks.map((task) => (

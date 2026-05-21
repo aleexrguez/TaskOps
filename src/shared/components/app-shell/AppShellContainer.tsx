@@ -10,6 +10,7 @@ import { useRecurrences } from '@/features/recurrences/hooks/use-recurrences';
 import { useAutoGenerate } from '@/features/recurrences/hooks/use-auto-generate';
 import { useProfile } from '@/features/account/hooks/use-profile';
 import { getAvatarPublicUrl } from '@/features/account/api/profile.api';
+import { useTranslation } from 'react-i18next';
 import { AppShellLayout } from './AppShellLayout';
 import { ReminderContainerCtrl } from '@/features/task-manager/containers/ReminderContainerCtrl';
 import type { NavItem } from './app-shell.types';
@@ -23,16 +24,24 @@ const REPORTS_ICON =
 const ACCOUNT_ICON =
   "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%236366f1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'/%3E%3Ccircle cx='12' cy='7' r='4'/%3E%3C/svg%3E";
 
-const NAV_ITEMS: NavItem[] = [
-  { label: 'Inbox', to: '/app/inbox', icon: INBOX_ICON },
-  { label: 'Tasks', to: '/app/tasks', icon: '/TaskIcon.png' },
-  { label: 'Recurrences', to: '/app/recurrences', icon: '/RecurrenceIcon.png' },
-  { label: 'Reports', to: '/app/reports', icon: REPORTS_ICON },
-  { label: 'Account', to: '/app/account', icon: ACCOUNT_ICON },
-  { label: 'Settings', to: '/app/settings', icon: '/SettingsIcon.png' },
-];
-
 export function AppShellContainer() {
+  const { t } = useTranslation('common');
+  const navItems: NavItem[] = [
+    { label: t('nav.inbox'), to: '/app/inbox', icon: INBOX_ICON },
+    { label: t('nav.tasks'), to: '/app/tasks', icon: '/TaskIcon.png' },
+    {
+      label: t('nav.recurrences'),
+      to: '/app/recurrences',
+      icon: '/RecurrenceIcon.png',
+    },
+    { label: t('nav.reports'), to: '/app/reports', icon: REPORTS_ICON },
+    { label: t('nav.account'), to: '/app/account', icon: ACCOUNT_ICON },
+    {
+      label: t('nav.settings'),
+      to: '/app/settings',
+      icon: '/SettingsIcon.png',
+    },
+  ];
   useApplyTheme();
   const { needRefresh, updateServiceWorker, dismissUpdate } = usePWAUpdate();
 
@@ -91,7 +100,7 @@ export function AppShellContainer() {
             : undefined
         }
         sidebarProps={{
-          navItems: NAV_ITEMS,
+          navItems,
           isCollapsed: isSidebarCollapsed,
           onToggleCollapse: toggleSidebar,
           isMobileOpen: isMobileSidebarOpen,

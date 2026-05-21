@@ -1,0 +1,63 @@
+{
+  "heading": "Bandeja",
+  "greeting": {
+    "morning": "Buen dia",
+    "afternoon": "Buenas tardes",
+    "evening": "Buenas noches",
+    "fallbackName": "amigo"
+  },
+  "hero": {
+    "subtitle": "Que queres capturar hoy?"
+  },
+  "empty": {
+    "title": "Tu bandeja esta vacia",
+    "subtitle": "Captura ideas rapidas arriba — organizalas despues."
+  },
+  "quickInput": {
+    "placeholder": "Capturar una idea...",
+    "titleLabel": "Titulo del elemento",
+    "hideNotes": "Ocultar notas",
+    "addNotes": "Agregar notas",
+    "addItem": "Agregar elemento",
+    "notesPlaceholder": "Agregar notas (opcional)",
+    "notesLabel": "Notas del elemento"
+  },
+  "card": {
+    "justNow": "ahora",
+    "minutesAgo": "hace {{count}}m",
+    "hoursAgo": "hace {{count}}h",
+    "daysAgo": "hace {{count}}d",
+    "editItem": "Editar {{title}}",
+    "convertItem": "Convertir {{title}} a tarea",
+    "deleteItem": "Eliminar {{title}}"
+  },
+  "editForm": {
+    "editTitle": "Editar titulo",
+    "notesPlaceholder": "Notas (opcional)",
+    "editNotes": "Editar notas"
+  },
+  "convertForm": {
+    "dialogTitle": "Convertir a tarea",
+    "submitLabel": "Convertir a tarea",
+    "hideChecklist": "Ocultar checklist",
+    "addChecklist": "Agregar checklist",
+    "checklistPlaceholder": "Elemento del checklist...",
+    "checklistLabel": "Nuevo elemento del checklist",
+    "checklistAddItem": "Agregar elemento del checklist",
+    "checklistItems": "Elementos del checklist",
+    "removeItem": "Quitar {{item}}"
+  },
+  "toast": {
+    "captured": "Idea capturada",
+    "captureFailed": "Error al capturar idea",
+    "updated": "Elemento actualizado",
+    "updateFailed": "Error al actualizar elemento",
+    "deleted": "Elemento eliminado",
+    "deleteFailed": "Error al eliminar elemento",
+    "converted": "Idea convertida a tarea",
+    "convertFailed": "Error al convertir idea"
+  },
+  "error": {
+    "loadFailed": "Error al cargar elementos de la bandeja"
+  }
+}

@@ -1,0 +1,122 @@
+{
+  "toast": {
+    "created": "Task created",
+    "updated": "Task updated",
+    "deleted": "Task deleted",
+    "duplicated": "Task duplicated",
+    "archived": "Task archived",
+    "unarchived": "Task unarchived",
+    "statusUpdated": "Status updated",
+    "createFailed": "Failed to create task",
+    "updateFailed": "Failed to update task",
+    "deleteFailed": "Failed to delete task",
+    "duplicateFailed": "Failed to duplicate task",
+    "archiveFailed": "Failed to archive task",
+    "unarchiveFailed": "Failed to unarchive task",
+    "statusUpdateFailed": "Failed to update status"
+  },
+  "modal": {
+    "createTitle": "New Task",
+    "editTitle": "Edit Task",
+    "submitCreate": "Create Task",
+    "submitSave": "Save Changes"
+  },
+  "filter": {
+    "button": "Filters",
+    "searchPlaceholder": "Search tasks...",
+    "searchLabel": "Search tasks",
+    "statusLabel": "Filter by status",
+    "priorityLabel": "Filter by priority",
+    "allStatuses": "All Statuses",
+    "allPriorities": "All Priorities",
+    "viewingArchived": "Viewing archived tasks",
+    "reset": "Reset",
+    "showArchived": "Show archived",
+    "hideArchived": "Hide archived",
+    "hide": "Hide"
+  },
+  "board": {
+    "emptyColumn": "No tasks"
+  },
+  "empty": {
+    "noTasks": "No tasks yet",
+    "createFirst": "Create your first task to get started",
+    "notFound": "Task not found",
+    "backToDashboard": "Back to dashboard",
+    "noActivity": "No activity yet"
+  },
+  "card": {
+    "recurring": "Recurring",
+    "created": "Created",
+    "completed": "Completed",
+    "checklist": "Checklist"
+  },
+  "checklist": {
+    "heading": "Checklist",
+    "addPlaceholder": "Add item...",
+    "addItem": "Add checklist item",
+    "editTitle": "Edit item title",
+    "markComplete": "Mark \"{{title}}\" as complete",
+    "markIncomplete": "Mark \"{{title}}\" as incomplete",
+    "moveUp": "Move \"{{title}}\" up",
+    "moveDown": "Move \"{{title}}\" down",
+    "deleteItem": "Delete \"{{title}}\""
+  },
+  "detail": {
+    "noDescription": "No description",
+    "saveChanges": "Save Changes",
+    "activity": "Activity",
+    "created": "Created",
+    "updated": "Updated",
+    "completedAt": "Completed"
+  },
+  "confirm": {
+    "deleteTitle": "Delete task",
+    "deleteDescription": "Are you sure you want to delete this task? This action cannot be undone.",
+    "backToTasks": "Back to tasks"
+  },
+  "activity": {
+    "heading": "Activity",
+    "empty": "No activity yet",
+    "taskCreated": "Task created",
+    "statusChanged": "Moved from {{from}} to {{to}}",
+    "priorityChanged": "Priority changed from {{from}} to {{to}}",
+    "dueDateChanged": "Due date changed to {{date}}",
+    "dueDateRemoved": "Due date removed",
+    "taskCompleted": "Task completed",
+    "taskArchived": "Task archived",
+    "taskUnarchived": "Task restored",
+    "checklistItemCreated": "Added checklist item \"{{title}}\"",
+    "checklistItemCompleted": "Completed checklist item \"{{title}}\"",
+    "checklistItemDeleted": "Removed checklist item \"{{title}}\"",
+    "recurrenceGenerated": "Auto-generated from recurrence",
+    "default": "Activity recorded",
+    "unknownStatus": "unknown",
+    "noneValue": "none"
+  },
+  "a11y": {
+    "loadingTasks": "Loading tasks",
+    "loadingTaskDetails": "Loading task details",
+    "dueReminders": "Due date reminders",
+    "columnLabel": "{{title}} column"
+  },
+  "view": {
+    "list": "List",
+    "board": "Board"
+  },
+  "stats": {
+    "total": "Total"
+  },
+  "dashboard": {
+    "title": "Tasks",
+    "tasksShown_one": "{{count}} task shown",
+    "tasksShown_other": "{{count}} tasks shown",
+    "cleanupDone": "Clean up done ({{count}})",
+    "cleanupTitle": "Clean up done tasks",
+    "cleanupDescription_one": "Archive {{count}} completed task from previous days? They'll be hidden from the board but kept for reports.",
+    "cleanupDescription_other": "Archive {{count}} completed tasks from previous days? They'll be hidden from the board but kept for reports.",
+    "cleanupSuccess_one": "{{count}} task archived",
+    "cleanupSuccess_other": "{{count}} tasks archived",
+    "cleanupFailed": "Failed to archive tasks"
+  }
+}

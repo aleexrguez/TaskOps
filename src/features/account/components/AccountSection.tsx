@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { AvatarUpload } from './AvatarUpload';
 
 const DEFAULT_AVATAR = '/image-noPhotoPerfil.png';
@@ -32,6 +33,7 @@ export function AccountSection({
   onRemoveAvatar,
   isRemovingAvatar,
 }: AccountSectionProps) {
+  const { t } = useTranslation('account');
   // Track only user edits — null means "use prop value"
   const [editValue, setEditValue] = useState<string | null>(null);
   const name = editValue ?? displayName ?? '';
@@ -67,7 +69,7 @@ export function AccountSection({
           htmlFor="display-name"
           className="block text-sm font-medium text-gray-700 dark:text-gray-300"
         >
-          Display name
+          {t('profile.displayName')}
         </label>
         <div className="flex gap-2">
           <input
@@ -75,7 +77,7 @@ export function AccountSection({
             type="text"
             value={name}
             onChange={handleNameChange}
-            placeholder="Your name"
+            placeholder={t('profile.namePlaceholder')}
             maxLength={100}
             aria-describedby={saveNameError ? 'name-error' : undefined}
             aria-invalid={!!saveNameError}
@@ -86,7 +88,7 @@ export function AccountSection({
             disabled={isSavingName || !isDirty || !name.trim()}
             className="cursor-pointer rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
-            {isSavingName ? 'Saving...' : 'Save'}
+            {isSavingName ? t('common:action.saving') : t('common:action.save')}
           </button>
         </div>
         {saveNameError && (
@@ -103,7 +105,7 @@ export function AccountSection({
       {/* Email (readonly) */}
       <div>
         <p className="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-1">
-          Email
+          {t('profile.email')}
         </p>
         <p className="text-sm text-gray-900 dark:text-gray-100">{email}</p>
       </div>

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { resetPasswordInputSchema } from '../types';
 import type { ResetPasswordInput } from '../types';
 
@@ -27,6 +28,7 @@ export function ResetPasswordForm({
   error,
   isSuccess,
 }: ResetPasswordFormProps) {
+  const { t } = useTranslation('auth');
   const [fields, setFields] = useState<FormState>({
     password: '',
     confirmPassword: '',
@@ -52,7 +54,10 @@ export function ResetPasswordForm({
       const errors: FieldErrors = {};
       for (const issue of result.error.issues) {
         const field = issue.path[0] as keyof FieldErrors;
-        errors[field] = issue.message;
+        errors[field] =
+          issue.message === 'Passwords do not match'
+            ? t('validation.passwordsDoNotMatch')
+            : issue.message;
       }
       setFieldErrors(errors);
       return;
@@ -66,17 +71,17 @@ export function ResetPasswordForm({
       <div className="flex flex-col gap-4">
         <div className="rounded-lg border border-green-200 bg-green-50 px-4 py-3 dark:border-green-800 dark:bg-green-900/20">
           <p className="text-sm font-medium text-green-700 dark:text-green-400">
-            Password updated successfully
+            {t('resetPassword.successHeading')}
           </p>
           <p className="mt-1 text-sm text-green-600 dark:text-green-400">
-            You can now sign in with your new password.
+            {t('resetPassword.successMessage')}
           </p>
         </div>
         <Link
           to="/login"
           className="cursor-pointer rounded-md bg-indigo-600 px-4 py-2 text-center text-sm font-semibold text-white transition-colors hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
         >
-          Go to login
+          {t('resetPassword.goToLogin')}
         </Link>
       </div>
     );
@@ -85,7 +90,7 @@ export function ResetPasswordForm({
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       <p className="text-sm text-gray-600 dark:text-gray-400">
-        Enter your new password below.
+        {t('resetPassword.instruction')}
       </p>
 
       {error && (
@@ -99,7 +104,7 @@ export function ResetPasswordForm({
 
       <div className="flex flex-col gap-1">
         <label htmlFor="password" className={labelClass}>
-          New Password <span className="text-red-500">*</span>
+          {t('resetPassword.passwordLabel')}
         </label>
         <div className="relative">
           <input
@@ -111,11 +116,15 @@ export function ResetPasswordForm({
             value={fields.password}
             onChange={handleChange}
             className={`${inputClass} w-full pr-10`}
-            placeholder="••••••"
+            placeholder={t('resetPassword.passwordPlaceholder')}
           />
           <button
             type="button"
-            aria-label={showPassword ? 'Hide password' : 'Show password'}
+            aria-label={
+              showPassword
+                ? t('resetPassword.hidePassword')
+                : t('resetPassword.showPassword')
+            }
             onClick={() => setShowPassword((prev) => !prev)}
             className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
           >
@@ -135,7 +144,7 @@ export function ResetPasswordForm({
 
       <div className="flex flex-col gap-1">
         <label htmlFor="confirmPassword" className={labelClass}>
-          Confirm Password <span className="text-red-500">*</span>
+          {t('resetPassword.confirmPasswordLabel')}
         </label>
         <div className="relative">
           <input
@@ -147,11 +156,15 @@ export function ResetPasswordForm({
             value={fields.confirmPassword}
             onChange={handleChange}
             className={`${inputClass} w-full pr-10`}
-            placeholder="••••••"
+            placeholder={t('resetPassword.passwordPlaceholder')}
           />
           <button
             type="button"
-            aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+            aria-label={
+              showConfirmPassword
+                ? t('resetPassword.hidePassword')
+                : t('resetPassword.showPassword')
+            }
             onClick={() => setShowConfirmPassword((prev) => !prev)}
             className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
           >
@@ -176,7 +189,7 @@ export function ResetPasswordForm({
         disabled={isPending}
         className="cursor-pointer rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
       >
-        {isPending ? 'Updating...' : 'Update Password'}
+        {isPending ? t('resetPassword.submitting') : t('resetPassword.submit')}
       </button>
     </form>
   );

@@ -1,0 +1,93 @@
+{
+  "nav": {
+    "inbox": "Bandeja",
+    "tasks": "Tareas",
+    "recurrences": "Recurrencias",
+    "reports": "Reportes",
+    "account": "Cuenta",
+    "settings": "Ajustes",
+    "signOut": "Cerrar sesion",
+    "signingOut": "Cerrando sesion..."
+  },
+  "action": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "retry": "Reintentar",
+    "close": "Cerrar",
+    "today": "Hoy",
+    "clear": "Limpiar",
+    "add": "Agregar",
+    "remove": "Quitar",
+    "convert": "Convertir",
+    "saving": "Guardando...",
+    "converting": "Convirtiendo...",
+    "loading": "Cargando...",
+    "duplicate": "Duplicar",
+    "newTask": "Nueva tarea",
+    "archive": "Archivar",
+    "unarchive": "Desarchivar"
+  },
+  "status": {
+    "todo": "Pendiente",
+    "inProgress": "En progreso",
+    "done": "Hecha"
+  },
+  "priority": {
+    "low": "Baja",
+    "medium": "Media",
+    "high": "Alta"
+  },
+  "form": {
+    "title": "Titulo",
+    "description": "Descripcion",
+    "status": "Estado",
+    "priority": "Prioridad",
+    "dueDate": "Fecha limite",
+    "titlePlaceholder": "Titulo de la tarea",
+    "descriptionPlaceholder": "Descripcion de la tarea"
+  },
+  "date": {
+    "selectDate": "Seleccionar fecha",
+    "overdue": "Vencida",
+    "dueToday": "Vence hoy",
+    "tomorrow": "Manana",
+    "daysLeft_one": "{{count}} dia restante",
+    "daysLeft_other": "{{count}} dias restantes",
+    "datePickerCalendar": "Calendario de seleccion de fecha"
+  },
+  "weekday": {
+    "mon": "Lun",
+    "tue": "Mar",
+    "wed": "Mie",
+    "thu": "Jue",
+    "fri": "Vie",
+    "sat": "Sab",
+    "sun": "Dom"
+  },
+  "reminder": {
+    "dismissReminder": "Descartar recordatorio: {{title}}",
+    "more_one": "+{{count}} mas",
+    "more_other": "+{{count}} mas"
+  },
+  "error": {
+    "generic": "Algo salió mal.",
+    "tryAgain": "Reintentar"
+  },
+  "updateBanner": {
+    "message": "Hay una nueva versión de TaskOps disponible.",
+    "later": "Más tarde",
+    "updateNow": "Actualizar ahora"
+  },
+  "a11y": {
+    "openMenu": "Abrir menu",
+    "userMenu": "Menu de usuario",
+    "expandSidebar": "Expandir barra lateral",
+    "collapseSidebar": "Contraer barra lateral",
+    "navigationMenu": "Menu de navegacion",
+    "mainNavigation": "Navegacion principal",
+    "mobileNavigation": "Navegacion movil",
+    "dismissNotification": "Descartar notificacion: {{message}}"
+  }
+}

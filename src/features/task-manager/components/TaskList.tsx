@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import type { Task } from '../types';
 import type { ChecklistSummaries } from '../api/checklist-api';
 import { TaskCard } from './TaskCard';
@@ -24,17 +25,20 @@ export function TaskList({
   onDuplicate,
   isLoading = false,
   deletingId = null,
-  emptyMessage = 'No tasks yet',
+  emptyMessage,
   onCreateNew,
   checklistSummaries,
   compact,
 }: TaskListProps) {
+  const { t } = useTranslation('task');
+  const resolvedEmptyMessage = emptyMessage ?? t('empty.noTasks');
+
   if (isLoading) {
     return (
       <div
         className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
         role="status"
-        aria-label="Loading tasks"
+        aria-label={t('a11y.loadingTasks')}
         aria-live="polite"
       >
         {Array.from({ length: 4 }).map((_, i) => (
@@ -62,10 +66,10 @@ export function TaskList({
           📋
         </div>
         <p className="text-base font-bold text-gray-700 dark:text-gray-300">
-          {emptyMessage}
+          {resolvedEmptyMessage}
         </p>
         <p className="mt-1 text-sm text-gray-400 dark:text-gray-500">
-          Create your first task to get started
+          {t('empty.createFirst')}
         </p>
         {onCreateNew && (
           <button
@@ -73,7 +77,7 @@ export function TaskList({
             onClick={onCreateNew}
             className="cursor-pointer mt-4 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
           >
-            New Task
+            {t('common:action.newTask')}
           </button>
         )}
       </div>

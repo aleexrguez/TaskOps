@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useTasks } from '../hooks/use-tasks';
 import { useAutoPurge } from '../hooks/use-auto-purge';
 import { useCleanupDoneTasks } from '../hooks/use-cleanup-done-tasks';
@@ -16,6 +17,7 @@ import { CreateTaskContainer } from './CreateTaskContainer';
 import { EditTaskContainer } from './EditTaskContainer';
 
 export function TaskDashboardContainer() {
+  const { t } = useTranslation('task');
   const { data } = useTasks();
   const openCreateModal = useTaskUIStore((s) => s.openCreateModal);
   const viewMode = useTaskUIStore((s) => s.viewMode);
@@ -58,13 +60,13 @@ export function TaskDashboardContainer() {
     cleanupDone(candidateIds, {
       onSuccess: ({ archivedCount }) => {
         addToast(
-          `${archivedCount} task${archivedCount === 1 ? '' : 's'} archived`,
+          t('dashboard.cleanupSuccess', { count: archivedCount }),
           'success',
         );
         setShowCleanupConfirm(false);
       },
       onError: () => {
-        addToast('Failed to archive tasks', 'error');
+        addToast(t('dashboard.cleanupFailed'), 'error');
         setShowCleanupConfirm(false);
       },
     });
@@ -75,12 +77,12 @@ export function TaskDashboardContainer() {
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
-            Tasks
+            {t('dashboard.title')}
           </h1>
           <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
             {totalTasks === 0
-              ? 'No tasks yet'
-              : `${totalTasks} task${totalTasks === 1 ? '' : 's'} shown`}
+              ? t('empty.noTasks')
+              : t('dashboard.tasksShown', { count: totalTasks })}
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -91,7 +93,7 @@ export function TaskDashboardContainer() {
               onClick={() => setShowCleanupConfirm(true)}
               className="cursor-pointer rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
             >
-              Clean up done ({cleanupCount})
+              {t('dashboard.cleanupDone', { count: cleanupCount })}
             </button>
           )}
           <button
@@ -100,7 +102,7 @@ export function TaskDashboardContainer() {
             className="cursor-pointer flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
           >
             <span aria-hidden="true">+</span>
-            New Task
+            {t('common:action.newTask')}
           </button>
         </div>
       </div>
@@ -115,9 +117,9 @@ export function TaskDashboardContainer() {
 
       <ConfirmDialog
         isOpen={showCleanupConfirm}
-        title="Clean up done tasks"
-        description={`Archive ${cleanupCount} completed task${cleanupCount === 1 ? '' : 's'} from previous days? They'll be hidden from the board but kept for reports.`}
-        confirmLabel="Archive"
+        title={t('dashboard.cleanupTitle')}
+        description={t('dashboard.cleanupDescription', { count: cleanupCount })}
+        confirmLabel={t('common:action.archive')}
         variant="default"
         isLoading={isCleaning}
         onConfirm={handleCleanup}

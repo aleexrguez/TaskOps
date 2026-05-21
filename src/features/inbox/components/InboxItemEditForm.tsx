@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import type { FormEvent, KeyboardEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface InboxItemEditFormProps {
   initialTitle: string;
@@ -16,6 +17,7 @@ export function InboxItemEditForm({
   onCancel,
   isSubmitting = false,
 }: InboxItemEditFormProps) {
+  const { t } = useTranslation(['inbox', 'common']);
   const titleRef = useRef<HTMLInputElement>(null);
   const [title, setTitle] = useState(initialTitle);
   const [notes, setNotes] = useState(initialNotes ?? '');
@@ -62,15 +64,15 @@ export function InboxItemEditForm({
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         onKeyDown={handleTitleKeyDown}
-        aria-label="Edit title"
+        aria-label={t('inbox:editForm.editTitle')}
         className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
       />
       <textarea
         value={notes}
         onChange={(e) => setNotes(e.target.value)}
         onKeyDown={handleNotesKeyDown}
-        placeholder="Notes (optional)"
-        aria-label="Edit notes"
+        placeholder={t('inbox:editForm.notesPlaceholder')}
+        aria-label={t('inbox:editForm.editNotes')}
         rows={2}
         className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-500"
       />
@@ -81,14 +83,14 @@ export function InboxItemEditForm({
           disabled={isSubmitting}
           className="rounded-md px-3 py-1.5 text-sm font-medium text-gray-600 hover:bg-gray-100 disabled:opacity-50 dark:text-gray-400 dark:hover:bg-gray-700"
         >
-          Cancel
+          {t('common:action.cancel')}
         </button>
         <button
           type="submit"
           disabled={!canSave}
           className="rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-indigo-500 dark:hover:bg-indigo-600"
         >
-          {isSubmitting ? 'Saving...' : 'Save'}
+          {isSubmitting ? t('common:action.saving') : t('common:action.save')}
         </button>
       </div>
     </form>

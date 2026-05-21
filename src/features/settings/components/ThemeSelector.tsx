@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import type { ThemePreference } from '@/shared/types/preferences.types';
 
 interface ThemeSelectorProps {
@@ -5,21 +6,23 @@ interface ThemeSelectorProps {
   onThemeChange: (theme: ThemePreference) => void;
 }
 
-const OPTIONS: { value: ThemePreference; label: string }[] = [
-  { value: 'light', label: 'Light' },
-  { value: 'dark', label: 'Dark' },
-  { value: 'system', label: 'System' },
-];
-
 export function ThemeSelector({ theme, onThemeChange }: ThemeSelectorProps) {
+  const { t } = useTranslation('settings');
+
+  const options: { value: ThemePreference; label: string }[] = [
+    { value: 'light', label: t('appearance.light') },
+    { value: 'dark', label: t('appearance.dark') },
+    { value: 'system', label: t('appearance.system') },
+  ];
+
   return (
     <fieldset className="border-0 m-0 p-0">
       <legend className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
-        Theme
+        {t('appearance.theme')}
       </legend>
 
       <div className="flex gap-2">
-        {OPTIONS.map(({ value, label }) => (
+        {options.map(({ value, label }) => (
           <label
             key={value}
             className={[

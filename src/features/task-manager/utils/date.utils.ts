@@ -1,4 +1,13 @@
+import { enUS, es } from 'date-fns/locale';
 import { format, parse, parseISO } from 'date-fns';
+
+const LOCALE_MAP = { en: enUS, es } as const;
+
+export type DateLang = keyof typeof LOCALE_MAP;
+
+export function getDateLocale(lang: DateLang = 'en') {
+  return LOCALE_MAP[lang] ?? enUS;
+}
 
 /**
  * Parse an ISO string safely, handling both date-only (YYYY-MM-DD) and
@@ -16,11 +25,15 @@ function parseDateSafe(iso: string): Date {
 }
 
 /** Format any ISO string as "MMM d, yyyy" (e.g. "May 10, 2026"). */
-export function formatDate(iso: string): string {
-  return format(parseDateSafe(iso), 'MMM d, yyyy');
+export function formatDate(iso: string, lang: DateLang = 'en'): string {
+  return format(parseDateSafe(iso), 'MMM d, yyyy', {
+    locale: LOCALE_MAP[lang],
+  });
 }
 
 /** Format a full ISO datetime as "MMM d, yyyy · h:mm a" (e.g. "May 10, 2026 · 3:45 PM"). */
-export function formatDateTime(iso: string): string {
-  return format(parseISO(iso), "MMM d, yyyy '·' h:mm a");
+export function formatDateTime(iso: string, lang: DateLang = 'en'): string {
+  return format(parseISO(iso), "MMM d, yyyy '·' h:mm a", {
+    locale: LOCALE_MAP[lang],
+  });
 }

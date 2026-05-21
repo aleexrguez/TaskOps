@@ -1,30 +1,11 @@
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useApplyTheme } from '@/shared/hooks/use-apply-theme';
 import { useAppPreferencesStore } from '@/shared/store/app-preferences.store';
+import { LanguageToggle } from '@/shared/components/LanguageToggle';
 import type { ThemePreference } from '@/shared/types/preferences.types';
 
-const features = [
-  {
-    title: 'Kanban Board',
-    description:
-      'Visualize your workflow with drag-and-drop columns. Move tasks between Todo, In Progress, and Done.',
-  },
-  {
-    title: 'Recurring Tasks',
-    description:
-      'Set up daily, weekly, or monthly recurring tasks that generate automatically.',
-  },
-  {
-    title: 'Smart Reminders',
-    description:
-      'Get notified about overdue and upcoming tasks with priority-based alerts.',
-  },
-  {
-    title: 'Persistent Ordering',
-    description:
-      'Your board order is saved automatically. Drag once, stay organized forever.',
-  },
-];
+const featureKeys = ['kanban', 'recurring', 'reminders', 'ordering'] as const;
 
 function nextTheme(current: ThemePreference): ThemePreference {
   if (current === 'light') return 'dark';
@@ -38,6 +19,7 @@ function themeIcon(current: ThemePreference): string {
 
 export function LandingPage() {
   useApplyTheme();
+  const { t } = useTranslation('landing');
 
   const theme = useAppPreferencesStore((s) => s.theme);
   const setTheme = useAppPreferencesStore((s) => s.setTheme);
@@ -61,22 +43,23 @@ export function LandingPage() {
             <button
               type="button"
               onClick={() => setTheme(nextTheme(theme))}
-              aria-label={`Switch to ${nextTheme(theme)} mode`}
+              aria-label={t('nav.themeToggle', { nextTheme: nextTheme(theme) })}
               className="cursor-pointer rounded-md p-2 text-gray-600 transition-colors hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-800"
             >
               {themeIcon(theme)}
             </button>
+            <LanguageToggle />
             <Link
               to="/login"
               className="cursor-pointer rounded-lg px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
             >
-              Login
+              {t('nav.login')}
             </Link>
             <Link
               to="/register"
               className="cursor-pointer rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-indigo-700"
             >
-              Get Started
+              {t('nav.getStarted')}
             </Link>
           </nav>
         </div>
@@ -86,25 +69,23 @@ export function LandingPage() {
       <main className="flex flex-1 flex-col">
         <section className="flex flex-col items-center justify-center px-4 py-20 text-center sm:py-28">
           <h1 className="text-4xl font-bold tracking-tight text-gray-900 dark:text-gray-100 sm:text-5xl">
-            Ship Work, Not Chaos
+            {t('hero.title')}
           </h1>
           <p className="mt-4 max-w-xl text-lg text-gray-600 dark:text-gray-400">
-            TaskOps is a lightweight task manager built for developers and small
-            teams. Kanban boards, recurring tasks, smart reminders — everything
-            you need to stay on track.
+            {t('hero.subtitle')}
           </p>
           <div className="mt-8 flex items-center gap-4">
             <Link
               to="/register"
               className="cursor-pointer rounded-lg bg-indigo-600 px-6 py-3 text-base font-semibold text-white transition-colors hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
             >
-              Get Started
+              {t('hero.cta.getStarted')}
             </Link>
             <Link
               to="/login"
               className="cursor-pointer rounded-lg border border-gray-300 px-6 py-3 text-base font-medium text-gray-700 transition-colors hover:bg-gray-100 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800"
             >
-              Login
+              {t('hero.cta.login')}
             </Link>
           </div>
         </section>
@@ -113,19 +94,19 @@ export function LandingPage() {
         <section className="border-t border-gray-200 bg-white px-4 py-16 dark:border-gray-700 dark:bg-gray-800">
           <div className="mx-auto max-w-5xl">
             <h2 className="mb-10 text-center text-2xl font-bold text-gray-900 dark:text-gray-100">
-              Everything you need, nothing you don't
+              {t('features.heading')}
             </h2>
             <div className="grid gap-6 sm:grid-cols-2">
-              {features.map((f) => (
+              {featureKeys.map((key) => (
                 <div
-                  key={f.title}
+                  key={key}
                   className="rounded-lg border border-gray-200 p-6 dark:border-gray-700"
                 >
                   <h3 className="text-base font-semibold text-gray-900 dark:text-gray-100">
-                    {f.title}
+                    {t(`features.${key}.title`)}
                   </h3>
                   <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                    {f.description}
+                    {t(`features.${key}.description`)}
                   </p>
                 </div>
               ))}
@@ -136,7 +117,7 @@ export function LandingPage() {
 
       {/* Footer */}
       <footer className="border-t border-gray-200 py-6 text-center text-sm text-gray-500 dark:border-gray-700 dark:text-gray-400">
-        TaskOps · Built by Alessandro Rodriguez Rojas
+        {t('footer')}
       </footer>
     </div>
   );

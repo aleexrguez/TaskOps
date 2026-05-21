@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import type { HeaderProps } from './app-shell.types';
 import { UserMenu } from './UserMenu';
 
@@ -7,6 +8,7 @@ export function Header({
   onToggleMobileSidebar,
   userMenu,
 }: HeaderProps) {
+  const { t } = useTranslation('common');
   return (
     <header
       role="banner"
@@ -18,7 +20,7 @@ export function Header({
       <div className="flex items-center">
         <button
           type="button"
-          aria-label="Open menu"
+          aria-label={t('a11y.openMenu')}
           className="md:hidden mr-3 cursor-pointer rounded-md p-1 text-gray-700 hover:bg-gray-100 dark:text-gray-100 dark:hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900"
           onClick={onToggleMobileSidebar}
         >

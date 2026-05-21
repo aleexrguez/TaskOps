@@ -1,6 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { DayPicker } from 'react-day-picker';
 import { format, parse } from 'date-fns';
+import type { Locale } from 'date-fns';
+import { enUS, es } from 'date-fns/locale';
+import { useTranslation } from 'react-i18next';
 
 type Placement = 'bottom' | 'top';
 
@@ -20,8 +23,8 @@ function formatValue(date: Date): string {
   return format(date, 'yyyy-MM-dd');
 }
 
-function formatDisplay(date: Date): string {
-  return format(date, 'MMM d, yyyy');
+function formatDisplay(date: Date, loc: Locale): string {
+  return format(date, 'MMM d, yyyy', { locale: loc });
 }
 
 function computePlacement(triggerEl: HTMLElement): Placement {
@@ -41,13 +44,18 @@ export function DatePicker({
   id,
   disabled = false,
 }: DatePickerProps) {
+  const { t, i18n } = useTranslation('common');
+  const locale = i18n.resolvedLanguage === 'es' ? es : enUS;
+
   const [open, setOpen] = useState(false);
   const [placement, setPlacement] = useState<Placement>('bottom');
   const containerRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
 
   const selected = value ? parseValue(value) : undefined;
-  const displayText = selected ? formatDisplay(selected) : 'Select date';
+  const displayText = selected
+    ? formatDisplay(selected, locale)
+    : t('date.selectDate');
 
   useEffect(() => {
     if (!open) return;
@@ -135,13 +143,14 @@ export function DatePicker({
       {open && (
         <div
           role="dialog"
-          aria-label="Date picker calendar"
+          aria-label={t('date.datePickerCalendar')}
           className={`absolute left-0 z-50 max-h-[min(24rem,calc(100vh-2rem))] overflow-y-auto overscroll-contain rounded-lg border border-gray-200 bg-white p-3 shadow-lg dark:border-gray-600 dark:bg-gray-800 ${popoverPlacement}`}
         >
           <DayPicker
             mode="single"
             selected={selected}
             onSelect={handleSelect}
+            locale={locale}
           />
           <div className="mt-2 flex gap-2 border-t border-gray-100 pt-2 dark:border-gray-700">
             <button
@@ -149,14 +158,14 @@ export function DatePicker({
               onClick={handleToday}
               className="flex-1 rounded-md bg-gray-100 px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
             >
-              Today
+              {t('action.today')}
             </button>
             <button
               type="button"
               onClick={handleClear}
               className="flex-1 rounded-md bg-gray-100 px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
             >
-              Clear
+              {t('action.clear')}
             </button>
           </div>
         </div>

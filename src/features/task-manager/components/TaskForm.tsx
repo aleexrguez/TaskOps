@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { CreateTaskInput, TaskStatus, TaskPriority } from '../types';
 import { DatePicker } from '@/shared/components/DatePicker';
 
@@ -36,6 +37,7 @@ export function TaskForm({
   submitLabel = 'Submit',
   autoFocusTitle = false,
 }: TaskFormProps) {
+  const { t } = useTranslation();
   const titleRef = useRef<HTMLInputElement>(null);
   const [fields, setFields] = useState<FormState>(() =>
     buildInitialState(initialValues),
@@ -76,7 +78,7 @@ export function TaskForm({
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       <div className="flex flex-col gap-1">
         <label htmlFor="title" className={labelClass}>
-          Title <span className="text-red-500">*</span>
+          {t('common:form.title')} <span className="text-red-500">*</span>
         </label>
         <input
           ref={titleRef}
@@ -87,13 +89,13 @@ export function TaskForm({
           value={fields.title}
           onChange={handleChange}
           className={inputClass}
-          placeholder="Task title"
+          placeholder={t('common:form.titlePlaceholder')}
         />
       </div>
 
       <div className="flex flex-col gap-1">
         <label htmlFor="description" className={labelClass}>
-          Description
+          {t('common:form.description')}
         </label>
         <textarea
           id="description"
@@ -102,13 +104,13 @@ export function TaskForm({
           value={fields.description}
           onChange={handleChange}
           className={inputClass}
-          placeholder="Task description"
+          placeholder={t('common:form.descriptionPlaceholder')}
         />
       </div>
 
       <div className="flex flex-col gap-1">
         <label htmlFor="status" className={labelClass}>
-          Status
+          {t('common:form.status')}
         </label>
         <select
           id="status"
@@ -117,15 +119,15 @@ export function TaskForm({
           onChange={handleChange}
           className={inputClass}
         >
-          <option value="todo">Todo</option>
-          <option value="in-progress">In Progress</option>
-          <option value="done">Done</option>
+          <option value="todo">{t('common:status.todo')}</option>
+          <option value="in-progress">{t('common:status.inProgress')}</option>
+          <option value="done">{t('common:status.done')}</option>
         </select>
       </div>
 
       <div className="flex flex-col gap-1">
         <label htmlFor="priority" className={labelClass}>
-          Priority
+          {t('common:form.priority')}
         </label>
         <select
           id="priority"
@@ -134,16 +136,16 @@ export function TaskForm({
           onChange={handleChange}
           className={inputClass}
         >
-          <option value="low">Low</option>
-          <option value="medium">Medium</option>
-          <option value="high">High</option>
+          <option value="low">{t('common:priority.low')}</option>
+          <option value="medium">{t('common:priority.medium')}</option>
+          <option value="high">{t('common:priority.high')}</option>
         </select>
       </div>
 
       <div className="flex flex-col gap-1">
         <DatePicker
           id="dueDate"
-          label="Due Date"
+          label={t('common:form.dueDate')}
           value={fields.dueDate || undefined}
           onChange={(date) =>
             setFields((prev) => ({ ...prev, dueDate: date ?? '' }))

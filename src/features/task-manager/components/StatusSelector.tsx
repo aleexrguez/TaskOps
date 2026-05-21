@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { TaskStatus } from '../types';
-import { STATUS_LABELS, STATUS_STYLES } from './status.constants';
+import { STATUS_I18N_KEYS, STATUS_STYLES } from './status.constants';
 
 interface StatusSelectorProps {
   status: TaskStatus;
@@ -21,6 +22,7 @@ export function StatusSelector({
   onStatusChange,
   disabled = false,
 }: StatusSelectorProps) {
+  const { t } = useTranslation('common');
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -73,7 +75,7 @@ export function StatusSelector({
         disabled={disabled}
         className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium ${STATUS_STYLES[status]} ${disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
       >
-        {STATUS_LABELS[status]}
+        {t(STATUS_I18N_KEYS[status])}
         <svg
           className="h-3 w-3"
           viewBox="0 0 12 12"
@@ -108,7 +110,9 @@ export function StatusSelector({
               <span
                 className={`h-2 w-2 rounded-full ${STATUS_DOT_STYLES[option]}`}
               />
-              <span className="flex-1 text-left">{STATUS_LABELS[option]}</span>
+              <span className="flex-1 text-left">
+                {t(STATUS_I18N_KEYS[option])}
+              </span>
               {status === option && (
                 <svg
                   className="h-3 w-3 text-indigo-600 dark:text-indigo-400"

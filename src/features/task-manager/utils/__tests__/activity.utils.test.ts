@@ -1,6 +1,9 @@
 import { describe, it, expect } from 'vitest';
+import i18n from '@/i18n/i18n';
 import { formatEventDescription } from '../activity.utils';
 import type { ActivityEvent } from '../../types/activity.types';
+
+const t = i18n.t.bind(i18n);
 
 function makeEvent(overrides: Partial<ActivityEvent> = {}): ActivityEvent {
   return {
@@ -17,7 +20,7 @@ function makeEvent(overrides: Partial<ActivityEvent> = {}): ActivityEvent {
 
 describe('formatEventDescription', () => {
   it('returns "Task created" for task_created', () => {
-    expect(formatEventDescription(makeEvent())).toBe('Task created');
+    expect(formatEventDescription(makeEvent(), t)).toBe('Task created');
   });
 
   it('returns status labels for task_status_changed', () => {
@@ -26,7 +29,7 @@ describe('formatEventDescription', () => {
       fromValue: 'todo',
       toValue: 'in-progress',
     });
-    expect(formatEventDescription(event)).toBe(
+    expect(formatEventDescription(event, t)).toBe(
       'Moved from Todo to In Progress',
     );
   });
@@ -37,7 +40,7 @@ describe('formatEventDescription', () => {
       fromValue: 'in-progress',
       toValue: 'done',
     });
-    expect(formatEventDescription(event)).toBe(
+    expect(formatEventDescription(event, t)).toBe(
       'Moved from In Progress to Done',
     );
   });
@@ -48,8 +51,8 @@ describe('formatEventDescription', () => {
       fromValue: 'medium',
       toValue: 'high',
     });
-    expect(formatEventDescription(event)).toBe(
-      'Priority changed from medium to high',
+    expect(formatEventDescription(event, t)).toBe(
+      'Priority changed from Medium to High',
     );
   });
 
@@ -59,8 +62,8 @@ describe('formatEventDescription', () => {
       fromValue: null,
       toValue: 'high',
     });
-    expect(formatEventDescription(event)).toBe(
-      'Priority changed from none to high',
+    expect(formatEventDescription(event, t)).toBe(
+      'Priority changed from none to High',
     );
   });
 
@@ -69,7 +72,7 @@ describe('formatEventDescription', () => {
       eventType: 'task_due_date_changed',
       toValue: '2026-05-15',
     });
-    expect(formatEventDescription(event)).toContain('Due date changed to');
+    expect(formatEventDescription(event, t)).toContain('Due date changed to');
   });
 
   it('returns "Due date removed" when toValue is null', () => {
@@ -78,7 +81,7 @@ describe('formatEventDescription', () => {
       fromValue: '2026-05-15',
       toValue: null,
     });
-    expect(formatEventDescription(event)).toBe('Due date removed');
+    expect(formatEventDescription(event, t)).toBe('Due date removed');
   });
 
   it('returns "Task completed" for task_completed', () => {
@@ -87,18 +90,18 @@ describe('formatEventDescription', () => {
       fromValue: 'in-progress',
       toValue: 'done',
     });
-    expect(formatEventDescription(event)).toBe('Task completed');
+    expect(formatEventDescription(event, t)).toBe('Task completed');
   });
 
   it('returns "Task archived" for task_archived', () => {
     expect(
-      formatEventDescription(makeEvent({ eventType: 'task_archived' })),
+      formatEventDescription(makeEvent({ eventType: 'task_archived' }), t),
     ).toBe('Task archived');
   });
 
   it('returns "Task restored" for task_unarchived', () => {
     expect(
-      formatEventDescription(makeEvent({ eventType: 'task_unarchived' })),
+      formatEventDescription(makeEvent({ eventType: 'task_unarchived' }), t),
     ).toBe('Task restored');
   });
 
@@ -107,7 +110,7 @@ describe('formatEventDescription', () => {
       eventType: 'checklist_item_created',
       metadata: { title: 'Buy milk' },
     });
-    expect(formatEventDescription(event)).toBe(
+    expect(formatEventDescription(event, t)).toBe(
       'Added checklist item "Buy milk"',
     );
   });
@@ -117,7 +120,7 @@ describe('formatEventDescription', () => {
       eventType: 'checklist_item_completed',
       metadata: { title: 'Buy milk' },
     });
-    expect(formatEventDescription(event)).toBe(
+    expect(formatEventDescription(event, t)).toBe(
       'Completed checklist item "Buy milk"',
     );
   });
@@ -127,7 +130,7 @@ describe('formatEventDescription', () => {
       eventType: 'checklist_item_deleted',
       metadata: { title: 'Buy milk' },
     });
-    expect(formatEventDescription(event)).toBe(
+    expect(formatEventDescription(event, t)).toBe(
       'Removed checklist item "Buy milk"',
     );
   });
@@ -137,13 +140,16 @@ describe('formatEventDescription', () => {
       eventType: 'checklist_item_created',
       metadata: {},
     });
-    expect(formatEventDescription(event)).toBe('Added checklist item "item"');
+    expect(formatEventDescription(event, t)).toBe(
+      'Added checklist item "item"',
+    );
   });
 
   it('returns recurrence description', () => {
     expect(
       formatEventDescription(
         makeEvent({ eventType: 'recurrence_generated_task' }),
+        t,
       ),
     ).toBe('Auto-generated from recurrence');
   });

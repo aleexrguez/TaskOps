@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import {
   useInboxItems,
   useCreateInboxItem,
@@ -17,13 +18,14 @@ import {
 import { ConvertToTaskContainer } from './ConvertToTaskContainer';
 import { useAuth } from '@/features/auth/hooks';
 import { useProfile } from '@/features/account/hooks/use-profile';
-import { getGreeting, getDisplayName } from '../utils/greeting.utils';
+import { getGreetingKey, getDisplayName } from '../utils/greeting.utils';
 import { InboxHero } from '../components/InboxHero';
 
 export function InboxDashboardContainer() {
+  const { t } = useTranslation(['inbox', 'common']);
   const { user } = useAuth();
   const { data: profile } = useProfile();
-  const greeting = getGreeting(new Date().getHours());
+  const greeting = t(getGreetingKey(new Date().getHours()));
   const displayName = getDisplayName(profile, user?.email);
 
   const { data, isLoading, isError } = useInboxItems();
@@ -43,8 +45,8 @@ export function InboxDashboardContainer() {
     createMutation.mutate(
       { title: input.title, notes: input.notes ?? null },
       {
-        onSuccess: () => addToast('Idea captured', 'success'),
-        onError: () => addToast('Failed to capture idea', 'error'),
+        onSuccess: () => addToast(t('inbox:toast.captured'), 'success'),
+        onError: () => addToast(t('inbox:toast.captureFailed'), 'error'),
       },
     );
   }
@@ -58,17 +60,17 @@ export function InboxDashboardContainer() {
       {
         onSuccess: () => {
           setEditingItem(null);
-          addToast('Item updated', 'success');
+          addToast(t('inbox:toast.updated'), 'success');
         },
-        onError: () => addToast('Failed to update item', 'error'),
+        onError: () => addToast(t('inbox:toast.updateFailed'), 'error'),
       },
     );
   }
 
   function handleDelete(id: string) {
     deleteMutation.mutate(id, {
-      onSuccess: () => addToast('Item deleted', 'success'),
-      onError: () => addToast('Failed to delete item', 'error'),
+      onSuccess: () => addToast(t('inbox:toast.deleted'), 'success'),
+      onError: () => addToast(t('inbox:toast.deleteFailed'), 'error'),
     });
   }
 
@@ -79,7 +81,9 @@ export function InboxDashboardContainer() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <p className="text-sm text-gray-500 dark:text-gray-400">Loading...</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400">
+          {t('common:action.loading')}
+        </p>
       </div>
     );
   }
@@ -88,7 +92,7 @@ export function InboxDashboardContainer() {
     return (
       <div className="flex items-center justify-center py-12">
         <p className="text-sm text-red-600 dark:text-red-400">
-          Failed to load inbox items
+          {t('inbox:error.loadFailed')}
         </p>
       </div>
     );

@@ -1,0 +1,93 @@
+{
+  "nav": {
+    "inbox": "Inbox",
+    "tasks": "Tasks",
+    "recurrences": "Recurrences",
+    "reports": "Reports",
+    "account": "Account",
+    "settings": "Settings",
+    "signOut": "Sign out",
+    "signingOut": "Signing out..."
+  },
+  "action": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "retry": "Retry",
+    "close": "Close",
+    "today": "Today",
+    "clear": "Clear",
+    "add": "Add",
+    "remove": "Remove",
+    "convert": "Convert",
+    "saving": "Saving...",
+    "converting": "Converting...",
+    "loading": "Loading...",
+    "duplicate": "Duplicate",
+    "newTask": "New Task",
+    "archive": "Archive",
+    "unarchive": "Unarchive"
+  },
+  "status": {
+    "todo": "Todo",
+    "inProgress": "In Progress",
+    "done": "Done"
+  },
+  "priority": {
+    "low": "Low",
+    "medium": "Medium",
+    "high": "High"
+  },
+  "form": {
+    "title": "Title",
+    "description": "Description",
+    "status": "Status",
+    "priority": "Priority",
+    "dueDate": "Due Date",
+    "titlePlaceholder": "Task title",
+    "descriptionPlaceholder": "Task description"
+  },
+  "date": {
+    "selectDate": "Select date",
+    "overdue": "Overdue",
+    "dueToday": "Due today",
+    "tomorrow": "Tomorrow",
+    "daysLeft_one": "{{count}} day left",
+    "daysLeft_other": "{{count}} days left",
+    "datePickerCalendar": "Date picker calendar"
+  },
+  "weekday": {
+    "mon": "Mon",
+    "tue": "Tue",
+    "wed": "Wed",
+    "thu": "Thu",
+    "fri": "Fri",
+    "sat": "Sat",
+    "sun": "Sun"
+  },
+  "reminder": {
+    "dismissReminder": "Dismiss reminder: {{title}}",
+    "more_one": "+{{count}} more",
+    "more_other": "+{{count}} more"
+  },
+  "error": {
+    "generic": "Something went wrong.",
+    "tryAgain": "Try again"
+  },
+  "updateBanner": {
+    "message": "A new version of TaskOps is available.",
+    "later": "Later",
+    "updateNow": "Update now"
+  },
+  "a11y": {
+    "openMenu": "Open menu",
+    "userMenu": "User menu",
+    "expandSidebar": "Expand sidebar",
+    "collapseSidebar": "Collapse sidebar",
+    "navigationMenu": "Navigation menu",
+    "mainNavigation": "Main navigation",
+    "mobileNavigation": "Mobile navigation",
+    "dismissNotification": "Dismiss notification: {{message}}"
+  }
+}

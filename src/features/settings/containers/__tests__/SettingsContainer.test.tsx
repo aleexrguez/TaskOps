@@ -11,6 +11,7 @@ vi.mock('@/shared/store/app-preferences.store', () => ({
 const mockSetTheme = vi.fn();
 const mockSetRetentionPolicy = vi.fn();
 const mockToggleReminders = vi.fn();
+const mockSetLanguage = vi.fn();
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -27,6 +28,8 @@ beforeEach(() => {
       toggleReminders: mockToggleReminders,
       animatedBackground: false,
       toggleAnimatedBackground: vi.fn(),
+      language: 'en',
+      setLanguage: mockSetLanguage,
     }),
   );
 });
@@ -61,7 +64,9 @@ describe('SettingsContainer', () => {
   it('renders retention select with store value', () => {
     render(<SettingsContainer />);
 
-    const select = screen.getByRole('combobox');
+    const select = screen.getByRole('combobox', {
+      name: /automatically archive completed tasks after/i,
+    });
     expect(select).toBeInTheDocument();
     expect(select).toHaveValue('never');
   });
@@ -70,7 +75,12 @@ describe('SettingsContainer', () => {
     const user = userEvent.setup();
     render(<SettingsContainer />);
 
-    await user.selectOptions(screen.getByRole('combobox'), '7d');
+    await user.selectOptions(
+      screen.getByRole('combobox', {
+        name: /automatically archive completed tasks after/i,
+      }),
+      '7d',
+    );
 
     expect(mockSetRetentionPolicy).toHaveBeenCalledWith('7d');
   });
@@ -92,5 +102,25 @@ describe('SettingsContainer', () => {
     );
 
     expect(mockToggleReminders).toHaveBeenCalledOnce();
+  });
+
+  it('passes language from store to SettingsPage', () => {
+    render(<SettingsContainer />);
+
+    expect(
+      screen.getByRole('combobox', { name: /display language/i }),
+    ).toHaveValue('en');
+  });
+
+  it('calls setLanguage from store when language is changed', async () => {
+    const user = userEvent.setup();
+    render(<SettingsContainer />);
+
+    await user.selectOptions(
+      screen.getByRole('combobox', { name: /display language/i }),
+      'es',
+    );
+
+    expect(mockSetLanguage).toHaveBeenCalledWith('es');
   });
 });

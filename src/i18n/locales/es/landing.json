@@ -1,0 +1,32 @@
+{
+  "nav": {
+    "login": "Iniciar sesión",
+    "getStarted": "Comenzar",
+    "themeToggle": "Cambiar a modo {{nextTheme}}"
+  },
+  "hero": {
+    "title": "Organiza el trabajo, no el caos",
+    "subtitle": "TaskOps es un gestor de tareas ligero para desarrolladores y equipos pequeños. Tableros Kanban, tareas recurrentes, recordatorios inteligentes — todo lo que necesitas para mantener el rumbo.",
+    "cta": { "getStarted": "Comenzar", "login": "Iniciar sesión" }
+  },
+  "features": {
+    "heading": "Todo lo que necesitas, nada que no",
+    "kanban": {
+      "title": "Tablero Kanban",
+      "description": "Visualiza tu flujo de trabajo con columnas arrastrables. Mueve tareas entre Pendiente, En progreso y Hecho."
+    },
+    "recurring": {
+      "title": "Tareas recurrentes",
+      "description": "Configura tareas diarias, semanales o mensuales que se generan automáticamente."
+    },
+    "reminders": {
+      "title": "Recordatorios inteligentes",
+      "description": "Recibe notificaciones sobre tareas vencidas y próximas con alertas basadas en prioridad."
+    },
+    "ordering": {
+      "title": "Orden persistente",
+      "description": "El orden de tu tablero se guarda automáticamente. Arrastra una vez, mantente organizado para siempre."
+    }
+  },
+  "footer": "TaskOps · Creado por Alessandro Rodriguez Rojas"
+}

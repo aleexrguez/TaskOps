@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import type { GroupedReminder } from '../types/reminder.types';
 import { ReminderToast } from './ReminderToast';
 
@@ -14,12 +15,14 @@ export function ReminderContainer({
   onClick,
   onClickMore,
 }: ReminderContainerProps) {
+  const { t } = useTranslation('task');
+
   if (reminders.length === 0) return null;
 
   return (
     <div
       role="region"
-      aria-label="Due date reminders"
+      aria-label={t('a11y.dueReminders')}
       aria-live="assertive"
       className="fixed bottom-20 right-4 z-50 flex flex-col gap-2"
     >

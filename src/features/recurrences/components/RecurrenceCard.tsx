@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import type { RecurrenceTemplate } from '../types/recurrence.types';
 import { formatFrequencyLabel } from '../utils/recurrence.utils';
 
@@ -19,7 +20,8 @@ export function RecurrenceCard({
   onEdit,
   onDelete,
 }: RecurrenceCardProps) {
-  const frequencyLabel = formatFrequencyLabel(template);
+  const { t } = useTranslation('recurrence');
+  const frequencyLabel = formatFrequencyLabel(template, t);
   const priorityClass =
     PRIORITY_BADGE[template.priority] ?? PRIORITY_BADGE.medium;
 
@@ -39,7 +41,7 @@ export function RecurrenceCard({
               onClick={() => onEdit(template.id)}
               className="cursor-pointer rounded-md px-2 py-1 text-xs font-medium text-indigo-600 hover:bg-indigo-50 dark:text-indigo-400 dark:hover:bg-indigo-900/40"
             >
-              Edit
+              {t('common:action.edit')}
             </button>
           )}
           {onDelete && (
@@ -48,7 +50,7 @@ export function RecurrenceCard({
               onClick={() => onDelete(template.id)}
               className="cursor-pointer rounded-md px-2 py-1 text-xs font-medium text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/40"
             >
-              Delete
+              {t('common:action.delete')}
             </button>
           )}
         </div>
@@ -60,15 +62,15 @@ export function RecurrenceCard({
 
       {(template.leadTimeDays ?? 0) > 0 && (
         <p className="mb-3 text-xs text-indigo-500 dark:text-indigo-400">
-          Generates {template.leadTimeDays} days early
+          {t('card.generatesEarly', { days: template.leadTimeDays })}
         </p>
       )}
 
       <div className="flex flex-wrap items-center gap-2">
         <span
-          className={`rounded px-2 py-0.5 text-xs font-medium capitalize ${priorityClass}`}
+          className={`rounded px-2 py-0.5 text-xs font-medium ${priorityClass}`}
         >
-          {template.priority}
+          {t(`common:priority.${template.priority}`)}
         </span>
         <span
           className={`rounded px-2 py-0.5 text-xs font-medium ${
@@ -77,7 +79,7 @@ export function RecurrenceCard({
               : 'bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400'
           }`}
         >
-          {template.isActive ? 'Active' : 'Paused'}
+          {template.isActive ? t('card.active') : t('card.paused')}
         </span>
       </div>
     </div>

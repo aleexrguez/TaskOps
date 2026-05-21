@@ -1,0 +1,38 @@
+{
+  "heading": "Reports",
+  "subtitle": "Task activity summaries by period",
+  "period": {
+    "thisWeek": "This Week",
+    "lastWeek": "Last Week",
+    "thisMonth": "This Month",
+    "lastMonth": "Last Month"
+  },
+  "loading": "Loading report...",
+  "error": "Failed to load report data. Please try again.",
+  "footer": "Archived completed tasks are included. Purged tasks may be excluded.",
+  "card": {
+    "completed": "Completed",
+    "created": "Created",
+    "inProgress": "In Progress",
+    "overdue": "Overdue",
+    "recurring": "Recurring",
+    "checklist": "Checklist"
+  },
+  "section": {
+    "completedTasks": "Completed Tasks",
+    "createdThisWeek": "Created This Week",
+    "stuck": "Stuck — Open for Many Days",
+    "overdueTasks": "Overdue Tasks",
+    "longestRunning": "Longest Running Tasks",
+    "completedByDay": "Completed by Day",
+    "completedByPriority": "Completed by Priority",
+    "noCompletions": "No completions this month",
+    "emptySection": "No tasks in this section",
+    "stuckDescWeekly": "In-progress tasks created more than 7 days ago",
+    "stuckDescMonthly": "In-progress tasks created more than 14 days ago"
+  },
+  "inline": {
+    "openForDays": "Open for {{days}} days",
+    "dueDate": "Due {{date}}"
+  }
+}

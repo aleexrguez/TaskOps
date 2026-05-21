@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import type { GroupedReminder, ReminderTier } from '../types/reminder.types';
 
 interface ReminderToastProps {
@@ -31,10 +32,10 @@ const focusClasses: Record<ReminderTier, string> = {
     'focus-visible:ring-2 focus-visible:ring-blue-400/50 focus-visible:ring-offset-1 dark:focus-visible:ring-offset-gray-900',
 };
 
-function getDayLabel(daysRemaining: number): string {
-  if (daysRemaining < 0) return 'Overdue';
-  if (daysRemaining === 0) return 'Due today';
-  return 'Tomorrow';
+function getDayLabelKey(daysRemaining: number): string {
+  if (daysRemaining < 0) return 'date.overdue';
+  if (daysRemaining === 0) return 'date.dueToday';
+  return 'date.tomorrow';
 }
 
 function handleCardKeyDown(e: React.KeyboardEvent, callback: () => void): void {
@@ -50,9 +51,10 @@ export function ReminderToast({
   onClick,
   onClickMore,
 }: ReminderToastProps) {
+  const { t } = useTranslation('common');
   const { tier, topTask, extraCount } = reminder;
   const role = tier === 'critical' ? 'alert' : 'status';
-  const dayLabel = getDayLabel(topTask.daysRemaining);
+  const dayLabel = t(getDayLabelKey(topTask.daysRemaining));
 
   return (
     <div
@@ -85,13 +87,13 @@ export function ReminderToast({
               onClickMore?.();
             }}
           >
-            +{extraCount} more
+            {t('reminder.more', { count: extraCount })}
           </button>
         )}
       </div>
       <button
         type="button"
-        aria-label={`Dismiss reminder: ${topTask.taskTitle}`}
+        aria-label={t('reminder.dismissReminder', { title: topTask.taskTitle })}
         onClick={(e) => {
           e.stopPropagation();
           onDismiss(topTask.taskId);

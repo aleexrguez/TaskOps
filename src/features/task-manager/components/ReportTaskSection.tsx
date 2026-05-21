@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import type { Task } from '../types';
 import { StatusBadge } from './StatusBadge';
 import { PriorityIndicator } from './PriorityIndicator';
@@ -14,9 +15,11 @@ export function ReportTaskSection({
   title,
   description,
   tasks,
-  emptyMessage = 'No tasks in this section',
+  emptyMessage,
   renderExtra,
 }: ReportTaskSectionProps) {
+  const { t } = useTranslation('reports');
+  const empty = emptyMessage ?? t('section.emptySection');
   return (
     <details
       open
@@ -37,7 +40,7 @@ export function ReportTaskSection({
         )}
         {tasks.length === 0 ? (
           <p className="py-2 text-sm text-gray-400 dark:text-gray-500">
-            {emptyMessage}
+            {empty}
           </p>
         ) : (
           <ul className="divide-y divide-gray-100 dark:divide-gray-800">

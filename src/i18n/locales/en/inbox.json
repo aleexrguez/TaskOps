@@ -1,0 +1,63 @@
+{
+  "heading": "Inbox",
+  "greeting": {
+    "morning": "Good morning",
+    "afternoon": "Good afternoon",
+    "evening": "Good evening",
+    "fallbackName": "there"
+  },
+  "hero": {
+    "subtitle": "What do you want to capture today?"
+  },
+  "empty": {
+    "title": "Your inbox is empty",
+    "subtitle": "Capture quick ideas above — organize them later."
+  },
+  "quickInput": {
+    "placeholder": "Capture an idea...",
+    "titleLabel": "Inbox item title",
+    "hideNotes": "Hide notes",
+    "addNotes": "Add notes",
+    "addItem": "Add inbox item",
+    "notesPlaceholder": "Add notes (optional)",
+    "notesLabel": "Inbox item notes"
+  },
+  "card": {
+    "justNow": "just now",
+    "minutesAgo": "{{count}}m ago",
+    "hoursAgo": "{{count}}h ago",
+    "daysAgo": "{{count}}d ago",
+    "editItem": "Edit {{title}}",
+    "convertItem": "Convert {{title}} to task",
+    "deleteItem": "Delete {{title}}"
+  },
+  "editForm": {
+    "editTitle": "Edit title",
+    "notesPlaceholder": "Notes (optional)",
+    "editNotes": "Edit notes"
+  },
+  "convertForm": {
+    "dialogTitle": "Convert to Task",
+    "submitLabel": "Convert to Task",
+    "hideChecklist": "Hide checklist",
+    "addChecklist": "Add checklist",
+    "checklistPlaceholder": "Checklist item...",
+    "checklistLabel": "New checklist item",
+    "checklistAddItem": "Add checklist item",
+    "checklistItems": "Checklist items",
+    "removeItem": "Remove {{item}}"
+  },
+  "toast": {
+    "captured": "Idea captured",
+    "captureFailed": "Failed to capture idea",
+    "updated": "Item updated",
+    "updateFailed": "Failed to update item",
+    "deleted": "Item deleted",
+    "deleteFailed": "Failed to delete item",
+    "converted": "Idea converted to task",
+    "convertFailed": "Failed to convert idea"
+  },
+  "error": {
+    "loadFailed": "Failed to load inbox items"
+  }
+}

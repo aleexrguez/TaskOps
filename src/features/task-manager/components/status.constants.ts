@@ -7,8 +7,9 @@ export const STATUS_STYLES: Record<TaskStatus, string> = {
   done: 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300',
 };
 
-export const STATUS_LABELS: Record<TaskStatus, string> = {
-  todo: 'Todo',
-  'in-progress': 'In Progress',
-  done: 'Done',
+/** Maps TaskStatus values to common:status.* i18n keys for use with t() in components */
+export const STATUS_I18N_KEYS: Record<TaskStatus, string> = {
+  todo: 'status.todo',
+  'in-progress': 'status.inProgress',
+  done: 'status.done',
 };

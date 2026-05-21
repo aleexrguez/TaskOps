@@ -1,7 +1,9 @@
+import { useTranslation } from 'react-i18next';
 import type { Task } from '../types';
 import type { ChecklistSummary } from '../api/checklist-api';
 import { isGeneratedTask } from '@/features/recurrences/utils/recurrence.utils';
 import { formatDate, formatDateTime } from '../utils/date.utils';
+import type { DateLang } from '../utils/date.utils';
 import { StatusBadge } from './StatusBadge';
 import { PriorityIndicator } from './PriorityIndicator';
 import { DueDateDisplay } from './DueDateDisplay';
@@ -28,7 +30,9 @@ export function TaskCard({
   checklistSummary,
   compact = false,
 }: TaskCardProps) {
-  const formattedDate = formatDate(task.createdAt);
+  const { t, i18n } = useTranslation();
+  const lang = (i18n.resolvedLanguage ?? 'en') as DateLang;
+  const formattedDate = formatDate(task.createdAt, lang);
   const recurring = isGeneratedTask(task);
 
   const cardContent = (
@@ -48,7 +52,7 @@ export function TaskCard({
               }}
               className="cursor-pointer rounded-md px-2 py-1 text-xs font-medium text-indigo-600 hover:bg-indigo-50 dark:text-indigo-400 dark:hover:bg-indigo-900/40 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900 min-h-[44px] min-w-[44px] lg:min-h-8 lg:min-w-8"
             >
-              Duplicate
+              {t('common:action.duplicate')}
             </button>
           )}
           {!recurring && onDelete && (
@@ -60,7 +64,7 @@ export function TaskCard({
               disabled={isDeleting}
               className="cursor-pointer rounded-md px-2 py-1 text-xs font-medium text-red-600 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50 dark:text-red-400 dark:hover:bg-red-900/40 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900 min-h-[44px] min-w-[44px] lg:min-h-8 lg:min-w-8"
             >
-              {isDeleting ? '...' : 'Delete'}
+              {isDeleting ? '...' : t('common:action.delete')}
             </button>
           )}
           {task.status === 'done' && onArchive && (
@@ -71,7 +75,9 @@ export function TaskCard({
               }}
               className="cursor-pointer rounded-md px-2 py-1 text-xs font-medium text-gray-600 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:text-gray-400 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900 min-h-[44px] min-w-[44px] lg:min-h-8 lg:min-w-8"
             >
-              {task.isArchived ? 'Unarchive' : 'Archive'}
+              {task.isArchived
+                ? t('common:action.unarchive')
+                : t('common:action.archive')}
             </button>
           )}
         </div>
@@ -90,7 +96,7 @@ export function TaskCard({
         <PriorityIndicator priority={task.priority} />
         {recurring && (
           <span className="inline-flex items-center rounded-full bg-indigo-100 px-2.5 py-0.5 text-xs font-medium text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300">
-            Recurring
+            {t('task:card.recurring')}
           </span>
         )}
         {task.dueDate && (
@@ -103,7 +109,7 @@ export function TaskCard({
           className={`mt-2 flex items-center gap-1.5${compact ? ' hidden sm:flex' : ''}`}
         >
           <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
-            Checklist
+            {t('task:card.checklist')}
           </span>
           <ChecklistProgress
             completed={checklistSummary.completed}
@@ -115,14 +121,16 @@ export function TaskCard({
       <div
         className={`mt-3 flex items-center justify-between border-t border-gray-100 pt-3 text-xs text-gray-400 dark:border-gray-700 dark:text-gray-500${compact ? ' hidden sm:flex' : ''}`}
       >
-        <span className="shrink-0">Created {formattedDate}</span>
+        <span className="shrink-0">
+          {t('task:card.created')} {formattedDate}
+        </span>
       </div>
       {task.status === 'done' && task.completedAt && (
         <div
           className={`mt-1 text-xs text-gray-400 dark:text-gray-500${compact ? ' hidden sm:block' : ''}`}
         >
-          <span className="font-medium">Completed</span>{' '}
-          {formatDateTime(task.completedAt)}
+          <span className="font-medium">{t('task:card.completed')}</span>{' '}
+          {formatDateTime(task.completedAt, lang)}
         </div>
       )}
     </>
