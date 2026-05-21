@@ -1,3 +1,4 @@
+import type { TFunction } from 'i18next';
 import type {
   RecurrenceFrequency,
   RecurrenceTemplate,
@@ -273,11 +274,12 @@ function getNextMonthlyOccurrences(
 // Interval helper text
 // ---------------------------------------------------------------------------
 
-export const INTERVAL_HELPER_TEXT: Record<RecurrenceFrequency, string> = {
-  daily: '1 = every day. 2 = every 2 days.',
-  weekly: '1 = every week. 2 = every 2 weeks.',
-  monthly: '1 = every month. 2 = every 2 months.',
-};
+export function getIntervalHelperText(
+  frequency: RecurrenceFrequency,
+  t: TFunction,
+): string {
+  return t(`recurrence:helperText.${frequency}`);
+}
 
 // ---------------------------------------------------------------------------
 // Occurrence logic
@@ -521,14 +523,14 @@ export function getPendingGenerations(
 // Formatting helpers
 // ---------------------------------------------------------------------------
 
-const DAY_NAMES: Record<number, string> = {
-  1: 'Mon',
-  2: 'Tue',
-  3: 'Wed',
-  4: 'Thu',
-  5: 'Fri',
-  6: 'Sat',
-  7: 'Sun',
+const DAY_WEEKDAY_KEYS: Record<number, string> = {
+  1: 'weekday.mon',
+  2: 'weekday.tue',
+  3: 'weekday.wed',
+  4: 'weekday.thu',
+  5: 'weekday.fri',
+  6: 'weekday.sat',
+  7: 'weekday.sun',
 };
 
 /**
@@ -536,68 +538,85 @@ const DAY_NAMES: Record<number, string> = {
  * Days are sorted before formatting.
  * e.g. [1,3,5] → "Mon, Wed, Fri"
  */
-export function formatWeeklyDays(days: number[]): string {
+export function formatWeeklyDays(days: number[], t: TFunction): string {
   return [...days]
     .sort((a, b) => a - b)
-    .map((d) => DAY_NAMES[d] ?? String(d))
+    .map((d) => t(`common:${DAY_WEEKDAY_KEYS[d]}`) ?? String(d))
     .join(', ');
 }
 
 /**
- * Returns the ordinal suffix for a number (st, nd, rd, th).
+ * Formats a number as a locale-aware ordinal string using i18n.
  * Handles teen exceptions (11th, 12th, 13th).
  */
-function ordinalSuffix(n: number): string {
+function formatOrdinal(n: number, t: TFunction): string {
   const mod100 = n % 100;
-  if (mod100 >= 11 && mod100 <= 13) return 'th';
+  if (mod100 >= 11 && mod100 <= 13) return t('recurrence:ordinal.th', { n });
   switch (n % 10) {
     case 1:
-      return 'st';
+      return t('recurrence:ordinal.st', { n });
     case 2:
-      return 'nd';
+      return t('recurrence:ordinal.nd', { n });
     case 3:
-      return 'rd';
+      return t('recurrence:ordinal.rd', { n });
     default:
-      return 'th';
+      return t('recurrence:ordinal.th', { n });
   }
 }
 
 /**
- * Formats a monthly day number as an ordinal string.
- * e.g. 1 → "1st", 2 → "2nd", 3 → "3rd", 11 → "11th", 21 → "21st"
+ * Formats a monthly day number as a locale-aware ordinal string.
+ * e.g. 1 → "1st" (EN), "1" (ES)
  */
-export function formatMonthlyDay(day: number): string {
-  return `${day}${ordinalSuffix(day)}`;
+export function formatMonthlyDay(day: number, t: TFunction): string {
+  return formatOrdinal(day, t);
 }
 
 /**
  * Returns a human-readable label describing the frequency of a template.
  * e.g. "Daily", "Weekly (Mon, Wed, Fri)", "Monthly (15th)"
  */
-export function formatFrequencyLabel(template: RecurrenceTemplate): string {
+export function formatFrequencyLabel(
+  template: RecurrenceTemplate,
+  t: TFunction,
+): string {
   const n = template.interval;
   switch (template.frequency) {
     case 'daily':
-      return n > 1 ? `Every ${n} days` : 'Daily';
+      return n > 1
+        ? t('recurrence:freq.everyNDays', { n })
+        : t('recurrence:freq.daily');
 
     case 'weekly': {
-      const prefix = n > 1 ? `Every ${n} weeks` : 'Weekly';
+      const prefix =
+        n > 1
+          ? t('recurrence:freq.everyNWeeks', { n })
+          : t('recurrence:freq.weekly');
       if (template.weeklyDays && template.weeklyDays.length > 0) {
-        return `${prefix} (${formatWeeklyDays(template.weeklyDays)})`;
+        return t('recurrence:freq.withDays', {
+          prefix,
+          days: formatWeeklyDays(template.weeklyDays, t),
+        });
       }
       return prefix;
     }
 
     case 'monthly': {
-      const prefix = n > 1 ? `Every ${n} months` : 'Monthly';
+      const prefix =
+        n > 1
+          ? t('recurrence:freq.everyNMonths', { n })
+          : t('recurrence:freq.monthly');
       if (template.monthlyDay !== undefined) {
-        return `${prefix} (${formatMonthlyDay(template.monthlyDay)})`;
+        return t('recurrence:freq.withDay', {
+          prefix,
+          day: formatMonthlyDay(template.monthlyDay, t),
+        });
       }
       return prefix;
     }
 
     default:
-      return 'Unknown';
+      return t('recurrence:freq.unknown');
   }
 }
 

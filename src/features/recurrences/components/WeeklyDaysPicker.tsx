@@ -1,22 +1,26 @@
+import { useTranslation } from 'react-i18next';
+
 interface WeeklyDaysPickerProps {
   selectedDays: number[];
   onChange: (days: number[]) => void;
 }
 
-const DAYS: { value: number; label: string }[] = [
-  { value: 1, label: 'Mon' },
-  { value: 2, label: 'Tue' },
-  { value: 3, label: 'Wed' },
-  { value: 4, label: 'Thu' },
-  { value: 5, label: 'Fri' },
-  { value: 6, label: 'Sat' },
-  { value: 7, label: 'Sun' },
-];
-
 export function WeeklyDaysPicker({
   selectedDays,
   onChange,
 }: WeeklyDaysPickerProps) {
+  const { t } = useTranslation('common');
+
+  const DAYS: { value: number; label: string }[] = [
+    { value: 1, label: t('weekday.mon') },
+    { value: 2, label: t('weekday.tue') },
+    { value: 3, label: t('weekday.wed') },
+    { value: 4, label: t('weekday.thu') },
+    { value: 5, label: t('weekday.fri') },
+    { value: 6, label: t('weekday.sat') },
+    { value: 7, label: t('weekday.sun') },
+  ];
+
   function handleToggle(day: number): void {
     const isSelected = selectedDays.includes(day);
     const next = isSelected

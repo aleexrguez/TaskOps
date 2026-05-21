@@ -1,6 +1,7 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, afterAll, beforeAll } from 'vitest';
 import type { Task } from '@/features/task-manager/types/task.types';
 import type { RecurrenceTemplate } from '../../types/recurrence.types';
+import i18n from '@/i18n/i18n';
 import {
   getISODayOfWeek,
   getLastDayOfMonth,
@@ -12,12 +13,16 @@ import {
   formatWeeklyDays,
   formatMonthlyDay,
   formatFrequencyLabel,
+  getIntervalHelperText,
   isGeneratedTask,
   groupByFrequency,
   isIntervalMatch,
   getNextOccurrences,
-  INTERVAL_HELPER_TEXT,
 } from '../recurrence.utils';
+
+afterAll(async () => {
+  await i18n.changeLanguage('en');
+});
 
 // ---------------------------------------------------------------------------
 // Fixture helpers
@@ -457,24 +462,26 @@ describe('getPendingGenerations', () => {
 // ---------------------------------------------------------------------------
 
 describe('formatWeeklyDays', () => {
+  const t = i18n.t.bind(i18n);
+
   it('formats [1] as "Mon"', () => {
-    expect(formatWeeklyDays([1])).toBe('Mon');
+    expect(formatWeeklyDays([1], t)).toBe('Mon');
   });
 
   it('formats [1, 3, 5] as "Mon, Wed, Fri"', () => {
-    expect(formatWeeklyDays([1, 3, 5])).toBe('Mon, Wed, Fri');
+    expect(formatWeeklyDays([1, 3, 5], t)).toBe('Mon, Wed, Fri');
   });
 
   it('formats [2, 4] as "Tue, Thu"', () => {
-    expect(formatWeeklyDays([2, 4])).toBe('Tue, Thu');
+    expect(formatWeeklyDays([2, 4], t)).toBe('Tue, Thu');
   });
 
   it('formats [6, 7] as "Sat, Sun"', () => {
-    expect(formatWeeklyDays([6, 7])).toBe('Sat, Sun');
+    expect(formatWeeklyDays([6, 7], t)).toBe('Sat, Sun');
   });
 
   it('formats all 7 days', () => {
-    expect(formatWeeklyDays([1, 2, 3, 4, 5, 6, 7])).toBe(
+    expect(formatWeeklyDays([1, 2, 3, 4, 5, 6, 7], t)).toBe(
       'Mon, Tue, Wed, Thu, Fri, Sat, Sun',
     );
   });
@@ -482,7 +489,7 @@ describe('formatWeeklyDays', () => {
   it('formats days even if passed out of order', () => {
     // [5, 1, 3] — should preserve the given order (or sort, be consistent)
     // We sort by day number for consistent display
-    expect(formatWeeklyDays([5, 1, 3])).toBe('Mon, Wed, Fri');
+    expect(formatWeeklyDays([5, 1, 3], t)).toBe('Mon, Wed, Fri');
   });
 });
 
@@ -491,52 +498,54 @@ describe('formatWeeklyDays', () => {
 // ---------------------------------------------------------------------------
 
 describe('formatMonthlyDay', () => {
+  const t = i18n.t.bind(i18n);
+
   it('formats 1 as "1st"', () => {
-    expect(formatMonthlyDay(1)).toBe('1st');
+    expect(formatMonthlyDay(1, t)).toBe('1st');
   });
 
   it('formats 2 as "2nd"', () => {
-    expect(formatMonthlyDay(2)).toBe('2nd');
+    expect(formatMonthlyDay(2, t)).toBe('2nd');
   });
 
   it('formats 3 as "3rd"', () => {
-    expect(formatMonthlyDay(3)).toBe('3rd');
+    expect(formatMonthlyDay(3, t)).toBe('3rd');
   });
 
   it('formats 4 as "4th"', () => {
-    expect(formatMonthlyDay(4)).toBe('4th');
+    expect(formatMonthlyDay(4, t)).toBe('4th');
   });
 
   it('formats 11 as "11th" (teen exception)', () => {
-    expect(formatMonthlyDay(11)).toBe('11th');
+    expect(formatMonthlyDay(11, t)).toBe('11th');
   });
 
   it('formats 12 as "12th" (teen exception)', () => {
-    expect(formatMonthlyDay(12)).toBe('12th');
+    expect(formatMonthlyDay(12, t)).toBe('12th');
   });
 
   it('formats 13 as "13th" (teen exception)', () => {
-    expect(formatMonthlyDay(13)).toBe('13th');
+    expect(formatMonthlyDay(13, t)).toBe('13th');
   });
 
   it('formats 21 as "21st"', () => {
-    expect(formatMonthlyDay(21)).toBe('21st');
+    expect(formatMonthlyDay(21, t)).toBe('21st');
   });
 
   it('formats 22 as "22nd"', () => {
-    expect(formatMonthlyDay(22)).toBe('22nd');
+    expect(formatMonthlyDay(22, t)).toBe('22nd');
   });
 
   it('formats 23 as "23rd"', () => {
-    expect(formatMonthlyDay(23)).toBe('23rd');
+    expect(formatMonthlyDay(23, t)).toBe('23rd');
   });
 
   it('formats 31 as "31st"', () => {
-    expect(formatMonthlyDay(31)).toBe('31st');
+    expect(formatMonthlyDay(31, t)).toBe('31st');
   });
 
   it('formats 15 as "15th"', () => {
-    expect(formatMonthlyDay(15)).toBe('15th');
+    expect(formatMonthlyDay(15, t)).toBe('15th');
   });
 });
 
@@ -545,9 +554,11 @@ describe('formatMonthlyDay', () => {
 // ---------------------------------------------------------------------------
 
 describe('formatFrequencyLabel', () => {
+  const t = i18n.t.bind(i18n);
+
   it('returns "Daily" for a daily template', () => {
     const template = makeTemplate({ frequency: 'daily' });
-    expect(formatFrequencyLabel(template)).toBe('Daily');
+    expect(formatFrequencyLabel(template, t)).toBe('Daily');
   });
 
   it('returns "Weekly (Mon, Wed, Fri)" for a weekly template with [1,3,5]', () => {
@@ -555,12 +566,12 @@ describe('formatFrequencyLabel', () => {
       frequency: 'weekly',
       weeklyDays: [1, 3, 5],
     });
-    expect(formatFrequencyLabel(template)).toBe('Weekly (Mon, Wed, Fri)');
+    expect(formatFrequencyLabel(template, t)).toBe('Weekly (Mon, Wed, Fri)');
   });
 
   it('returns "Weekly" for a weekly template without weeklyDays', () => {
     const template = makeTemplate({ frequency: 'weekly' });
-    expect(formatFrequencyLabel(template)).toBe('Weekly');
+    expect(formatFrequencyLabel(template, t)).toBe('Weekly');
   });
 
   it('returns "Monthly (15th)" for a monthly template with monthlyDay 15', () => {
@@ -568,17 +579,17 @@ describe('formatFrequencyLabel', () => {
       frequency: 'monthly',
       monthlyDay: 15,
     });
-    expect(formatFrequencyLabel(template)).toBe('Monthly (15th)');
+    expect(formatFrequencyLabel(template, t)).toBe('Monthly (15th)');
   });
 
   it('returns "Monthly" for a monthly template without monthlyDay', () => {
     const template = makeTemplate({ frequency: 'monthly' });
-    expect(formatFrequencyLabel(template)).toBe('Monthly');
+    expect(formatFrequencyLabel(template, t)).toBe('Monthly');
   });
 
   it('returns "Monthly (1st)" for monthlyDay 1', () => {
     const template = makeTemplate({ frequency: 'monthly', monthlyDay: 1 });
-    expect(formatFrequencyLabel(template)).toBe('Monthly (1st)');
+    expect(formatFrequencyLabel(template, t)).toBe('Monthly (1st)');
   });
 });
 
@@ -1060,9 +1071,11 @@ describe('getOccurrencesInWindow — monthly interval + leadTimeDays', () => {
 // ---------------------------------------------------------------------------
 
 describe('formatFrequencyLabel — intervals', () => {
+  const t = i18n.t.bind(i18n);
+
   it('returns "Every 10 days" for daily interval=10', () => {
     const template = makeTemplate({ frequency: 'daily', interval: 10 });
-    expect(formatFrequencyLabel(template)).toBe('Every 10 days');
+    expect(formatFrequencyLabel(template, t)).toBe('Every 10 days');
   });
 
   it('returns "Every 4 weeks (Fri)" for weekly interval=4 weeklyDays=[5]', () => {
@@ -1071,7 +1084,7 @@ describe('formatFrequencyLabel — intervals', () => {
       weeklyDays: [5],
       interval: 4,
     });
-    expect(formatFrequencyLabel(template)).toBe('Every 4 weeks (Fri)');
+    expect(formatFrequencyLabel(template, t)).toBe('Every 4 weeks (Fri)');
   });
 
   it('returns "Every 2 months (15th)" for monthly interval=2 monthlyDay=15', () => {
@@ -1080,12 +1093,12 @@ describe('formatFrequencyLabel — intervals', () => {
       monthlyDay: 15,
       interval: 2,
     });
-    expect(formatFrequencyLabel(template)).toBe('Every 2 months (15th)');
+    expect(formatFrequencyLabel(template, t)).toBe('Every 2 months (15th)');
   });
 
   it('returns "Daily" for interval=1 (unchanged)', () => {
     const template = makeTemplate({ frequency: 'daily', interval: 1 });
-    expect(formatFrequencyLabel(template)).toBe('Daily');
+    expect(formatFrequencyLabel(template, t)).toBe('Daily');
   });
 });
 
@@ -1386,14 +1399,63 @@ describe('getNextOccurrences', () => {
 // 19. INTERVAL_HELPER_TEXT
 // ---------------------------------------------------------------------------
 
-describe('INTERVAL_HELPER_TEXT', () => {
+describe('getIntervalHelperText', () => {
+  const t = i18n.t.bind(i18n);
+
   it('has entries for all three frequencies', () => {
-    expect(INTERVAL_HELPER_TEXT.daily).toBe('1 = every day. 2 = every 2 days.');
-    expect(INTERVAL_HELPER_TEXT.weekly).toBe(
+    expect(getIntervalHelperText('daily', t)).toBe(
+      '1 = every day. 2 = every 2 days.',
+    );
+    expect(getIntervalHelperText('weekly', t)).toBe(
       '1 = every week. 2 = every 2 weeks.',
     );
-    expect(INTERVAL_HELPER_TEXT.monthly).toBe(
+    expect(getIntervalHelperText('monthly', t)).toBe(
       '1 = every month. 2 = every 2 months.',
+    );
+  });
+});
+
+// ---------------------------------------------------------------------------
+// 20. formatFrequencyLabel — Spanish
+// ---------------------------------------------------------------------------
+
+describe('formatFrequencyLabel — Spanish', () => {
+  beforeAll(async () => {
+    await i18n.changeLanguage('es');
+  });
+
+  afterAll(async () => {
+    await i18n.changeLanguage('en');
+  });
+
+  const t = i18n.t.bind(i18n);
+
+  it('returns "Diaria" for daily', () => {
+    const template = makeTemplate({ frequency: 'daily' });
+    expect(formatFrequencyLabel(template, t)).toBe('Diaria');
+  });
+
+  it('returns "Cada 2 dias" for daily interval=2', () => {
+    const template = makeTemplate({ frequency: 'daily', interval: 2 });
+    expect(formatFrequencyLabel(template, t)).toBe('Cada 2 dias');
+  });
+
+  it('returns weekly with Spanish days', () => {
+    const template = makeTemplate({
+      frequency: 'weekly',
+      weeklyDays: [1, 3, 5],
+    });
+    expect(formatFrequencyLabel(template, t)).toBe('Semanal los Lun, Mie, Vie');
+  });
+
+  it('returns monthly with plain number (no ordinal suffix)', () => {
+    const template = makeTemplate({ frequency: 'monthly', monthlyDay: 15 });
+    expect(formatFrequencyLabel(template, t)).toBe('Mensual el dia 15');
+  });
+
+  it('returns interval helper text in Spanish', () => {
+    expect(getIntervalHelperText('daily', t)).toBe(
+      '1 = cada dia. 2 = cada 2 dias.',
     );
   });
 });

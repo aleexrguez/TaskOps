@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import type { RecurrenceTemplate } from '../types/recurrence.types';
 import { RecurrenceCard } from './RecurrenceCard';
 
@@ -12,11 +13,15 @@ export function RecurrenceList({
   templates,
   onEdit,
   onDelete,
-  emptyMessage = 'No recurrences found',
+  emptyMessage,
 }: RecurrenceListProps) {
+  const { t } = useTranslation('recurrence');
+  const resolvedEmptyMessage = emptyMessage ?? t('empty.notFound');
   if (templates.length === 0) {
     return (
-      <p className="text-sm text-gray-500 dark:text-gray-400">{emptyMessage}</p>
+      <p className="text-sm text-gray-500 dark:text-gray-400">
+        {resolvedEmptyMessage}
+      </p>
     );
   }
 

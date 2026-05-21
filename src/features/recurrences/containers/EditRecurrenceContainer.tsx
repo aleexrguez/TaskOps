@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useRecurrence, useUpdateRecurrence } from '../hooks/use-recurrences';
 import { useRecurrenceUIStore } from '../store/recurrence-ui.store';
 import { useToastStore } from '@/shared/store/toast.store';
@@ -9,6 +10,7 @@ import type {
 } from '../types/recurrence.types';
 
 export function EditRecurrenceContainer() {
+  const { t } = useTranslation('recurrence');
   const isOpen = useRecurrenceUIStore((s) => s.isEditModalOpen);
   const selectedTemplateId = useRecurrenceUIStore((s) => s.selectedTemplateId);
   const closeEditModal = useRecurrenceUIStore((s) => s.closeEditModal);
@@ -52,10 +54,10 @@ export function EditRecurrenceContainer() {
             : undefined,
       };
       await updateRecurrence({ id: selectedTemplateId, input: updateInput });
-      addToast('Recurrence updated', 'success');
+      addToast(t('toast.updated'), 'success');
       closeEditModal();
     } catch {
-      addToast('Failed to update recurrence', 'error');
+      addToast(t('toast.updateFailed'), 'error');
     }
   }
 
@@ -72,11 +74,11 @@ export function EditRecurrenceContainer() {
             id="edit-recurrence-title"
             className="text-lg font-semibold text-gray-900 dark:text-gray-100"
           >
-            Edit Recurrence
+            {t('modal.editTitle')}
           </h2>
           <button
             type="button"
-            aria-label="Close"
+            aria-label={t('common:action.close')}
             onClick={closeEditModal}
             className="cursor-pointer text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
           >
@@ -92,7 +94,7 @@ export function EditRecurrenceContainer() {
             onSubmit={handleSubmit}
             initialValues={template}
             isSubmitting={isPending}
-            submitLabel="Save Changes"
+            submitLabel={t('modal.submitSave')}
           />
         )}
       </div>

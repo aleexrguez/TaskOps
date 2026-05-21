@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useRecurrences, useDeleteRecurrence } from '../hooks/use-recurrences';
 import { useRecurrenceUIStore } from '../store/recurrence-ui.store';
 import { useToastStore } from '@/shared/store/toast.store';
@@ -9,6 +10,7 @@ import { EditRecurrenceContainer } from './EditRecurrenceContainer';
 import { groupByFrequency } from '../utils/recurrence.utils';
 
 export function RecurrenceDashboardContainer() {
+  const { t } = useTranslation('recurrence');
   const { data, isLoading, isError, error, refetch } = useRecurrences();
   const { mutate: deleteRecurrence, isPending: isDeleting } =
     useDeleteRecurrence();
@@ -26,11 +28,11 @@ export function RecurrenceDashboardContainer() {
     if (!templateToDelete) return;
     deleteRecurrence(templateToDelete, {
       onSuccess: () => {
-        addToast('Recurrence deleted', 'success');
+        addToast(t('toast.deleted'), 'success');
         setTemplateToDelete(null);
       },
       onError: () => {
-        addToast('Failed to delete recurrence', 'error');
+        addToast(t('toast.deleteFailed'), 'error');
         setTemplateToDelete(null);
       },
     });
@@ -45,7 +47,7 @@ export function RecurrenceDashboardContainer() {
       <div
         className="flex justify-center py-12"
         role="status"
-        aria-label="Loading"
+        aria-label={t('common:action.loading')}
       >
         <div className="h-8 w-8 animate-spin rounded-full border-2 border-indigo-600 border-t-transparent" />
       </div>
@@ -59,7 +61,7 @@ export function RecurrenceDashboardContainer() {
       <div>
         <div className="mb-8 flex items-center justify-between">
           <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
-            Recurrences
+            {t('heading')}
           </h1>
         </div>
         <div className="rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-800 dark:bg-red-900/20">
@@ -71,7 +73,7 @@ export function RecurrenceDashboardContainer() {
             onClick={() => refetch()}
             className="mt-2 rounded-md bg-red-100 px-3 py-1.5 text-xs font-medium text-red-700 hover:bg-red-200 dark:bg-red-800 dark:text-red-300 dark:hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
           >
-            Try again
+            {t('dashboard.tryAgain')}
           </button>
         </div>
       </div>
@@ -85,7 +87,7 @@ export function RecurrenceDashboardContainer() {
     <>
       <div className="mb-8 flex items-center justify-between">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
-          Recurrences
+          {t('heading')}
         </h1>
         <button
           type="button"
@@ -93,7 +95,7 @@ export function RecurrenceDashboardContainer() {
           className="cursor-pointer flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
         >
           <span aria-hidden="true">+</span>
-          New Recurrence
+          {t('dashboard.newRecurrence')}
         </button>
       </div>
 
@@ -106,9 +108,9 @@ export function RecurrenceDashboardContainer() {
 
       <ConfirmDialog
         isOpen={!!templateToDelete}
-        title="Delete recurrence"
-        description="Are you sure you want to delete this recurrence? All future generated tasks will also be removed. This action cannot be undone."
-        confirmLabel="Delete"
+        title={t('confirm.deleteTitle')}
+        description={t('confirm.deleteDescription')}
+        confirmLabel={t('common:action.delete')}
         variant="danger"
         isLoading={isDeleting}
         onConfirm={handleConfirmDelete}

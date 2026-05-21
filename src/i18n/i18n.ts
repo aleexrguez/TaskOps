@@ -13,6 +13,8 @@ import accountEN from './locales/en/account.json';
 import accountES from './locales/es/account.json';
 import reportsEN from './locales/en/reports.json';
 import reportsES from './locales/es/reports.json';
+import recurrenceEN from './locales/en/recurrence.json';
+import recurrenceES from './locales/es/recurrence.json';
 
 i18n.use(initReactI18next).init({
   resources: {
@@ -23,6 +25,7 @@ i18n.use(initReactI18next).init({
       task: taskEN,
       account: accountEN,
       reports: reportsEN,
+      recurrence: recurrenceEN,
     },
     es: {
       common: commonES,
@@ -31,6 +34,7 @@ i18n.use(initReactI18next).init({
       task: taskES,
       account: accountES,
       reports: reportsES,
+      recurrence: recurrenceES,
     },
   },
   lng: 'en',

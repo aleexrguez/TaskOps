@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { FormEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { CreateRecurrenceInput } from '../types/recurrence.types';
 import type { RecurrenceFrequency } from '../types/recurrence.types';
 import type { TaskPriority } from '@/features/task-manager/types/task.types';
 import {
   getNextOccurrences,
-  INTERVAL_HELPER_TEXT,
+  getIntervalHelperText,
   parseDateKey,
 } from '../utils/recurrence.utils';
 import { DatePicker } from '@/shared/components/DatePicker';
@@ -70,9 +71,10 @@ function buildInitialState(
   };
 }
 
-function formatPreviewDate(dateKey: string): string {
+function formatPreviewDate(dateKey: string, locale: string): string {
   const date = parseDateKey(dateKey);
-  return date.toLocaleDateString('en-US', {
+  const dateLocale = locale === 'es' ? 'es-AR' : 'en-US';
+  return date.toLocaleDateString(dateLocale, {
     weekday: 'short',
     month: 'short',
     day: 'numeric',
@@ -91,6 +93,7 @@ export function RecurrenceForm({
   submitLabel = 'Submit',
   autoFocusTitle = false,
 }: RecurrenceFormProps) {
+  const { t, i18n } = useTranslation('recurrence');
   const titleRef = useRef<HTMLInputElement>(null);
   const hasUserEditedMonthlyDay = useRef(
     initialValues?.frequency === 'monthly' &&
@@ -196,11 +199,11 @@ export function RecurrenceForm({
     const next: Record<string, string> = {};
 
     if (!fields.title.trim()) {
-      next.title = 'Title is required';
+      next.title = t('validation.titleRequired');
     }
 
     if (fields.frequency === 'weekly' && fields.weeklyDays.length === 0) {
-      next.weeklyDays = 'Select at least one day';
+      next.weeklyDays = t('validation.selectDay');
     }
 
     if (
@@ -209,7 +212,7 @@ export function RecurrenceForm({
         Number(fields.monthlyDay) < 1 ||
         Number(fields.monthlyDay) > 31)
     ) {
-      next.monthlyDay = 'Day must be between 1 and 31';
+      next.monthlyDay = t('validation.monthlyDayRange');
     }
 
     if (
@@ -217,11 +220,11 @@ export function RecurrenceForm({
       Number(fields.interval) < 1 ||
       Number(fields.interval) > 365
     ) {
-      next.interval = 'Interval must be between 1 and 365';
+      next.interval = t('validation.intervalRange');
     }
 
     if (!fields.startDate) {
-      next.startDate = 'Start date is required';
+      next.startDate = t('validation.startDateRequired');
     }
 
     setErrors(next);
@@ -279,7 +282,7 @@ export function RecurrenceForm({
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       <div className="flex flex-col gap-1">
         <label htmlFor="title" className={labelClass}>
-          Title <span className="text-red-500">*</span>
+          {t('form.titleLabel')} <span className="text-red-500">*</span>
         </label>
         <input
           ref={titleRef}
@@ -289,14 +292,14 @@ export function RecurrenceForm({
           value={fields.title}
           onChange={handleChange}
           className={inputClass}
-          placeholder="Recurrence title"
+          placeholder={t('form.titlePlaceholder')}
         />
         {errors.title && <p className="text-xs text-red-500">{errors.title}</p>}
       </div>
 
       <div className="flex flex-col gap-1">
         <label htmlFor="description" className={labelClass}>
-          Description
+          {t('form.descriptionLabel')}
         </label>
         <textarea
           id="description"
@@ -305,13 +308,13 @@ export function RecurrenceForm({
           value={fields.description}
           onChange={handleChange}
           className={inputClass}
-          placeholder="Optional description"
+          placeholder={t('form.descriptionPlaceholder')}
         />
       </div>
 
       <div className="flex flex-col gap-1">
         <label htmlFor="priority" className={labelClass}>
-          Priority
+          {t('common:form.priority')}
         </label>
         <select
           id="priority"
@@ -320,15 +323,15 @@ export function RecurrenceForm({
           onChange={handleChange}
           className={inputClass}
         >
-          <option value="low">Low</option>
-          <option value="medium">Medium</option>
-          <option value="high">High</option>
+          <option value="low">{t('common:priority.low')}</option>
+          <option value="medium">{t('common:priority.medium')}</option>
+          <option value="high">{t('common:priority.high')}</option>
         </select>
       </div>
 
       <div className="flex flex-col gap-1">
         <label htmlFor="frequency" className={labelClass}>
-          Frequency
+          {t('form.frequencyLabel')}
         </label>
         <select
           id="frequency"
@@ -337,15 +340,15 @@ export function RecurrenceForm({
           onChange={handleChange}
           className={inputClass}
         >
-          <option value="daily">Daily</option>
-          <option value="weekly">Weekly</option>
-          <option value="monthly">Monthly</option>
+          <option value="daily">{t('form.frequency.daily')}</option>
+          <option value="weekly">{t('form.frequency.weekly')}</option>
+          <option value="monthly">{t('form.frequency.monthly')}</option>
         </select>
       </div>
 
       <div className="flex flex-col gap-1">
         <label htmlFor="interval" className={labelClass}>
-          Repeat every
+          {t('form.repeatEvery')}
         </label>
         <div className="flex items-center gap-2">
           <input
@@ -360,15 +363,15 @@ export function RecurrenceForm({
           />
           <span className="text-sm text-gray-600 dark:text-gray-400">
             {fields.frequency === 'daily' &&
-              (fields.interval === '1' ? 'day' : 'days')}
+              t('form.intervalUnit.day', { count: Number(fields.interval) })}
             {fields.frequency === 'weekly' &&
-              (fields.interval === '1' ? 'week' : 'weeks')}
+              t('form.intervalUnit.week', { count: Number(fields.interval) })}
             {fields.frequency === 'monthly' &&
-              (fields.interval === '1' ? 'month' : 'months')}
+              t('form.intervalUnit.month', { count: Number(fields.interval) })}
           </span>
         </div>
         <p className="text-xs text-gray-500 dark:text-gray-400">
-          {INTERVAL_HELPER_TEXT[fields.frequency]}
+          {getIntervalHelperText(fields.frequency, t)}
         </p>
         {errors.interval && (
           <p className="text-xs text-red-500">{errors.interval}</p>
@@ -377,7 +380,7 @@ export function RecurrenceForm({
 
       <DatePicker
         id="startDate"
-        label="Starting from"
+        label={t('form.startingFrom')}
         value={fields.startDate || undefined}
         onChange={handleStartDateChange}
       />
@@ -387,7 +390,7 @@ export function RecurrenceForm({
 
       {fields.frequency === 'weekly' && (
         <div className="flex flex-col gap-1">
-          <span className={labelClass}>Days of the week</span>
+          <span className={labelClass}>{t('form.daysOfWeek')}</span>
           <WeeklyDaysPicker
             selectedDays={fields.weeklyDays}
             onChange={handleWeeklyDaysChange}
@@ -401,7 +404,7 @@ export function RecurrenceForm({
       {fields.frequency === 'monthly' && (
         <div className="flex flex-col gap-1">
           <label htmlFor="monthlyDay" className={labelClass}>
-            Monthly Day (1–31)
+            {t('form.monthlyDay')}
           </label>
           <input
             id="monthlyDay"
@@ -422,7 +425,7 @@ export function RecurrenceForm({
       {fields.frequency === 'monthly' && (
         <div className="flex flex-col gap-1">
           <label htmlFor="leadTimeDays" className={labelClass}>
-            Generate task X days before (0–14)
+            {t('form.leadTimeDays')}
           </label>
           <input
             id="leadTimeDays"
@@ -439,14 +442,17 @@ export function RecurrenceForm({
 
       {nextDates.length > 0 && (
         <div className="flex flex-col gap-1">
-          <span className={labelClass}>Next occurrences</span>
-          <ul className="flex flex-wrap gap-2" aria-label="Next occurrences">
+          <span className={labelClass}>{t('form.nextOccurrences')}</span>
+          <ul
+            className="flex flex-wrap gap-2"
+            aria-label={t('form.nextOccurrences')}
+          >
             {nextDates.map((dateKey) => (
               <li
                 key={dateKey}
                 className="rounded-md bg-gray-100 px-2 py-1 text-xs text-gray-700 dark:bg-gray-700 dark:text-gray-300"
               >
-                {formatPreviewDate(dateKey)}
+                {formatPreviewDate(dateKey, i18n.resolvedLanguage ?? 'en')}
               </li>
             ))}
           </ul>

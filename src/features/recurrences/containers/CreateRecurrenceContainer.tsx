@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useCreateRecurrence } from '../hooks/use-recurrences';
 import { useRecurrenceUIStore } from '../store/recurrence-ui.store';
 import { useToastStore } from '@/shared/store/toast.store';
@@ -6,6 +7,7 @@ import { RecurrenceForm } from '../components/RecurrenceForm';
 import type { CreateRecurrenceInput } from '../types/recurrence.types';
 
 export function CreateRecurrenceContainer() {
+  const { t } = useTranslation('recurrence');
   const isOpen = useRecurrenceUIStore((s) => s.isCreateModalOpen);
   const closeCreateModal = useRecurrenceUIStore((s) => s.closeCreateModal);
   const addToast = useToastStore((s) => s.addToast);
@@ -25,10 +27,10 @@ export function CreateRecurrenceContainer() {
   async function handleSubmit(data: CreateRecurrenceInput): Promise<void> {
     try {
       await createRecurrence(data);
-      addToast('Recurrence created', 'success');
+      addToast(t('toast.created'), 'success');
       closeCreateModal();
     } catch {
-      addToast('Failed to create recurrence', 'error');
+      addToast(t('toast.createFailed'), 'error');
     }
   }
 
@@ -45,11 +47,11 @@ export function CreateRecurrenceContainer() {
             id="create-recurrence-title"
             className="text-lg font-semibold text-gray-900 dark:text-gray-100"
           >
-            New Recurrence
+            {t('modal.createTitle')}
           </h2>
           <button
             type="button"
-            aria-label="Close"
+            aria-label={t('common:action.close')}
             onClick={closeCreateModal}
             className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
           >
@@ -59,7 +61,7 @@ export function CreateRecurrenceContainer() {
         <RecurrenceForm
           onSubmit={handleSubmit}
           isSubmitting={isPending}
-          submitLabel="Create Recurrence"
+          submitLabel={t('modal.submitCreate')}
           autoFocusTitle
         />
       </div>

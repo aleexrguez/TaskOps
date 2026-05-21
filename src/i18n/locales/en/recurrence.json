@@ -1,0 +1,94 @@
+{
+  "heading": "Recurrences",
+  "modal": {
+    "createTitle": "New Recurrence",
+    "editTitle": "Edit Recurrence",
+    "submitCreate": "Create Recurrence",
+    "submitSave": "Save Changes"
+  },
+  "form": {
+    "titleLabel": "Title",
+    "titlePlaceholder": "Recurrence title",
+    "descriptionLabel": "Description",
+    "descriptionPlaceholder": "Optional description",
+    "frequencyLabel": "Frequency",
+    "repeatEvery": "Repeat every",
+    "startingFrom": "Starting from",
+    "daysOfWeek": "Days of the week",
+    "monthlyDay": "Monthly Day (1–31)",
+    "leadTimeDays": "Generate task X days before (0–14)",
+    "nextOccurrences": "Next occurrences",
+    "frequency": {
+      "daily": "Daily",
+      "weekly": "Weekly",
+      "monthly": "Monthly"
+    },
+    "intervalUnit": {
+      "day_one": "day",
+      "day_other": "days",
+      "week_one": "week",
+      "week_other": "weeks",
+      "month_one": "month",
+      "month_other": "months"
+    }
+  },
+  "validation": {
+    "titleRequired": "Title is required",
+    "selectDay": "Select at least one day",
+    "monthlyDayRange": "Day must be between 1 and 31",
+    "intervalRange": "Interval must be between 1 and 365",
+    "startDateRequired": "Start date is required"
+  },
+  "card": {
+    "generatesEarly": "Generates {{days}} days early",
+    "active": "Active",
+    "paused": "Paused"
+  },
+  "empty": {
+    "noRecurrences": "No recurrences yet",
+    "setupMessage": "Set up recurring tasks to automate your workflow",
+    "createButton": "Create Recurrence",
+    "notFound": "No recurrences found"
+  },
+  "toast": {
+    "created": "Recurrence created",
+    "createFailed": "Failed to create recurrence",
+    "updated": "Recurrence updated",
+    "updateFailed": "Failed to update recurrence",
+    "deleted": "Recurrence deleted",
+    "deleteFailed": "Failed to delete recurrence"
+  },
+  "confirm": {
+    "deleteTitle": "Delete recurrence",
+    "deleteDescription": "Are you sure you want to delete this recurrence? All future generated tasks will also be removed. This action cannot be undone."
+  },
+  "dashboard": {
+    "newRecurrence": "New Recurrence",
+    "tryAgain": "Try again"
+  },
+  "placeholder": {
+    "comingSoon": "Coming soon."
+  },
+  "freq": {
+    "daily": "Daily",
+    "everyNDays": "Every {{n}} days",
+    "weekly": "Weekly",
+    "everyNWeeks": "Every {{n}} weeks",
+    "monthly": "Monthly",
+    "everyNMonths": "Every {{n}} months",
+    "withDays": "{{prefix}} ({{days}})",
+    "withDay": "{{prefix}} ({{day}})",
+    "unknown": "Unknown"
+  },
+  "ordinal": {
+    "st": "{{n}}st",
+    "nd": "{{n}}nd",
+    "rd": "{{n}}rd",
+    "th": "{{n}}th"
+  },
+  "helperText": {
+    "daily": "1 = every day. 2 = every 2 days.",
+    "weekly": "1 = every week. 2 = every 2 weeks.",
+    "monthly": "1 = every month. 2 = every 2 months."
+  }
+}

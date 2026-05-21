@@ -34,6 +34,7 @@ import { celebrateTaskDone } from '../utils/confetti';
 
 export function TaskDetailContainer() {
   const { t } = useTranslation('task');
+  const { t: tRecurrence } = useTranslation('recurrence');
   const { id = '' } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
@@ -59,7 +60,7 @@ export function TaskDetailContainer() {
     task?.recurrenceTemplateId ?? '',
   );
   const frequencyLabel = recurrenceTemplate
-    ? formatFrequencyLabel(recurrenceTemplate)
+    ? formatFrequencyLabel(recurrenceTemplate, tRecurrence)
     : undefined;
 
   // Checklist hooks

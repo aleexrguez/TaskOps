@@ -1,0 +1,94 @@
+{
+  "heading": "Recurrencias",
+  "modal": {
+    "createTitle": "Nueva recurrencia",
+    "editTitle": "Editar recurrencia",
+    "submitCreate": "Crear recurrencia",
+    "submitSave": "Guardar cambios"
+  },
+  "form": {
+    "titleLabel": "Titulo",
+    "titlePlaceholder": "Titulo de la recurrencia",
+    "descriptionLabel": "Descripcion",
+    "descriptionPlaceholder": "Descripcion opcional",
+    "frequencyLabel": "Frecuencia",
+    "repeatEvery": "Repetir cada",
+    "startingFrom": "A partir de",
+    "daysOfWeek": "Dias de la semana",
+    "monthlyDay": "Dia del mes (1–31)",
+    "leadTimeDays": "Generar tarea X dias antes (0–14)",
+    "nextOccurrences": "Proximas ocurrencias",
+    "frequency": {
+      "daily": "Diaria",
+      "weekly": "Semanal",
+      "monthly": "Mensual"
+    },
+    "intervalUnit": {
+      "day_one": "dia",
+      "day_other": "dias",
+      "week_one": "semana",
+      "week_other": "semanas",
+      "month_one": "mes",
+      "month_other": "meses"
+    }
+  },
+  "validation": {
+    "titleRequired": "El titulo es obligatorio",
+    "selectDay": "Selecciona al menos un dia",
+    "monthlyDayRange": "El dia debe estar entre 1 y 31",
+    "intervalRange": "El intervalo debe estar entre 1 y 365",
+    "startDateRequired": "La fecha de inicio es obligatoria"
+  },
+  "card": {
+    "generatesEarly": "Se genera {{days}} dias antes",
+    "active": "Activa",
+    "paused": "Pausada"
+  },
+  "empty": {
+    "noRecurrences": "No hay recurrencias",
+    "setupMessage": "Configura tareas recurrentes para automatizar tu flujo de trabajo",
+    "createButton": "Crear recurrencia",
+    "notFound": "No se encontraron recurrencias"
+  },
+  "toast": {
+    "created": "Recurrencia creada",
+    "createFailed": "Error al crear la recurrencia",
+    "updated": "Recurrencia actualizada",
+    "updateFailed": "Error al actualizar la recurrencia",
+    "deleted": "Recurrencia eliminada",
+    "deleteFailed": "Error al eliminar la recurrencia"
+  },
+  "confirm": {
+    "deleteTitle": "Eliminar recurrencia",
+    "deleteDescription": "¿Estas seguro de que queres eliminar esta recurrencia? Todas las tareas futuras generadas tambien se eliminaran. Esta accion no se puede deshacer."
+  },
+  "dashboard": {
+    "newRecurrence": "Nueva recurrencia",
+    "tryAgain": "Reintentar"
+  },
+  "placeholder": {
+    "comingSoon": "Proximamente."
+  },
+  "freq": {
+    "daily": "Diaria",
+    "everyNDays": "Cada {{n}} dias",
+    "weekly": "Semanal",
+    "everyNWeeks": "Cada {{n}} semanas",
+    "monthly": "Mensual",
+    "everyNMonths": "Cada {{n}} meses",
+    "withDays": "{{prefix}} los {{days}}",
+    "withDay": "{{prefix}} el dia {{day}}",
+    "unknown": "Desconocido"
+  },
+  "ordinal": {
+    "st": "{{n}}",
+    "nd": "{{n}}",
+    "rd": "{{n}}",
+    "th": "{{n}}"
+  },
+  "helperText": {
+    "daily": "1 = cada dia. 2 = cada 2 dias.",
+    "weekly": "1 = cada semana. 2 = cada 2 semanas.",
+    "monthly": "1 = cada mes. 2 = cada 2 meses."
+  }
+}
