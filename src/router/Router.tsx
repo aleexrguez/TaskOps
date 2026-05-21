@@ -16,6 +16,7 @@ import {
 import { AppShellContainer } from '@/shared/components/app-shell';
 import { ProtectedRoute } from './ProtectedRoute';
 import { PublicOnlyRoute } from './PublicOnlyRoute';
+import { ScrollToTop } from './ScrollToTop';
 
 const InboxDashboardContainer = lazy(() =>
   import('@/features/inbox/containers/InboxDashboardContainer').then((m) => ({
@@ -58,6 +59,7 @@ const AccountContainer = lazy(() =>
 export function Router() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Routes>
         {/* Public routes */}
         <Route
