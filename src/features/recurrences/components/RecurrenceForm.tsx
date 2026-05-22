@@ -57,7 +57,8 @@ function buildInitialState(
         ? String((initial as { monthlyDay?: number }).monthlyDay ?? 1)
         : '1',
     leadTimeDays:
-      initial?.frequency === 'monthly' && 'leadTimeDays' in (initial ?? {})
+      (initial?.frequency === 'monthly' || initial?.frequency === 'weekly') &&
+      'leadTimeDays' in (initial ?? {})
         ? String((initial as { leadTimeDays?: number }).leadTimeDays ?? 0)
         : '0',
     interval:
@@ -170,10 +171,14 @@ export function RecurrenceForm({
     setFields((prev) => {
       const next = { ...prev, [name]: value };
       if (name === 'frequency') {
-        Object.assign(
-          next,
-          autofillMonthlyDay(value as RecurrenceFrequency, prev.startDate),
-        );
+        const newFreq = value as RecurrenceFrequency;
+        if (newFreq === 'daily') {
+          next.leadTimeDays = '0';
+        } else if (newFreq === 'weekly') {
+          const current = Number(next.leadTimeDays);
+          if (current > 7) next.leadTimeDays = '7';
+        }
+        Object.assign(next, autofillMonthlyDay(newFreq, prev.startDate));
       }
       return next;
     });
@@ -227,6 +232,14 @@ export function RecurrenceForm({
       next.startDate = t('validation.startDateRequired');
     }
 
+    if (fields.frequency !== 'daily') {
+      const maxLead = fields.frequency === 'weekly' ? 7 : 14;
+      const leadVal = Number(fields.leadTimeDays);
+      if (isNaN(leadVal) || leadVal < 0 || leadVal > maxLead) {
+        next.leadTimeDays = t('validation.leadTimeDaysRange', { max: maxLead });
+      }
+    }
+
     setErrors(next);
     return Object.keys(next).length === 0;
   }
@@ -258,6 +271,7 @@ export function RecurrenceForm({
         title: fields.title,
         priority: fields.priority,
         weeklyDays: fields.weeklyDays,
+        leadTimeDays: Number(fields.leadTimeDays),
         interval: intervalNum,
         startDate: fields.startDate,
         ...descriptionField,
@@ -422,7 +436,7 @@ export function RecurrenceForm({
         </div>
       )}
 
-      {fields.frequency === 'monthly' && (
+      {fields.frequency !== 'daily' && (
         <div className="flex flex-col gap-1">
           <label htmlFor="leadTimeDays" className={labelClass}>
             {t('form.leadTimeDays')}
@@ -432,11 +446,19 @@ export function RecurrenceForm({
             name="leadTimeDays"
             type="number"
             min={0}
-            max={14}
+            max={fields.frequency === 'weekly' ? 7 : 14}
             value={fields.leadTimeDays}
             onChange={handleChange}
             className={inputClass}
           />
+          <p className="text-xs text-gray-500 dark:text-gray-400">
+            {t('form.leadTimeDaysHelper', {
+              max: fields.frequency === 'weekly' ? 7 : 14,
+            })}
+          </p>
+          {errors.leadTimeDays && (
+            <p className="text-xs text-red-500">{errors.leadTimeDays}</p>
+          )}
         </div>
       )}
 

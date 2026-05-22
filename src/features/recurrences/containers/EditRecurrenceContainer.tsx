@@ -49,7 +49,8 @@ export function EditRecurrenceContainer() {
             ? data.monthlyDay
             : undefined,
         leadTimeDays:
-          data.frequency === 'monthly' && 'leadTimeDays' in data
+          (data.frequency === 'monthly' || data.frequency === 'weekly') &&
+          'leadTimeDays' in data
             ? data.leadTimeDays
             : undefined,
       };

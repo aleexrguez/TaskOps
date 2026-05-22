@@ -16,7 +16,8 @@
     "startingFrom": "Starting from",
     "daysOfWeek": "Days of the week",
     "monthlyDay": "Monthly Day (1–31)",
-    "leadTimeDays": "Generate task X days before (0–14)",
+    "leadTimeDays": "Generate task days before due date",
+    "leadTimeDaysHelper": "0 = appears on due date. Max: {{max}} days",
     "nextOccurrences": "Next occurrences",
     "frequency": {
       "daily": "Daily",
@@ -37,7 +38,8 @@
     "selectDay": "Select at least one day",
     "monthlyDayRange": "Day must be between 1 and 31",
     "intervalRange": "Interval must be between 1 and 365",
-    "startDateRequired": "Start date is required"
+    "startDateRequired": "Start date is required",
+    "leadTimeDaysRange": "Must be between 0 and {{max}}"
   },
   "card": {
     "generatesEarly": "Generates {{days}} days early",

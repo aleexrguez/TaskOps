@@ -16,7 +16,8 @@
     "startingFrom": "A partir de",
     "daysOfWeek": "Dias de la semana",
     "monthlyDay": "Dia del mes (1–31)",
-    "leadTimeDays": "Generar tarea X dias antes (0–14)",
+    "leadTimeDays": "Generar tarea dias antes del vencimiento",
+    "leadTimeDaysHelper": "0 = aparece el dia del vencimiento. Max: {{max}} dias",
     "nextOccurrences": "Proximas ocurrencias",
     "frequency": {
       "daily": "Diaria",
@@ -37,7 +38,8 @@
     "selectDay": "Selecciona al menos un dia",
     "monthlyDayRange": "El dia debe estar entre 1 y 31",
     "intervalRange": "El intervalo debe estar entre 1 y 365",
-    "startDateRequired": "La fecha de inicio es obligatoria"
+    "startDateRequired": "La fecha de inicio es obligatoria",
+    "leadTimeDaysRange": "Debe ser entre 0 y {{max}}"
   },
   "card": {
     "generatesEarly": "Se genera {{days}} dias antes",

@@ -79,14 +79,13 @@ describe('RecurrenceForm — conditional fields', () => {
     expect(screen.queryByLabelText(/days before/i)).not.toBeInTheDocument();
   });
 
-  it('does not show lead time input when frequency is weekly', async () => {
+  it('shows lead time input when frequency is weekly', async () => {
     const user = userEvent.setup();
     render(<RecurrenceForm onSubmit={vi.fn()} />);
-
     await user.selectOptions(screen.getByLabelText(/frequency/i), 'weekly');
-
-    expect(screen.queryByLabelText(/lead time/i)).not.toBeInTheDocument();
-    expect(screen.queryByLabelText(/days before/i)).not.toBeInTheDocument();
+    expect(
+      screen.getByLabelText(/generate.*days.*before|days.*before/i),
+    ).toBeInTheDocument();
   });
 
   it('shows lead time input when frequency is monthly', async () => {
@@ -567,5 +566,128 @@ describe('RecurrenceForm — monthlyDay autofill', () => {
     await user.selectOptions(screen.getByLabelText(/frequency/i), 'monthly');
 
     expect(screen.getByLabelText(/monthly day/i)).toHaveValue(15);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// leadTimeDays for weekly
+// ---------------------------------------------------------------------------
+
+describe('RecurrenceForm — leadTimeDays for weekly', () => {
+  it('weekly submission includes leadTimeDays in payload', async () => {
+    const user = userEvent.setup();
+    const onSubmit = vi.fn();
+    render(<RecurrenceForm onSubmit={onSubmit} />);
+
+    await user.type(screen.getByLabelText(/title/i), 'Weekly Task');
+    await user.selectOptions(screen.getByLabelText(/frequency/i), 'weekly');
+    await user.click(screen.getByRole('button', { name: 'Mon' }));
+    const leadInput = screen.getByLabelText(
+      /generate.*days.*before|days.*before/i,
+    );
+    await user.clear(leadInput);
+    await user.type(leadInput, '3');
+    await user.click(screen.getByRole('button', { name: /submit/i }));
+
+    expect(onSubmit).toHaveBeenCalledOnce();
+    expect(onSubmit).toHaveBeenCalledWith(
+      expect.objectContaining({
+        frequency: 'weekly',
+        weeklyDays: [1],
+        leadTimeDays: 3,
+      }),
+    );
+  });
+
+  it('leadTimeDays max is 7 for weekly', async () => {
+    const user = userEvent.setup();
+    render(<RecurrenceForm onSubmit={vi.fn()} />);
+    await user.selectOptions(screen.getByLabelText(/frequency/i), 'weekly');
+    const leadInput = screen.getByLabelText(
+      /generate.*days.*before|days.*before/i,
+    );
+    expect(leadInput).toHaveAttribute('max', '7');
+  });
+
+  it('leadTimeDays max is 14 for monthly', async () => {
+    const user = userEvent.setup();
+    render(<RecurrenceForm onSubmit={vi.fn()} />);
+    await user.selectOptions(screen.getByLabelText(/frequency/i), 'monthly');
+    const leadInput = screen.getByLabelText(
+      /generate.*days.*before|days.*before/i,
+    );
+    expect(leadInput).toHaveAttribute('max', '14');
+  });
+
+  it('switching to daily resets leadTimeDays to 0', async () => {
+    const user = userEvent.setup();
+    render(
+      <RecurrenceForm
+        onSubmit={vi.fn()}
+        initialValues={{
+          frequency: 'monthly',
+          startDate: '2026-01-15',
+          monthlyDay: 15,
+          leadTimeDays: 10,
+          interval: 1,
+        }}
+      />,
+    );
+    // Verify initial value
+    const leadInput = screen.getByLabelText(
+      /generate.*days.*before|days.*before/i,
+    );
+    expect(leadInput).toHaveValue(10);
+
+    // Switch to daily — field should disappear, internal value reset to 0
+    await user.selectOptions(screen.getByLabelText(/frequency/i), 'daily');
+    expect(
+      screen.queryByLabelText(/generate.*days.*before|days.*before/i),
+    ).not.toBeInTheDocument();
+
+    // Switch back to monthly — value should be 0 (was reset)
+    await user.selectOptions(screen.getByLabelText(/frequency/i), 'monthly');
+    expect(
+      screen.getByLabelText(/generate.*days.*before|days.*before/i),
+    ).toHaveValue(0);
+  });
+
+  it('switching from monthly (leadTimeDays=10) to weekly caps to 7', async () => {
+    const user = userEvent.setup();
+    render(
+      <RecurrenceForm
+        onSubmit={vi.fn()}
+        initialValues={{
+          frequency: 'monthly',
+          startDate: '2026-01-15',
+          monthlyDay: 15,
+          leadTimeDays: 10,
+          interval: 1,
+        }}
+      />,
+    );
+    expect(
+      screen.getByLabelText(/generate.*days.*before|days.*before/i),
+    ).toHaveValue(10);
+
+    // Switch to weekly — should cap to 7
+    await user.selectOptions(screen.getByLabelText(/frequency/i), 'weekly');
+    expect(
+      screen.getByLabelText(/generate.*days.*before|days.*before/i),
+    ).toHaveValue(7);
+  });
+
+  it('shows helper text with correct max for weekly', async () => {
+    const user = userEvent.setup();
+    render(<RecurrenceForm onSubmit={vi.fn()} />);
+    await user.selectOptions(screen.getByLabelText(/frequency/i), 'weekly');
+    expect(screen.getByText(/max.*7/i)).toBeInTheDocument();
+  });
+
+  it('shows helper text with correct max for monthly', async () => {
+    const user = userEvent.setup();
+    render(<RecurrenceForm onSubmit={vi.fn()} />);
+    await user.selectOptions(screen.getByLabelText(/frequency/i), 'monthly');
+    expect(screen.getByText(/max.*14/i)).toBeInTheDocument();
   });
 });

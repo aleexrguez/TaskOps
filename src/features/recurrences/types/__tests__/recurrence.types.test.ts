@@ -477,15 +477,50 @@ describe('createRecurrenceInputSchema — leadTimeDays', () => {
     expect('leadTimeDays' in result).toBe(false);
   });
 
-  it('weekly input does not accept leadTimeDays (field is absent from the type)', () => {
-    // Weekly never has leadTimeDays — the field should not exist in the output
-    const result = createRecurrenceInputSchema.parse({
-      frequency: 'weekly',
-      title: 'Team sync',
-      startDate: '2024-01-01',
-      weeklyDays: [1, 3],
+  describe('weekly leadTimeDays', () => {
+    it('accepts weekly input with leadTimeDays = 0', () => {
+      const result = createRecurrenceInputSchema.parse({
+        frequency: 'weekly',
+        title: 'Team sync',
+        startDate: '2024-01-01',
+        weeklyDays: [1, 3],
+        leadTimeDays: 0,
+      });
+      expect((result as { leadTimeDays: number }).leadTimeDays).toBe(0);
     });
-    expect('leadTimeDays' in result).toBe(false);
+
+    it('accepts weekly input with leadTimeDays = 7 (cap)', () => {
+      const result = createRecurrenceInputSchema.parse({
+        frequency: 'weekly',
+        title: 'Team sync',
+        startDate: '2024-01-01',
+        weeklyDays: [5],
+        leadTimeDays: 7,
+      });
+      expect((result as { leadTimeDays: number }).leadTimeDays).toBe(7);
+    });
+
+    it('rejects weekly input with leadTimeDays = 8 (exceeds weekly cap)', () => {
+      expect(() =>
+        createRecurrenceInputSchema.parse({
+          frequency: 'weekly',
+          title: 'Team sync',
+          startDate: '2024-01-01',
+          weeklyDays: [1],
+          leadTimeDays: 8,
+        }),
+      ).toThrow();
+    });
+
+    it('defaults weekly leadTimeDays to 0 when not provided', () => {
+      const result = createRecurrenceInputSchema.parse({
+        frequency: 'weekly',
+        title: 'Team sync',
+        startDate: '2024-01-01',
+        weeklyDays: [1, 3],
+      });
+      expect((result as { leadTimeDays: number }).leadTimeDays).toBe(0);
+    });
   });
 });
 
@@ -573,5 +608,60 @@ describe('updateRecurrenceInputSchema', () => {
     expect(() =>
       updateRecurrenceInputSchema.parse({ monthlyDay: 32 }),
     ).toThrow();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// 4b. updateRecurrenceInputSchema — frequency-specific leadTimeDays
+// ---------------------------------------------------------------------------
+
+describe('updateRecurrenceInputSchema — frequency-specific leadTimeDays', () => {
+  it('accepts weekly update with leadTimeDays = 7', () => {
+    const result = updateRecurrenceInputSchema.parse({
+      frequency: 'weekly',
+      leadTimeDays: 7,
+    });
+    expect(result.leadTimeDays).toBe(7);
+  });
+
+  it('rejects weekly update with leadTimeDays = 8', () => {
+    expect(() =>
+      updateRecurrenceInputSchema.parse({
+        frequency: 'weekly',
+        leadTimeDays: 8,
+      }),
+    ).toThrow();
+  });
+
+  it('accepts daily update with leadTimeDays = 0', () => {
+    const result = updateRecurrenceInputSchema.parse({
+      frequency: 'daily',
+      leadTimeDays: 0,
+    });
+    expect(result.leadTimeDays).toBe(0);
+  });
+
+  it('rejects daily update with leadTimeDays = 1', () => {
+    expect(() =>
+      updateRecurrenceInputSchema.parse({
+        frequency: 'daily',
+        leadTimeDays: 1,
+      }),
+    ).toThrow();
+  });
+
+  it('accepts monthly update with leadTimeDays = 14', () => {
+    const result = updateRecurrenceInputSchema.parse({
+      frequency: 'monthly',
+      leadTimeDays: 14,
+    });
+    expect(result.leadTimeDays).toBe(14);
+  });
+
+  it('accepts update with leadTimeDays but no frequency (partial update, max 14)', () => {
+    const result = updateRecurrenceInputSchema.parse({
+      leadTimeDays: 10,
+    });
+    expect(result.leadTimeDays).toBe(10);
   });
 });

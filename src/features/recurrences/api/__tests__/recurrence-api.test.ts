@@ -269,6 +269,7 @@ describe('createRecurrence — toDbInsert mapping', () => {
       interval: 1,
       startDate: '2024-01-01',
       weeklyDays: [1, 3],
+      leadTimeDays: 0,
     });
 
     expect(mockInsert).toHaveBeenCalledWith(
@@ -665,6 +666,38 @@ describe('CRUD operations', () => {
         weekly_days: [1, 3],
         monthly_day: null,
         lead_time_days: 0,
+      }),
+    );
+  });
+
+  it('updateRecurrence preserves leadTimeDays value when frequency is weekly (override wins over reset)', async () => {
+    const updatedRow = makeDbRow({
+      frequency: 'weekly',
+      weekly_days: [1, 5],
+      lead_time_days: 5,
+    });
+
+    const mockSingle = vi
+      .fn()
+      .mockResolvedValue({ data: updatedRow, error: null });
+    const mockSelect = vi.fn().mockReturnValue({ single: mockSingle });
+    const mockEq = vi.fn().mockReturnValue({ select: mockSelect });
+    const mockUpdate = vi.fn().mockReturnValue({ eq: mockEq });
+
+    vi.mocked(supabase.from).mockReturnValue(
+      asFromReturn({ update: mockUpdate }),
+    );
+
+    await updateRecurrence('tmpl-uuid-001', {
+      frequency: 'weekly',
+      weeklyDays: [1, 5],
+      leadTimeDays: 5,
+    });
+
+    expect(mockUpdate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        frequency: 'weekly',
+        lead_time_days: 5,
       }),
     );
   });

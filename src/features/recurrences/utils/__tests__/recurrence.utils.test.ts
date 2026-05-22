@@ -1459,3 +1459,142 @@ describe('formatFrequencyLabel — Spanish', () => {
     );
   });
 });
+
+// ---------------------------------------------------------------------------
+// 17. getOccurrencesInWindow — weekly lead time
+// ---------------------------------------------------------------------------
+
+describe('getOccurrencesInWindow — weekly lead time', () => {
+  // 2024-01-08 is a Monday, 2024-01-10 is a Wednesday, 2024-01-12 is a Friday
+
+  it('leadTimeDays 0 preserves current behavior — generates only on occurrence day', () => {
+    const template = makeTemplate({
+      frequency: 'weekly',
+      weeklyDays: [5], // Friday
+      leadTimeDays: 0,
+    });
+    // Today is Friday 2024-01-12 → should return the occurrence
+    expect(getOccurrencesInWindow(template, new Date(2024, 0, 12))).toEqual([
+      '2024-01-12',
+    ]);
+    // Today is Thursday 2024-01-11 → should NOT return anything
+    expect(getOccurrencesInWindow(template, new Date(2024, 0, 11))).toEqual([]);
+  });
+
+  it('leadTimeDays 0 returns empty when today is not a weekly day', () => {
+    const template = makeTemplate({
+      frequency: 'weekly',
+      weeklyDays: [1], // Monday
+      leadTimeDays: 0,
+    });
+    // Today is Wednesday
+    expect(getOccurrencesInWindow(template, new Date(2024, 0, 10))).toEqual([]);
+  });
+
+  it('leadTimeDays 3 returns occurrence 2 days away', () => {
+    const template = makeTemplate({
+      frequency: 'weekly',
+      weeklyDays: [5], // Friday
+      leadTimeDays: 3,
+    });
+    // Today is Wednesday 2024-01-10, Friday is 2 days away (within window of 3)
+    expect(getOccurrencesInWindow(template, new Date(2024, 0, 10))).toEqual([
+      '2024-01-12',
+    ]);
+  });
+
+  it('leadTimeDays 3 does NOT return occurrence 5 days away', () => {
+    const template = makeTemplate({
+      frequency: 'weekly',
+      weeklyDays: [1], // Monday
+      leadTimeDays: 3,
+    });
+    // Today is Wednesday 2024-01-10, next Monday is 5 days away (outside window of 3)
+    expect(getOccurrencesInWindow(template, new Date(2024, 0, 10))).toEqual([]);
+  });
+
+  it('returned dateKey is the occurrence date, not today', () => {
+    const template = makeTemplate({
+      frequency: 'weekly',
+      weeklyDays: [5], // Friday
+      leadTimeDays: 5,
+    });
+    // Today is Monday 2024-01-08, Friday occurrence is 4 days away
+    const result = getOccurrencesInWindow(template, new Date(2024, 0, 8));
+    expect(result).toEqual(['2024-01-12']); // Friday's date, not Monday's
+  });
+
+  it('respects interval matching on the occurrence date', () => {
+    const template = makeTemplate({
+      frequency: 'weekly',
+      weeklyDays: [5], // Friday
+      leadTimeDays: 5,
+      interval: 2, // every 2 weeks
+      startDate: '2024-01-05', // First Friday
+    });
+    // Week of Jan 8: this is week 1 from start (interval 2, so next is week 2 = Jan 19)
+    // Today is Mon Jan 8, Friday Jan 12 is 4 days away but is in week 1 (not interval match for bi-weekly)
+    // Actually let me check: startDate is 2024-01-05 (Friday), interval=2
+    // Jan 12 is 7 days later = 1 week. 1 % 2 != 0 → no match
+    expect(getOccurrencesInWindow(template, new Date(2024, 0, 8))).toEqual([]);
+
+    // Today is Mon Jan 15, Friday Jan 19 is 4 days away, which is 14 days from start = 2 weeks. 2 % 2 == 0 → match
+    expect(getOccurrencesInWindow(template, new Date(2024, 0, 15))).toEqual([
+      '2024-01-19',
+    ]);
+  });
+
+  it('respects startDate gating', () => {
+    const template = makeTemplate({
+      frequency: 'weekly',
+      weeklyDays: [5], // Friday
+      leadTimeDays: 5,
+      startDate: '2024-01-15', // Starts after the Friday we're checking
+    });
+    // Today is Mon Jan 8, Friday Jan 12 is within lead window but before startDate
+    expect(getOccurrencesInWindow(template, new Date(2024, 0, 8))).toEqual([]);
+  });
+
+  it('multiple weeklyDays within lead window returns all matching dateKeys', () => {
+    const template = makeTemplate({
+      frequency: 'weekly',
+      weeklyDays: [3, 5], // Wednesday, Friday
+      leadTimeDays: 7,
+    });
+    // Today is Monday 2024-01-08, lead window covers Mon-Mon (8-15)
+    // Wednesday Jan 10 is 2 days away → match
+    // Friday Jan 12 is 4 days away → match
+    const result = getOccurrencesInWindow(template, new Date(2024, 0, 8));
+    expect(result).toEqual(['2024-01-10', '2024-01-12']);
+  });
+
+  it('leadTimeDays 7 edge case — full week window', () => {
+    const template = makeTemplate({
+      frequency: 'weekly',
+      weeklyDays: [1], // Monday
+      leadTimeDays: 7,
+    });
+    // Today is Tuesday 2024-01-09, next Monday is Jan 15 = 6 days away (within 7)
+    expect(getOccurrencesInWindow(template, new Date(2024, 0, 9))).toEqual([
+      '2024-01-15',
+    ]);
+    // Today is Monday 2024-01-08 — offset 0 matches (Jan 8), offset 7 also matches (Jan 15)
+    expect(getOccurrencesInWindow(template, new Date(2024, 0, 8))).toEqual([
+      '2024-01-08',
+      '2024-01-15',
+    ]);
+  });
+
+  it('leadTimeDays 7 returns occurrence exactly 7 days away', () => {
+    const template = makeTemplate({
+      frequency: 'weekly',
+      weeklyDays: [2], // Tuesday
+      leadTimeDays: 7,
+    });
+    // Today is Tuesday 2024-01-09, next Tuesday is Jan 16 = exactly 7 days away
+    expect(getOccurrencesInWindow(template, new Date(2024, 0, 9))).toEqual([
+      '2024-01-09',
+      '2024-01-16',
+    ]);
+  });
+});
