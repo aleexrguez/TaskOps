@@ -49,6 +49,7 @@ export function createWeeklyInput(
     interval: 1,
     startDate: '2026-01-01',
     weeklyDays: [1],
+    leadTimeDays: 0,
     ...overrides,
   };
 }

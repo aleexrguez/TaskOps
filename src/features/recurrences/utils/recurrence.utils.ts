@@ -395,18 +395,49 @@ export function getOccurrencesInWindow(
       if (!template.weeklyDays || template.weeklyDays.length === 0) {
         return [];
       }
-      const isoDay = getISODayOfWeek(today);
-      if (!template.weeklyDays.includes(isoDay)) return [];
-      if (
-        !isIntervalMatch(
-          'weekly',
-          template.interval,
-          template.startDate,
-          todayKey,
+
+      const leadTime = template.leadTimeDays ?? 0;
+
+      if (leadTime === 0) {
+        // Exact current behavior — no change
+        const isoDay = getISODayOfWeek(today);
+        if (!template.weeklyDays.includes(isoDay)) return [];
+        if (
+          !isIntervalMatch(
+            'weekly',
+            template.interval,
+            template.startDate,
+            todayKey,
+          )
         )
-      )
-        return [];
-      return [todayKey];
+          return [];
+        return [todayKey];
+      }
+
+      // Lead time: scan window [today, today + leadTime]
+      const result: string[] = [];
+      for (let offset = 0; offset <= leadTime; offset++) {
+        const candidate = new Date(
+          today.getFullYear(),
+          today.getMonth(),
+          today.getDate() + offset,
+        );
+        const candidateKey = formatDateKey(candidate);
+        if (candidateKey < template.startDate) continue;
+        const isoDay = getISODayOfWeek(candidate);
+        if (!template.weeklyDays.includes(isoDay)) continue;
+        if (
+          !isIntervalMatch(
+            'weekly',
+            template.interval,
+            template.startDate,
+            candidateKey,
+          )
+        )
+          continue;
+        result.push(candidateKey);
+      }
+      return [...new Set(result)];
     }
 
     case 'monthly': {

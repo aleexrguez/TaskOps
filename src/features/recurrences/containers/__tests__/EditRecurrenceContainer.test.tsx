@@ -289,6 +289,33 @@ describe('EditRecurrenceContainer', () => {
     expect(callArgs.input.monthlyDay).toBeDefined();
     expect(callArgs.input.leadTimeDays).toBeDefined();
   });
+
+  it('submits weekly template with leadTimeDays in payload', async () => {
+    const user = userEvent.setup();
+    mockMutateAsync.mockResolvedValue({});
+    (useRecurrence as ReturnType<typeof vi.fn>).mockReturnValue({
+      data: makeTemplate({
+        frequency: 'weekly',
+        weeklyDays: [1, 5],
+        leadTimeDays: 3,
+      }),
+      isLoading: false,
+      isError: false,
+      error: null,
+    });
+    useRecurrenceUIStore.setState({
+      isEditModalOpen: true,
+      selectedTemplateId: 'template-1',
+    });
+    const Wrapper = createWrapper();
+    render(<EditRecurrenceContainer />, { wrapper: Wrapper });
+
+    await user.click(screen.getByRole('button', { name: /save changes/i }));
+
+    const callArgs = mockMutateAsync.mock.calls[0][0];
+    expect(callArgs.input.frequency).toBe('weekly');
+    expect(callArgs.input.leadTimeDays).toBe(3);
+  });
 });
 
 describe('EditRecurrenceContainer — dialog accessibility', () => {
