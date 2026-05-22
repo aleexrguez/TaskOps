@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useFocusTrap } from '../hooks/use-focus-trap';
 
 interface ConfirmDialogProps {
   isOpen: boolean;
@@ -27,60 +28,13 @@ export function ConfirmDialog({
   children,
 }: ConfirmDialogProps) {
   const { t } = useTranslation('common');
-  const dialogRef = useRef<HTMLDivElement>(null);
   const cancelButtonRef = useRef<HTMLButtonElement>(null);
-  const previouslyOpen = useRef(false);
 
-  const getFocusableElements = useCallback((): HTMLElement[] => {
-    if (!dialogRef.current) return [];
-    return Array.from(
-      dialogRef.current.querySelectorAll<HTMLElement>(
-        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
-      ),
-    ).filter((el) => !el.hasAttribute('disabled'));
-  }, []);
-
-  useEffect(() => {
-    if (!isOpen) {
-      previouslyOpen.current = false;
-      return;
-    }
-
-    if (!previouslyOpen.current) {
-      cancelButtonRef.current?.focus();
-      previouslyOpen.current = true;
-    }
-
-    function handleKeyDown(event: KeyboardEvent): void {
-      if (event.key === 'Escape') {
-        if (!isLoading) onCancel();
-        return;
-      }
-
-      if (event.key === 'Tab') {
-        const focusable = getFocusableElements();
-        if (focusable.length === 0) return;
-
-        const first = focusable[0];
-        const last = focusable[focusable.length - 1];
-
-        if (event.shiftKey) {
-          if (document.activeElement === first) {
-            event.preventDefault();
-            last.focus();
-          }
-        } else {
-          if (document.activeElement === last) {
-            event.preventDefault();
-            first.focus();
-          }
-        }
-      }
-    }
-
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, isLoading, onCancel, getFocusableElements]);
+  const dialogRef = useFocusTrap({
+    isOpen,
+    onClose: isLoading ? undefined : onCancel,
+    initialFocusRef: cancelButtonRef,
+  });
 
   if (!isOpen) return null;
 

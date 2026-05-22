@@ -16,6 +16,7 @@ import {
 import { AppShellContainer } from '@/shared/components/app-shell';
 import { ProtectedRoute } from './ProtectedRoute';
 import { PublicOnlyRoute } from './PublicOnlyRoute';
+import { PublicAuthLayout } from './PublicAuthLayout';
 import { ScrollToTop } from './ScrollToTop';
 
 const InboxDashboardContainer = lazy(() =>
@@ -70,30 +71,23 @@ export function Router() {
             </PublicOnlyRoute>
           }
         />
+        {/* Auth modal routes (landing page as background + modal overlay) */}
         <Route
-          path="/login"
           element={
             <PublicOnlyRoute>
-              <LoginContainer />
+              <PublicAuthLayout />
             </PublicOnlyRoute>
           }
-        />
-        <Route
-          path="/register"
-          element={
-            <PublicOnlyRoute>
-              <RegisterContainer />
-            </PublicOnlyRoute>
-          }
-        />
-        <Route
-          path="/forgot-password"
-          element={
-            <PublicOnlyRoute>
-              <ForgotPasswordContainer />
-            </PublicOnlyRoute>
-          }
-        />
+        >
+          <Route path="/login" element={<LoginContainer />} />
+          <Route path="/register" element={<RegisterContainer />} />
+          <Route
+            path="/forgot-password"
+            element={<ForgotPasswordContainer />}
+          />
+        </Route>
+
+        {/* Reset password stays standalone (accessed via email link) */}
         <Route path="/reset-password" element={<ResetPasswordContainer />} />
 
         {/* Legal pages — universally accessible */}
