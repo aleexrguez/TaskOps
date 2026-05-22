@@ -4,6 +4,7 @@ import { useSignUp } from '../hooks';
 import { RegisterForm } from '../components';
 import { useApplyTheme } from '@/shared/hooks/use-apply-theme';
 import { LanguageToggle } from '@/shared/components/LanguageToggle';
+import { AuthPageLayout } from '@/shared/components/AuthPageLayout';
 import type { RegisterInput } from '../types';
 
 export function RegisterContainer() {
@@ -22,7 +23,7 @@ export function RegisterContainer() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-900">
+    <AuthPageLayout>
       <div className="w-full max-w-sm">
         <div className="mb-4 flex items-center justify-between">
           <Link
@@ -44,6 +45,6 @@ export function RegisterContainer() {
           />
         </div>
       </div>
-    </div>
+    </AuthPageLayout>
   );
 }

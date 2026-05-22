@@ -1,0 +1,175 @@
+{
+  "footer": {
+    "copyright": "TaskOps · Built by Alessandro Rodriguez Rojas",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "cookies": "Cookie Policy",
+    "legal": "Legal Notice"
+  },
+  "nav": {
+    "backToHome": "Back to home"
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "lastUpdated": "Last updated: {{date}}",
+    "dataCollected": {
+      "title": "Information We Collect",
+      "items": [
+        "Email address, used for account authentication.",
+        "Task data you create (titles, descriptions, due dates, priorities, and statuses).",
+        "UI preferences stored locally in your browser (theme, language, sidebar state)."
+      ]
+    },
+    "howWeUse": {
+      "title": "How We Use Your Information",
+      "items": [
+        "To provide and maintain the task management service.",
+        "To authenticate your identity and protect your account.",
+        "To remember your preferences across sessions."
+      ]
+    },
+    "thirdParties": {
+      "title": "Third-Party Services",
+      "items": [
+        "TaskOps uses Supabase as its authentication and database provider. Your account data and tasks are stored in Supabase-hosted infrastructure.",
+        "We do not use analytics, advertising, or tracking services of any kind."
+      ]
+    },
+    "storage": {
+      "title": "Data Storage",
+      "items": [
+        "Account and task data are stored securely in a Supabase-hosted database.",
+        "Authentication session tokens are managed by the Supabase SDK and stored in your browser's local storage.",
+        "UI preferences (theme, language, view mode) are stored in your browser's local storage and never sent to any server."
+      ]
+    },
+    "rights": {
+      "title": "Your Rights",
+      "items": [
+        "You can delete your account at any time from the account settings page.",
+        "You can request information about the data we store by contacting us.",
+        "You can clear all locally stored preferences by clearing your browser's local storage."
+      ]
+    },
+    "contact": {
+      "title": "Contact",
+      "content": "If you have questions about this privacy policy, you can reach us through the contact information provided in the Legal Notice page."
+    }
+  },
+  "terms": {
+    "title": "Terms of Service",
+    "lastUpdated": "Last updated: {{date}}",
+    "description": {
+      "title": "Service Description",
+      "items": [
+        "TaskOps is a free task management application that allows you to create, organize, and track tasks.",
+        "The service is provided for personal productivity purposes."
+      ]
+    },
+    "responsibilities": {
+      "title": "User Responsibilities",
+      "items": [
+        "You are responsible for maintaining the security of your account credentials.",
+        "You agree not to misuse the service or attempt to access it through unauthorized means.",
+        "You are responsible for all activity that occurs under your account."
+      ]
+    },
+    "ip": {
+      "title": "Intellectual Property",
+      "items": [
+        "You retain full ownership of the content and data you create within TaskOps.",
+        "The TaskOps platform, its design, and source code remain the property of its creator."
+      ]
+    },
+    "availability": {
+      "title": "Service Availability",
+      "items": [
+        "TaskOps is provided on an \"as-is\" basis without guarantees of availability or uptime.",
+        "We reserve the right to modify, suspend, or discontinue the service at any time."
+      ]
+    },
+    "termination": {
+      "title": "Account Termination",
+      "items": [
+        "You may delete your account at any time through the account settings.",
+        "We may terminate accounts that violate these terms or engage in abusive behavior."
+      ]
+    },
+    "liability": {
+      "title": "Limitation of Liability",
+      "items": [
+        "TaskOps and its creator shall not be held liable for any damages arising from the use or inability to use the service.",
+        "This includes, but is not limited to, loss of data, interruption of service, or any indirect damages."
+      ]
+    },
+    "changes": {
+      "title": "Changes to These Terms",
+      "content": "We may update these terms from time to time. Changes will be reflected on this page with an updated date."
+    }
+  },
+  "cookies": {
+    "title": "Cookie Policy",
+    "lastUpdated": "Last updated: {{date}}",
+    "overview": {
+      "title": "Overview",
+      "items": [
+        "TaskOps does not use HTTP cookies for tracking, analytics, or advertising purposes.",
+        "This page explains what technologies we do use and how they differ from cookies."
+      ]
+    },
+    "localStorage": {
+      "title": "Local Storage (Not Cookies)",
+      "items": [
+        "Local storage is a browser technology that allows websites to store data locally on your device. Unlike cookies, this data is never automatically sent to any server with your requests.",
+        "TaskOps uses local storage to remember your UI preferences: theme (light or dark), language (English or Spanish), sidebar state, and task view mode.",
+        "These preferences are essential for the application to function as expected and are stored only on your device."
+      ]
+    },
+    "supabaseAuth": {
+      "title": "Authentication Tokens",
+      "items": [
+        "When you sign in, the Supabase authentication SDK stores session tokens in your browser's local storage.",
+        "These tokens are used solely to keep you signed in and are managed automatically by the authentication library.",
+        "They are not cookies and are not shared with any third party."
+      ]
+    },
+    "thirdParty": {
+      "title": "Third-Party Cookies",
+      "items": [
+        "TaskOps does not load any third-party scripts, analytics tools, advertising networks, or social media embeds.",
+        "No third-party cookies are set when you use TaskOps."
+      ]
+    },
+    "whyNoBanner": {
+      "title": "Why There Is No Cookie Banner",
+      "content": "Since TaskOps does not use cookies — neither its own nor from third parties — there is no need for a cookie consent banner. The local storage we use is limited to essential functionality and does not require consent under current regulations."
+    }
+  },
+  "legalNotice": {
+    "title": "Legal Notice",
+    "lastUpdated": "Last updated: {{date}}",
+    "operator": {
+      "title": "Operator",
+      "content": "This service is operated by {{operatorName}}."
+    },
+    "contact": {
+      "title": "Contact",
+      "contentWithEmail": "For inquiries, you can reach us at {{contactEmail}}.",
+      "contentPending": "Contact information will be provided here once available."
+    },
+    "hosting": {
+      "title": "Hosting",
+      "items": [
+        "Database and authentication services are provided by Supabase.",
+        "The application may be hosted on various cloud platforms."
+      ]
+    },
+    "disclaimer": {
+      "title": "Disclaimer",
+      "items": [
+        "This is a personal project provided as-is, without warranty of any kind.",
+        "The operator assumes no liability for the accuracy, completeness, or usefulness of any information provided through this service."
+      ]
+    }
+  }
+}

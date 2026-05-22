@@ -1,0 +1,175 @@
+{
+  "footer": {
+    "copyright": "TaskOps · Creado por Alessandro Rodriguez Rojas",
+    "privacy": "Privacidad",
+    "terms": "Términos de Servicio",
+    "cookies": "Política de Cookies",
+    "legal": "Aviso Legal"
+  },
+  "nav": {
+    "backToHome": "Volver al inicio"
+  },
+  "privacy": {
+    "title": "Política de Privacidad",
+    "lastUpdated": "Última actualización: {{date}}",
+    "dataCollected": {
+      "title": "Información que Recopilamos",
+      "items": [
+        "Dirección de correo electrónico, utilizada para la autenticación de la cuenta.",
+        "Datos de tareas que creas (títulos, descripciones, fechas de vencimiento, prioridades y estados).",
+        "Preferencias de interfaz almacenadas localmente en tu navegador (tema, idioma, estado de la barra lateral)."
+      ]
+    },
+    "howWeUse": {
+      "title": "Cómo Usamos tu Información",
+      "items": [
+        "Para proporcionar y mantener el servicio de gestión de tareas.",
+        "Para autenticar tu identidad y proteger tu cuenta.",
+        "Para recordar tus preferencias entre sesiones."
+      ]
+    },
+    "thirdParties": {
+      "title": "Servicios de Terceros",
+      "items": [
+        "TaskOps utiliza Supabase como proveedor de autenticación y base de datos. Los datos de tu cuenta y tareas se almacenan en la infraestructura de Supabase.",
+        "No utilizamos servicios de analítica, publicidad ni rastreo de ningún tipo."
+      ]
+    },
+    "storage": {
+      "title": "Almacenamiento de Datos",
+      "items": [
+        "Los datos de cuenta y tareas se almacenan de forma segura en una base de datos alojada en Supabase.",
+        "Los tokens de sesión de autenticación son gestionados por el SDK de Supabase y se almacenan en el almacenamiento local de tu navegador.",
+        "Las preferencias de interfaz (tema, idioma, modo de vista) se almacenan en el almacenamiento local de tu navegador y nunca se envían a ningún servidor."
+      ]
+    },
+    "rights": {
+      "title": "Tus Derechos",
+      "items": [
+        "Puedes eliminar tu cuenta en cualquier momento desde la página de configuración de cuenta.",
+        "Puedes solicitar información sobre los datos que almacenamos contactándonos.",
+        "Puedes borrar todas las preferencias almacenadas localmente limpiando el almacenamiento local de tu navegador."
+      ]
+    },
+    "contact": {
+      "title": "Contacto",
+      "content": "Si tienes preguntas sobre esta política de privacidad, puedes contactarnos a través de la información proporcionada en la página de Aviso Legal."
+    }
+  },
+  "terms": {
+    "title": "Términos de Servicio",
+    "lastUpdated": "Última actualización: {{date}}",
+    "description": {
+      "title": "Descripción del Servicio",
+      "items": [
+        "TaskOps es una aplicación gratuita de gestión de tareas que te permite crear, organizar y hacer seguimiento de tus tareas.",
+        "El servicio se proporciona con fines de productividad personal."
+      ]
+    },
+    "responsibilities": {
+      "title": "Responsabilidades del Usuario",
+      "items": [
+        "Eres responsable de mantener la seguridad de las credenciales de tu cuenta.",
+        "Aceptas no hacer un uso indebido del servicio ni intentar acceder a él por medios no autorizados.",
+        "Eres responsable de toda la actividad que ocurra bajo tu cuenta."
+      ]
+    },
+    "ip": {
+      "title": "Propiedad Intelectual",
+      "items": [
+        "Conservas la propiedad total del contenido y los datos que creas dentro de TaskOps.",
+        "La plataforma TaskOps, su diseño y código fuente son propiedad de su creador."
+      ]
+    },
+    "availability": {
+      "title": "Disponibilidad del Servicio",
+      "items": [
+        "TaskOps se proporciona \"tal cual\", sin garantías de disponibilidad o tiempo de actividad.",
+        "Nos reservamos el derecho de modificar, suspender o descontinuar el servicio en cualquier momento."
+      ]
+    },
+    "termination": {
+      "title": "Terminación de Cuenta",
+      "items": [
+        "Puedes eliminar tu cuenta en cualquier momento desde la configuración de cuenta.",
+        "Podemos cancelar cuentas que violen estos términos o tengan comportamiento abusivo."
+      ]
+    },
+    "liability": {
+      "title": "Limitación de Responsabilidad",
+      "items": [
+        "TaskOps y su creador no serán responsables de ningún daño derivado del uso o la imposibilidad de uso del servicio.",
+        "Esto incluye, entre otros, pérdida de datos, interrupción del servicio o cualquier daño indirecto."
+      ]
+    },
+    "changes": {
+      "title": "Cambios en Estos Términos",
+      "content": "Podemos actualizar estos términos periódicamente. Los cambios se reflejarán en esta página con una fecha actualizada."
+    }
+  },
+  "cookies": {
+    "title": "Política de Cookies",
+    "lastUpdated": "Última actualización: {{date}}",
+    "overview": {
+      "title": "Resumen",
+      "items": [
+        "TaskOps no utiliza cookies HTTP con fines de rastreo, analítica o publicidad.",
+        "Esta página explica qué tecnologías utilizamos y en qué se diferencian de las cookies."
+      ]
+    },
+    "localStorage": {
+      "title": "Almacenamiento Local (No Son Cookies)",
+      "items": [
+        "El almacenamiento local es una tecnología del navegador que permite a los sitios web guardar datos localmente en tu dispositivo. A diferencia de las cookies, estos datos nunca se envían automáticamente a ningún servidor con tus solicitudes.",
+        "TaskOps usa almacenamiento local para recordar tus preferencias de interfaz: tema (claro u oscuro), idioma (inglés o español), estado de la barra lateral y modo de vista de tareas.",
+        "Estas preferencias son esenciales para el funcionamiento de la aplicación y se almacenan únicamente en tu dispositivo."
+      ]
+    },
+    "supabaseAuth": {
+      "title": "Tokens de Autenticación",
+      "items": [
+        "Cuando inicias sesión, el SDK de autenticación de Supabase almacena tokens de sesión en el almacenamiento local de tu navegador.",
+        "Estos tokens se usan únicamente para mantener tu sesión activa y son gestionados automáticamente por la biblioteca de autenticación.",
+        "No son cookies y no se comparten con ningún tercero."
+      ]
+    },
+    "thirdParty": {
+      "title": "Cookies de Terceros",
+      "items": [
+        "TaskOps no carga scripts de terceros, herramientas de analítica, redes publicitarias ni incrustaciones de redes sociales.",
+        "No se establecen cookies de terceros cuando usas TaskOps."
+      ]
+    },
+    "whyNoBanner": {
+      "title": "Por Qué No Hay Banner de Cookies",
+      "content": "Dado que TaskOps no utiliza cookies — ni propias ni de terceros — no es necesario un banner de consentimiento de cookies. El almacenamiento local que utilizamos se limita a funcionalidad esencial y no requiere consentimiento según la normativa vigente."
+    }
+  },
+  "legalNotice": {
+    "title": "Aviso Legal",
+    "lastUpdated": "Última actualización: {{date}}",
+    "operator": {
+      "title": "Operador",
+      "content": "Este servicio es operado por {{operatorName}}."
+    },
+    "contact": {
+      "title": "Contacto",
+      "contentWithEmail": "Para consultas, puedes contactarnos en {{contactEmail}}.",
+      "contentPending": "La información de contacto se proporcionará aquí cuando esté disponible."
+    },
+    "hosting": {
+      "title": "Alojamiento",
+      "items": [
+        "Los servicios de base de datos y autenticación son proporcionados por Supabase.",
+        "La aplicación puede estar alojada en diversas plataformas en la nube."
+      ]
+    },
+    "disclaimer": {
+      "title": "Descargo de Responsabilidad",
+      "items": [
+        "Este es un proyecto personal proporcionado tal cual, sin garantía de ningún tipo.",
+        "El operador no asume responsabilidad por la exactitud, integridad o utilidad de la información proporcionada a través de este servicio."
+      ]
+    }
+  }
+}
