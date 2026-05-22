@@ -21,6 +21,12 @@ const defaultProps = {
   changePasswordError: null,
   changePasswordSuccess: false,
   onResetChangePassword: () => {},
+  onOpenDeleteDialog: () => {},
+  onCloseDeleteDialog: () => {},
+  onDeleteAccount: () => {},
+  showDeleteDialog: false,
+  isDeletingAccount: false,
+  deleteAccountError: null,
 };
 
 afterAll(async () => {

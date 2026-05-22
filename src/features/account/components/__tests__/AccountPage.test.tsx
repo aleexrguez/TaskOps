@@ -20,6 +20,12 @@ const defaultProps = {
   changePasswordError: null,
   changePasswordSuccess: false,
   onResetChangePassword: vi.fn(),
+  onOpenDeleteDialog: vi.fn(),
+  onCloseDeleteDialog: vi.fn(),
+  onDeleteAccount: vi.fn(),
+  showDeleteDialog: false,
+  isDeletingAccount: false,
+  deleteAccountError: null,
 };
 
 describe('AccountPage', () => {

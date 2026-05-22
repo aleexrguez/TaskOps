@@ -5,7 +5,7 @@ export { TaskList } from './TaskList';
 export { TaskForm } from './TaskForm';
 export { TaskFilters } from './TaskFilters';
 export { TaskStats } from './TaskStats';
-export { ConfirmDialog } from './ConfirmDialog';
+export { ConfirmDialog } from '@/shared/components/ConfirmDialog';
 export { TaskDetailView } from './TaskDetailView';
 export { TaskNotFound } from './TaskNotFound';
 export { TaskErrorState } from './TaskErrorState';

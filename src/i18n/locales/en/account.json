@@ -30,6 +30,27 @@
     "avatarRemoved": "Avatar removed",
     "updateFailed": "Update failed",
     "uploadFailed": "Upload failed",
-    "removeFailed": "Remove failed"
+    "removeFailed": "Remove failed",
+    "deleteAccountFailed": "Failed to delete account"
+  },
+  "dangerZone": {
+    "heading": "Danger Zone",
+    "description": "Permanently delete your account and all associated data. This action cannot be undone.",
+    "deleteButton": "Delete account",
+    "dialog": {
+      "title": "Delete Account",
+      "warning": "This action is permanent and cannot be undone. All your data will be deleted:",
+      "consequences": {
+        "tasks": "All tasks and checklists",
+        "recurrences": "All recurrence templates",
+        "inbox": "Inbox items",
+        "profile": "Profile and avatar",
+        "activity": "Activity history"
+      },
+      "confirmPrompt": "Type DELETE to confirm:",
+      "confirmPlaceholder": "DELETE",
+      "confirmButton": "Delete account",
+      "deleting": "Deleting..."
+    }
   }
 }

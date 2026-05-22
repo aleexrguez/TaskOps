@@ -30,6 +30,27 @@
     "avatarRemoved": "Avatar eliminado",
     "updateFailed": "Error al actualizar",
     "uploadFailed": "Error al subir",
-    "removeFailed": "Error al eliminar"
+    "removeFailed": "Error al eliminar",
+    "deleteAccountFailed": "Error al eliminar cuenta"
+  },
+  "dangerZone": {
+    "heading": "Zona de peligro",
+    "description": "Eliminar permanentemente tu cuenta y todos los datos asociados. Esta accion no se puede deshacer.",
+    "deleteButton": "Eliminar cuenta",
+    "dialog": {
+      "title": "Eliminar cuenta",
+      "warning": "Esta accion es permanente y no se puede deshacer. Todos tus datos seran eliminados:",
+      "consequences": {
+        "tasks": "Todas las tareas y checklists",
+        "recurrences": "Todas las plantillas de recurrencia",
+        "inbox": "Items del inbox",
+        "profile": "Perfil y avatar",
+        "activity": "Historial de actividad"
+      },
+      "confirmPrompt": "Escribe DELETE para confirmar:",
+      "confirmPlaceholder": "DELETE",
+      "confirmButton": "Eliminar cuenta",
+      "deleting": "Eliminando..."
+    }
   }
 }

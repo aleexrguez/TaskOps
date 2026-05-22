@@ -25,7 +25,7 @@ import { taskKeys } from '../hooks/task.keys';
 import { RouteSpinner } from '@/shared/components/RouteSpinner';
 import { TaskFilters } from '../components/TaskFilters';
 import { TaskList } from '../components/TaskList';
-import { ConfirmDialog } from '../components/ConfirmDialog';
+import { ConfirmDialog } from '@/shared/components/ConfirmDialog';
 import {
   celebrateTaskDone,
   getConfettiOriginFromElement,
