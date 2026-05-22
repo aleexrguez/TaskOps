@@ -1,5 +1,9 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/features/auth/hooks';
+import { signOut } from '@/features/auth/api';
 import { useToastStore } from '@/shared/store/toast.store';
 import {
   useProfile,
@@ -8,6 +12,7 @@ import {
   useRemoveAvatar,
 } from '../hooks/use-profile';
 import { useChangePassword } from '../hooks/use-change-password';
+import { useDeleteAccount } from '../hooks/use-delete-account';
 import { getAvatarPublicUrl } from '../api/profile.api';
 import { AccountPage } from '../components/AccountPage';
 
@@ -15,6 +20,8 @@ export function AccountContainer() {
   const { t } = useTranslation('account');
   const { user } = useAuth();
   const addToast = useToastStore((s) => s.addToast);
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const { data: profile } = useProfile();
   const updateProfile = useUpdateProfile();
@@ -27,6 +34,36 @@ export function AccountContainer() {
     isSuccess: changePasswordSuccess,
     reset: resetChangePassword,
   } = useChangePassword();
+
+  const {
+    deleteAccount,
+    isPending: isDeletingAccount,
+    error: deleteAccountError,
+    reset: resetDeleteAccount,
+  } = useDeleteAccount();
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+
+  async function handleDeleteAccount() {
+    const success = await deleteAccount();
+    if (success) {
+      queryClient.clear();
+      try {
+        await signOut();
+      } catch {
+        // Best-effort — auth user is already deleted
+      }
+      navigate('/');
+    }
+  }
+
+  function handleOpenDeleteDialog() {
+    resetDeleteAccount();
+    setShowDeleteDialog(true);
+  }
+
+  function handleCloseDeleteDialog() {
+    setShowDeleteDialog(false);
+  }
 
   function handleSaveDisplayName(name: string) {
     updateProfile.mutate(
@@ -99,6 +136,12 @@ export function AccountContainer() {
       changePasswordError={changePasswordError}
       changePasswordSuccess={changePasswordSuccess}
       onResetChangePassword={resetChangePassword}
+      onOpenDeleteDialog={handleOpenDeleteDialog}
+      onCloseDeleteDialog={handleCloseDeleteDialog}
+      onDeleteAccount={handleDeleteAccount}
+      showDeleteDialog={showDeleteDialog}
+      isDeletingAccount={isDeletingAccount}
+      deleteAccountError={deleteAccountError}
     />
   );
 }

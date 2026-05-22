@@ -5,3 +5,4 @@ export {
   removeAvatar,
   getAvatarPublicUrl,
 } from './profile.api';
+export { deleteAccount } from './account.api';

@@ -38,6 +38,20 @@ describe('ConfirmDialog accessibility', () => {
     expect(titleElement).toHaveTextContent('Delete task');
   });
 
+  it('has aria-describedby pointing to description when no children', () => {
+    render(<ConfirmDialog {...defaultProps} />);
+
+    const dialog = screen.getByRole('dialog');
+    expect(dialog).toHaveAttribute(
+      'aria-describedby',
+      'confirm-dialog-description',
+    );
+    expect(screen.getByText('Are you sure?')).toHaveAttribute(
+      'id',
+      'confirm-dialog-description',
+    );
+  });
+
   it('moves focus into the dialog when opened', () => {
     render(<ConfirmDialog {...defaultProps} />);
 
@@ -102,5 +116,89 @@ describe('ConfirmDialog accessibility', () => {
     render(<ConfirmDialog {...defaultProps} />);
 
     expect(screen.getByRole('button', { name: /close/i })).toBeInTheDocument();
+  });
+
+  it('renders nothing when isOpen is false', () => {
+    const { container } = render(
+      <ConfirmDialog {...defaultProps} isOpen={false} />,
+    );
+    expect(container.firstChild).toBeNull();
+  });
+
+  it('action buttons meet touch target minimum height', () => {
+    render(<ConfirmDialog {...defaultProps} />);
+
+    const cancelButton = screen.getByRole('button', { name: /cancel/i });
+    const confirmButton = screen.getByRole('button', { name: /delete/i });
+
+    expect(cancelButton.className).toContain('min-h-[44px]');
+    expect(confirmButton.className).toContain('min-h-[44px]');
+  });
+});
+
+describe('ConfirmDialog — confirmDisabled prop', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('disables confirm button when confirmDisabled is true', () => {
+    render(<ConfirmDialog {...defaultProps} confirmDisabled={true} />);
+
+    const confirmButton = screen.getByRole('button', { name: /delete/i });
+    expect(confirmButton).toBeDisabled();
+  });
+
+  it('enables confirm button when confirmDisabled is false', () => {
+    render(<ConfirmDialog {...defaultProps} confirmDisabled={false} />);
+
+    const confirmButton = screen.getByRole('button', { name: /delete/i });
+    expect(confirmButton).toBeEnabled();
+  });
+
+  it('disables confirm button when isLoading even if confirmDisabled is false', () => {
+    render(
+      <ConfirmDialog
+        {...defaultProps}
+        isLoading={true}
+        confirmDisabled={false}
+      />,
+    );
+
+    const confirmButton = screen.getByRole('button', { name: /delete/i });
+    expect(confirmButton).toBeDisabled();
+  });
+});
+
+describe('ConfirmDialog — children prop', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('renders children instead of description when provided', () => {
+    render(
+      <ConfirmDialog {...defaultProps} description="Should not appear">
+        <p>Custom content here</p>
+      </ConfirmDialog>,
+    );
+
+    expect(screen.getByText('Custom content here')).toBeInTheDocument();
+    expect(screen.queryByText('Should not appear')).not.toBeInTheDocument();
+  });
+
+  it('does not set aria-describedby when children are provided', () => {
+    render(
+      <ConfirmDialog {...defaultProps}>
+        <p>Custom content</p>
+      </ConfirmDialog>,
+    );
+
+    const dialog = screen.getByRole('dialog');
+    expect(dialog).not.toHaveAttribute('aria-describedby');
+  });
+
+  it('renders description when no children provided', () => {
+    render(<ConfirmDialog {...defaultProps} description="Fallback text" />);
+
+    expect(screen.getByText('Fallback text')).toBeInTheDocument();
   });
 });

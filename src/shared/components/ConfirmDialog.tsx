@@ -4,12 +4,14 @@ import { useTranslation } from 'react-i18next';
 interface ConfirmDialogProps {
   isOpen: boolean;
   title: string;
-  description: string;
+  description?: string;
   confirmLabel: string;
   onConfirm: () => void;
   onCancel: () => void;
   isLoading?: boolean;
   variant?: 'danger' | 'default';
+  confirmDisabled?: boolean;
+  children?: React.ReactNode;
 }
 
 export function ConfirmDialog({
@@ -21,10 +23,13 @@ export function ConfirmDialog({
   onCancel,
   isLoading = false,
   variant = 'default',
+  confirmDisabled = false,
+  children,
 }: ConfirmDialogProps) {
   const { t } = useTranslation('common');
   const dialogRef = useRef<HTMLDivElement>(null);
   const cancelButtonRef = useRef<HTMLButtonElement>(null);
+  const previouslyOpen = useRef(false);
 
   const getFocusableElements = useCallback((): HTMLElement[] => {
     if (!dialogRef.current) return [];
@@ -36,9 +41,15 @@ export function ConfirmDialog({
   }, []);
 
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen) {
+      previouslyOpen.current = false;
+      return;
+    }
 
-    cancelButtonRef.current?.focus();
+    if (!previouslyOpen.current) {
+      cancelButtonRef.current?.focus();
+      previouslyOpen.current = true;
+    }
 
     function handleKeyDown(event: KeyboardEvent): void {
       if (event.key === 'Escape') {
@@ -85,7 +96,7 @@ export function ConfirmDialog({
         role="dialog"
         aria-modal="true"
         aria-labelledby="confirm-dialog-title"
-        aria-describedby="confirm-dialog-description"
+        aria-describedby={children ? undefined : 'confirm-dialog-description'}
         className="mx-4 w-full max-w-md rounded-lg bg-white p-4 shadow-xl md:mx-auto md:p-6 dark:bg-gray-800"
       >
         <div className="mb-4 flex items-center justify-between">
@@ -104,12 +115,16 @@ export function ConfirmDialog({
             ✕
           </button>
         </div>
-        <p
-          id="confirm-dialog-description"
-          className="mb-6 text-sm text-gray-600 dark:text-gray-300"
-        >
-          {description}
-        </p>
+        {children ? (
+          <div className="mb-6">{children}</div>
+        ) : (
+          <p
+            id="confirm-dialog-description"
+            className="mb-6 text-sm text-gray-600 dark:text-gray-300"
+          >
+            {description}
+          </p>
+        )}
         <div className="flex justify-end gap-3">
           <button
             ref={cancelButtonRef}
@@ -123,7 +138,7 @@ export function ConfirmDialog({
           <button
             type="button"
             onClick={onConfirm}
-            disabled={isLoading}
+            disabled={isLoading || confirmDisabled}
             className={confirmButtonClass}
           >
             {isLoading ? `${confirmLabel}...` : confirmLabel}

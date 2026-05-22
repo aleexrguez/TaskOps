@@ -23,7 +23,7 @@ import { useActivityEvents } from '../hooks/use-activity';
 import { useActivityRecorder } from '../hooks/use-activity-recorder';
 import { TaskNotFound } from '../components/TaskNotFound';
 import { TaskErrorState } from '../components/TaskErrorState';
-import { ConfirmDialog } from '../components/ConfirmDialog';
+import { ConfirmDialog } from '@/shared/components/ConfirmDialog';
 import {
   isGeneratedTask,
   formatFrequencyLabel,

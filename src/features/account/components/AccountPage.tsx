@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { AccountSection } from './AccountSection';
 import { ChangePasswordForm } from './ChangePasswordForm';
+import { DeleteAccountDialog } from './DeleteAccountDialog';
 
 interface AccountPageProps {
   email: string;
@@ -20,6 +21,12 @@ interface AccountPageProps {
   changePasswordError: string | null;
   changePasswordSuccess: boolean;
   onResetChangePassword: () => void;
+  onOpenDeleteDialog: () => void;
+  onCloseDeleteDialog: () => void;
+  onDeleteAccount: () => void;
+  showDeleteDialog: boolean;
+  isDeletingAccount: boolean;
+  deleteAccountError: string | null;
 }
 
 const CARD = 'bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm';
@@ -42,6 +49,12 @@ export function AccountPage({
   changePasswordError,
   changePasswordSuccess,
   onResetChangePassword,
+  onOpenDeleteDialog,
+  onCloseDeleteDialog,
+  onDeleteAccount,
+  showDeleteDialog,
+  isDeletingAccount,
+  deleteAccountError,
 }: AccountPageProps) {
   const { t } = useTranslation('account');
 
@@ -85,6 +98,31 @@ export function AccountPage({
           onReset={onResetChangePassword}
         />
       </section>
+
+      {/* Section 3 — Danger Zone */}
+      <section className={`${CARD} border border-red-200 dark:border-red-900`}>
+        <h2 className="text-lg font-semibold text-red-600 dark:text-red-400 mb-4">
+          {t('dangerZone.heading')}
+        </h2>
+        <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
+          {t('dangerZone.description')}
+        </p>
+        <button
+          type="button"
+          onClick={onOpenDeleteDialog}
+          className="cursor-pointer rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
+        >
+          {t('dangerZone.deleteButton')}
+        </button>
+      </section>
+
+      <DeleteAccountDialog
+        isOpen={showDeleteDialog}
+        onConfirm={onDeleteAccount}
+        onCancel={onCloseDeleteDialog}
+        isPending={isDeletingAccount}
+        error={deleteAccountError}
+      />
     </div>
   );
 }
