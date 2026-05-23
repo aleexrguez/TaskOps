@@ -4,11 +4,17 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { registerInputSchema } from '../types';
 import type { RegisterInput } from '../types';
+import { SocialLoginButton, GoogleIcon } from './SocialLoginButton';
+import { AuthDivider } from './AuthDivider';
 
 interface RegisterFormProps {
   onSubmit: (data: RegisterInput) => void;
   isPending: boolean;
   error: string | null;
+  isSuccess?: boolean;
+  onGoogleSignIn?: () => void;
+  isGooglePending?: boolean;
+  googleError?: string | null;
 }
 
 interface FormState {
@@ -27,6 +33,10 @@ export function RegisterForm({
   onSubmit,
   isPending,
   error,
+  isSuccess,
+  onGoogleSignIn,
+  isGooglePending,
+  googleError,
 }: RegisterFormProps) {
   const { t } = useTranslation('auth');
   const [fields, setFields] = useState<FormState>({
@@ -67,8 +77,55 @@ export function RegisterForm({
     onSubmit(result.data);
   }
 
+  if (isSuccess) {
+    return (
+      <div className="flex flex-col gap-4">
+        <div className="rounded-lg border border-green-200 bg-green-50 px-4 py-3 dark:border-green-800 dark:bg-green-900/20">
+          <p className="text-sm font-medium text-green-700 dark:text-green-400">
+            {t('register.successHeading')}
+          </p>
+          <p className="mt-1 text-sm text-green-600 dark:text-green-400">
+            {t('register.successMessage')}
+          </p>
+        </div>
+        <p className="text-center text-sm text-gray-600 dark:text-gray-400">
+          <Link
+            to="/login"
+            className="font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300"
+          >
+            {t('backToLogin')}
+          </Link>
+        </p>
+      </div>
+    );
+  }
+
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      {googleError && (
+        <div
+          role="alert"
+          className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 dark:border-red-800 dark:bg-red-900/20"
+        >
+          <p className="text-sm text-red-700 dark:text-red-400">
+            {googleError}
+          </p>
+        </div>
+      )}
+
+      {onGoogleSignIn && (
+        <>
+          <SocialLoginButton
+            label={t('social.continueWithGoogle')}
+            pendingLabel={t('social.googlePending')}
+            onClick={onGoogleSignIn}
+            isPending={isGooglePending ?? false}
+            icon={<GoogleIcon />}
+          />
+          <AuthDivider text={t('social.divider')} />
+        </>
+      )}
+
       {error && (
         <div
           role="alert"
@@ -183,7 +240,7 @@ export function RegisterForm({
 
       <button
         type="submit"
-        disabled={isPending}
+        disabled={isPending || isGooglePending}
         className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
       >
         {isPending ? t('register.submitting') : t('register.submit')}

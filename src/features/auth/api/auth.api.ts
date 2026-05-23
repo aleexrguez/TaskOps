@@ -32,3 +32,15 @@ export async function updatePassword(password: string) {
   const { error } = await supabase.auth.updateUser({ password });
   if (error) throw new Error(error.message);
 }
+
+export function getOAuthRedirectTo(): string {
+  return `${window.location.origin}/app`;
+}
+
+export async function signInWithGoogle(): Promise<void> {
+  const { error } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: { redirectTo: getOAuthRedirectTo() },
+  });
+  if (error) throw new Error(error.message);
+}

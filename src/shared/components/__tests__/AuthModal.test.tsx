@@ -166,6 +166,23 @@ describe('AuthModal', () => {
     ).toBeInTheDocument();
   });
 
+  it('focuses the first input on open, not the close button', () => {
+    renderModal({
+      children: <input data-testid="email-input" />,
+    });
+
+    expect(document.activeElement).toBe(screen.getByTestId('email-input'));
+  });
+
+  it('focuses first focusable when no input exists', () => {
+    renderModal({
+      children: <button data-testid="action-btn">Action</button>,
+    });
+
+    const closeButton = screen.getByRole('button', { name: /close/i });
+    expect(document.activeElement).toBe(closeButton);
+  });
+
   it('close button has min touch target', () => {
     renderModal();
 

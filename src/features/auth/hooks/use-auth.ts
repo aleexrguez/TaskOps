@@ -7,6 +7,7 @@ import {
   signOut,
   resetPasswordForEmail,
   updatePassword,
+  signInWithGoogle,
 } from '../api';
 
 export function useAuth(): AuthContextValue {
@@ -38,12 +39,19 @@ export function useSignIn() {
 export function useSignUp() {
   const [isPending, setIsPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isSuccess, setIsSuccess] = useState(false);
 
-  async function handleSignUp(email: string, password: string): Promise<void> {
+  async function handleSignUp(
+    email: string,
+    password: string,
+  ): Promise<boolean> {
     setIsPending(true);
     setError(null);
+    setIsSuccess(false);
     try {
-      await signUp(email, password);
+      const data = await signUp(email, password);
+      setIsSuccess(true);
+      return data.session !== null;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Sign up failed');
       throw err;
@@ -52,7 +60,7 @@ export function useSignUp() {
     }
   }
 
-  return { signUp: handleSignUp, isPending, error };
+  return { signUp: handleSignUp, isPending, error, isSuccess };
 }
 
 export function useSignOut() {
@@ -114,4 +122,22 @@ export function useUpdatePassword() {
   }
 
   return { updatePassword: handleUpdate, isPending, error, isSuccess };
+}
+
+export function useSignInWithGoogle() {
+  const [isPending, setIsPending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function handleSignInWithGoogle(): Promise<void> {
+    setIsPending(true);
+    setError(null);
+    try {
+      await signInWithGoogle();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Google sign in failed');
+      setIsPending(false);
+    }
+  }
+
+  return { signInWithGoogle: handleSignInWithGoogle, isPending, error };
 }
