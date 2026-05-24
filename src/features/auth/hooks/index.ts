@@ -5,4 +5,5 @@ export {
   useSignOut,
   useResetPassword,
   useUpdatePassword,
+  useSignInWithGoogle,
 } from './use-auth';

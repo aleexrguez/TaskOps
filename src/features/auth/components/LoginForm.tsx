@@ -4,11 +4,16 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { loginInputSchema } from '../types';
 import type { LoginInput } from '../types';
+import { SocialLoginButton, GoogleIcon } from './SocialLoginButton';
+import { AuthDivider } from './AuthDivider';
 
 interface LoginFormProps {
   onSubmit: (data: LoginInput) => void;
   isPending: boolean;
   error: string | null;
+  onGoogleSignIn?: () => void;
+  isGooglePending?: boolean;
+  googleError?: string | null;
 }
 
 interface FormState {
@@ -21,7 +26,14 @@ interface FieldErrors {
   password?: string;
 }
 
-export function LoginForm({ onSubmit, isPending, error }: LoginFormProps) {
+export function LoginForm({
+  onSubmit,
+  isPending,
+  error,
+  onGoogleSignIn,
+  isGooglePending,
+  googleError,
+}: LoginFormProps) {
   const { t } = useTranslation('auth');
   const [fields, setFields] = useState<FormState>({ email: '', password: '' });
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
@@ -55,6 +67,30 @@ export function LoginForm({ onSubmit, isPending, error }: LoginFormProps) {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      {googleError && (
+        <div
+          role="alert"
+          className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 dark:border-red-800 dark:bg-red-900/20"
+        >
+          <p className="text-sm text-red-700 dark:text-red-400">
+            {googleError}
+          </p>
+        </div>
+      )}
+
+      {onGoogleSignIn && (
+        <>
+          <SocialLoginButton
+            label={t('social.continueWithGoogle')}
+            pendingLabel={t('social.googlePending')}
+            onClick={onGoogleSignIn}
+            isPending={isGooglePending ?? false}
+            icon={<GoogleIcon />}
+          />
+          <AuthDivider text={t('social.divider')} />
+        </>
+      )}
+
       {error && (
         <div
           role="alert"
@@ -133,7 +169,7 @@ export function LoginForm({ onSubmit, isPending, error }: LoginFormProps) {
 
       <button
         type="submit"
-        disabled={isPending}
+        disabled={isPending || isGooglePending}
         className="cursor-pointer rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
       >
         {isPending ? t('login.submitting') : t('login.submit')}

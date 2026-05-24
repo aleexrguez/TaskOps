@@ -3,6 +3,12 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* Hide browser-native password reveal (Edge/Chromium) — keep custom toggle only */
+input[type='password']::-ms-reveal,
+input[type='password']::-ms-clear {
+  display: none;
+}
+
 /* DatePicker scoped overrides */
 .taskops-date-picker .rdp-day {
   min-width: 44px;

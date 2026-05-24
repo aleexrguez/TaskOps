@@ -35,8 +35,10 @@ export function useFocusTrap({
       if (initialFocusRef) {
         initialFocusRef.current?.focus();
       } else {
+        const firstInput =
+          containerRef.current?.querySelector<HTMLElement>('input');
         const focusable = getFocusableElements();
-        focusable[0]?.focus();
+        (firstInput ?? focusable[0])?.focus();
       }
       previouslyOpen.current = true;
     }

@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useSignIn } from '../hooks';
+import { useSignIn, useSignInWithGoogle } from '../hooks';
 import { LoginForm } from '../components';
 import { useApplyTheme } from '@/shared/hooks/use-apply-theme';
 
@@ -12,6 +12,11 @@ export function LoginContainer() {
   const { t } = useTranslation('auth');
   const navigate = useNavigate();
   const { signIn, isPending, error } = useSignIn();
+  const {
+    signInWithGoogle,
+    isPending: isGooglePending,
+    error: googleError,
+  } = useSignInWithGoogle();
 
   async function handleSubmit(data: LoginInput): Promise<void> {
     try {
@@ -27,7 +32,14 @@ export function LoginContainer() {
       <h1 className="mb-6 text-center text-2xl font-bold text-gray-900 dark:text-gray-100">
         {t('login.heading')}
       </h1>
-      <LoginForm onSubmit={handleSubmit} isPending={isPending} error={error} />
+      <LoginForm
+        onSubmit={handleSubmit}
+        isPending={isPending}
+        error={error}
+        onGoogleSignIn={signInWithGoogle}
+        isGooglePending={isGooglePending}
+        googleError={googleError}
+      />
     </AuthModal>
   );
 }

@@ -9,8 +9,12 @@ export async function signIn(email: string, password: string) {
   return data;
 }
 
-export async function signUp(email: string, password: string) {
-  const { data, error } = await supabase.auth.signUp({ email, password });
+export async function signUp(email: string, password: string, name: string) {
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: { data: { display_name: name.trim() } },
+  });
   if (error) throw new Error(error.message);
   return data;
 }
@@ -30,5 +34,17 @@ export async function resetPasswordForEmail(email: string) {
 
 export async function updatePassword(password: string) {
   const { error } = await supabase.auth.updateUser({ password });
+  if (error) throw new Error(error.message);
+}
+
+export function getOAuthRedirectTo(): string {
+  return `${window.location.origin}/app`;
+}
+
+export async function signInWithGoogle(): Promise<void> {
+  const { error } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: { redirectTo: getOAuthRedirectTo() },
+  });
   if (error) throw new Error(error.message);
 }
