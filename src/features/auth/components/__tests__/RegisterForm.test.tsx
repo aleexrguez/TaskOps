@@ -19,6 +19,79 @@ function renderRegisterForm(
   );
 }
 
+describe('RegisterForm — name field', () => {
+  it('renders name field before email', () => {
+    renderRegisterForm();
+
+    const inputs = screen.getAllByRole('textbox');
+    expect(inputs[0]).toHaveAttribute('id', 'name');
+    expect(inputs[1]).toHaveAttribute('id', 'email');
+  });
+
+  it('does not submit with empty name (required attribute blocks)', async () => {
+    const user = userEvent.setup();
+    const onSubmit = vi.fn();
+    renderRegisterForm({ onSubmit });
+
+    await user.type(screen.getByLabelText(/^email/i), 'a@b.com');
+    await user.type(screen.getByLabelText(/^password/i), '123456');
+    await user.type(screen.getByLabelText(/confirm password/i), '123456');
+    await user.click(screen.getByRole('button', { name: /create account/i }));
+
+    expect(onSubmit).not.toHaveBeenCalled();
+  });
+
+  it('shows validation error for 1-character name', async () => {
+    const user = userEvent.setup();
+    const onSubmit = vi.fn();
+    renderRegisterForm({ onSubmit });
+
+    await user.type(screen.getByLabelText(/^name/i), 'J');
+    await user.type(screen.getByLabelText(/^email/i), 'a@b.com');
+    await user.type(screen.getByLabelText(/^password/i), '123456');
+    await user.type(screen.getByLabelText(/confirm password/i), '123456');
+    await user.click(screen.getByRole('button', { name: /create account/i }));
+
+    expect(onSubmit).not.toHaveBeenCalled();
+    expect(
+      screen.getByText(/name must be at least 2 characters/i),
+    ).toBeInTheDocument();
+  });
+
+  it('shows validation error for whitespace-only name', async () => {
+    const user = userEvent.setup();
+    const onSubmit = vi.fn();
+    renderRegisterForm({ onSubmit });
+
+    await user.type(screen.getByLabelText(/^name/i), '   ');
+    await user.type(screen.getByLabelText(/^email/i), 'a@b.com');
+    await user.type(screen.getByLabelText(/^password/i), '123456');
+    await user.type(screen.getByLabelText(/confirm password/i), '123456');
+    await user.click(screen.getByRole('button', { name: /create account/i }));
+
+    expect(onSubmit).not.toHaveBeenCalled();
+    expect(
+      screen.getByText(/name must be at least 2 characters/i),
+    ).toBeInTheDocument();
+  });
+
+  it('trims name before calling onSubmit', async () => {
+    const user = userEvent.setup();
+    const onSubmit = vi.fn();
+    renderRegisterForm({ onSubmit });
+
+    await user.type(screen.getByLabelText(/^name/i), '  John  ');
+    await user.type(screen.getByLabelText(/^email/i), 'a@b.com');
+    await user.type(screen.getByLabelText(/^password/i), '123456');
+    await user.type(screen.getByLabelText(/confirm password/i), '123456');
+    await user.click(screen.getByRole('button', { name: /create account/i }));
+
+    expect(onSubmit).toHaveBeenCalledWith(
+      expect.objectContaining({ name: 'John' }),
+    );
+  });
+});
+
 describe('RegisterForm — password visibility toggle', () => {
   it('renders both password inputs with type="password" by default', () => {
     renderRegisterForm();

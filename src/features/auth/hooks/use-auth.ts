@@ -44,12 +44,13 @@ export function useSignUp() {
   async function handleSignUp(
     email: string,
     password: string,
+    name: string,
   ): Promise<boolean> {
     setIsPending(true);
     setError(null);
     setIsSuccess(false);
     try {
-      const data = await signUp(email, password);
+      const data = await signUp(email, password, name);
       setIsSuccess(true);
       return data.session !== null;
     } catch (err) {

@@ -18,12 +18,14 @@ interface RegisterFormProps {
 }
 
 interface FormState {
+  name: string;
   email: string;
   password: string;
   confirmPassword: string;
 }
 
 interface FieldErrors {
+  name?: string;
   email?: string;
   password?: string;
   confirmPassword?: string;
@@ -40,6 +42,7 @@ export function RegisterForm({
 }: RegisterFormProps) {
   const { t } = useTranslation('auth');
   const [fields, setFields] = useState<FormState>({
+    name: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -134,6 +137,27 @@ export function RegisterForm({
           <p className="text-sm text-red-700 dark:text-red-400">{error}</p>
         </div>
       )}
+
+      <div className="flex flex-col gap-1">
+        <label htmlFor="name" className={labelClass}>
+          {t('register.nameLabel')}
+        </label>
+        <input
+          id="name"
+          name="name"
+          type="text"
+          required
+          value={fields.name}
+          onChange={handleChange}
+          className={inputClass}
+          placeholder={t('register.namePlaceholder')}
+        />
+        {fieldErrors.name && (
+          <p className="text-xs text-red-600 dark:text-red-400">
+            {fieldErrors.name}
+          </p>
+        )}
+      </div>
 
       <div className="flex flex-col gap-1">
         <label htmlFor="email" className={labelClass}>

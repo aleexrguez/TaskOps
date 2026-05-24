@@ -9,8 +9,12 @@ export async function signIn(email: string, password: string) {
   return data;
 }
 
-export async function signUp(email: string, password: string) {
-  const { data, error } = await supabase.auth.signUp({ email, password });
+export async function signUp(email: string, password: string, name: string) {
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: { data: { display_name: name.trim() } },
+  });
   if (error) throw new Error(error.message);
   return data;
 }

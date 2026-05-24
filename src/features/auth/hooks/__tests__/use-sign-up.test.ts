@@ -21,7 +21,7 @@ describe('useSignUp', () => {
 
     let hasSession: boolean | undefined;
     await act(async () => {
-      hasSession = await result.current.signUp('a@b.com', '123456');
+      hasSession = await result.current.signUp('a@b.com', '123456', 'John');
     });
 
     expect(hasSession).toBe(false);
@@ -39,7 +39,7 @@ describe('useSignUp', () => {
 
     let hasSession: boolean | undefined;
     await act(async () => {
-      hasSession = await result.current.signUp('a@b.com', '123456');
+      hasSession = await result.current.signUp('a@b.com', '123456', 'John');
     });
 
     expect(hasSession).toBe(true);
@@ -54,7 +54,7 @@ describe('useSignUp', () => {
 
     await act(async () => {
       try {
-        await result.current.signUp('a@b.com', '123456');
+        await result.current.signUp('a@b.com', '123456', 'John');
       } catch {
         // expected
       }
@@ -71,7 +71,7 @@ describe('useSignUp', () => {
 
     await act(async () => {
       try {
-        await result.current.signUp('a@b.com', '123456');
+        await result.current.signUp('a@b.com', '123456', 'John');
       } catch {
         // expected
       }
@@ -83,7 +83,7 @@ describe('useSignUp', () => {
     mockSignUp.mockResolvedValue({ user: { id: '1' }, session: null });
 
     await act(async () => {
-      await result.current.signUp('a@b.com', '123456');
+      await result.current.signUp('a@b.com', '123456', 'John');
     });
 
     expect(result.current.error).toBeNull();

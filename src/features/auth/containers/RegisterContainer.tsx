@@ -20,7 +20,7 @@ export function RegisterContainer() {
 
   async function handleSubmit(data: RegisterInput): Promise<void> {
     try {
-      const hasSession = await signUp(data.email, data.password);
+      const hasSession = await signUp(data.email, data.password, data.name);
       if (hasSession) {
         navigate('/app');
       }
