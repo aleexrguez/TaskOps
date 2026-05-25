@@ -19,7 +19,7 @@ export function RetentionPolicySelect({
       id={id}
       value={retentionPolicy}
       onChange={(e) => onRetentionChange(e.target.value as RetentionPolicy)}
-      className="rounded-md border border-gray-200 px-2 py-1 text-sm dark:border-gray-700 dark:bg-gray-800"
+      className="rounded-md border border-gray-300 px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:focus:ring-offset-gray-800"
     >
       <option value="5d">{t('dataRetention.5d')}</option>
       <option value="7d">{t('dataRetention.7d')}</option>
