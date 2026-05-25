@@ -7,7 +7,11 @@
   "hero": {
     "title": "Organiza el trabajo, no el caos",
     "subtitle": "TaskOps es un gestor de tareas ligero para desarrolladores y equipos pequeños. Tableros Kanban, tareas recurrentes, recordatorios inteligentes — todo lo que necesitas para mantener el rumbo.",
-    "cta": { "getStarted": "Comenzar", "login": "Iniciar sesión", "tryDemo": "Probar demo" }
+    "cta": {
+      "getStarted": "Comenzar",
+      "login": "Iniciar sesión",
+      "tryDemo": "Probar demo"
+    }
   },
   "features": {
     "heading": "Todo lo que necesitas, nada que no",
@@ -26,6 +30,35 @@
     "ordering": {
       "title": "Orden persistente",
       "description": "El orden de tu tablero se guarda automáticamente. Arrastra una vez, mantente organizado para siempre."
+    }
+  },
+  "feedback": {
+    "heading": "Ayuda a mejorar TaskOps",
+    "description": "¿Encontraste un bug, echas en falta alguna funcionalidad o quieres mejorar la experiencia? Comparte tu feedback y ayúdanos a decidir qué viene después.",
+    "message": {
+      "label": "Tu feedback",
+      "placeholder": "Describe lo que encontraste o lo que te gustaría ver...",
+      "required": "El mensaje es obligatorio",
+      "maxLength": "El mensaje debe tener menos de 1000 caracteres"
+    },
+    "category": {
+      "label": "Categoría",
+      "bug": "Bug",
+      "feature_request": "Nueva funcionalidad",
+      "ux_improvement": "Mejora de UX",
+      "other": "Otro"
+    },
+    "email": {
+      "label": "Email (opcional)",
+      "placeholder": "tu@ejemplo.com",
+      "invalid": "Introduce un email válido"
+    },
+    "submit": "Enviar feedback",
+    "submitting": "Enviando...",
+    "cooldown": "Puedes enviar de nuevo en {{seconds}}s",
+    "toast": {
+      "success": "¡Gracias por tu feedback!",
+      "error": "No se pudo enviar el feedback. Inténtalo de nuevo."
     }
   }
 }

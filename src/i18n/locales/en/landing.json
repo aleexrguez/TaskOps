@@ -7,7 +7,11 @@
   "hero": {
     "title": "Ship Work, Not Chaos",
     "subtitle": "TaskOps is a lightweight task manager built for developers and small teams. Kanban boards, recurring tasks, smart reminders — everything you need to stay on track.",
-    "cta": { "getStarted": "Get Started", "login": "Login", "tryDemo": "Try live demo" }
+    "cta": {
+      "getStarted": "Get Started",
+      "login": "Login",
+      "tryDemo": "Try live demo"
+    }
   },
   "features": {
     "heading": "Everything you need, nothing you don't",
@@ -26,6 +30,35 @@
     "ordering": {
       "title": "Persistent Ordering",
       "description": "Your board order is saved automatically. Drag once, stay organized forever."
+    }
+  },
+  "feedback": {
+    "heading": "Help shape TaskOps",
+    "description": "Found a bug, missing feature or UX improvement? Share your feedback and help decide what comes next.",
+    "message": {
+      "label": "Your feedback",
+      "placeholder": "Describe what you found or what you'd like to see...",
+      "required": "Message is required",
+      "maxLength": "Message must be under 1000 characters"
+    },
+    "category": {
+      "label": "Category",
+      "bug": "Bug",
+      "feature_request": "Feature request",
+      "ux_improvement": "UX improvement",
+      "other": "Other"
+    },
+    "email": {
+      "label": "Email (optional)",
+      "placeholder": "you@example.com",
+      "invalid": "Please enter a valid email"
+    },
+    "submit": "Send feedback",
+    "submitting": "Sending...",
+    "cooldown": "You can send again in {{seconds}}s",
+    "toast": {
+      "success": "Thanks for your feedback!",
+      "error": "Could not send feedback. Please try again."
     }
   }
 }
