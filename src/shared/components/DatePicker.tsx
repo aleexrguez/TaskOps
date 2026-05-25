@@ -109,7 +109,7 @@ export function DatePicker({
   }
 
   const triggerClass =
-    'flex items-center gap-2 rounded-md border border-gray-300 px-3 py-2 text-sm text-left w-full focus:border-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 disabled:cursor-not-allowed disabled:opacity-50';
+    'flex items-center gap-2 rounded-md border border-gray-300 px-3 py-2 text-sm text-left w-full focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:focus:ring-offset-gray-800 disabled:cursor-not-allowed disabled:opacity-50';
 
   const popoverPlacement =
     placement === 'top' ? 'bottom-full mb-2' : 'top-full mt-2';
@@ -144,7 +144,7 @@ export function DatePicker({
         <div
           role="dialog"
           aria-label={t('date.datePickerCalendar')}
-          className={`absolute left-0 z-50 max-h-[min(24rem,calc(100vh-2rem))] overflow-y-auto overscroll-contain rounded-lg border border-gray-200 bg-white p-3 shadow-lg dark:border-gray-600 dark:bg-gray-800 ${popoverPlacement}`}
+          className={`absolute left-0 z-50 max-h-[min(24rem,calc(100vh-2rem))] overflow-y-auto overscroll-contain rounded-lg border border-gray-300 bg-white p-3 shadow-lg dark:border-gray-600 dark:bg-gray-800 ${popoverPlacement}`}
         >
           <DayPicker
             mode="single"
