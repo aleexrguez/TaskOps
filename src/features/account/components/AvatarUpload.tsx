@@ -13,6 +13,7 @@ interface AvatarUploadProps {
   hasCustomAvatar: boolean;
   onRemove?: () => void;
   isRemoving?: boolean;
+  isDemoUser?: boolean;
 }
 
 export function AvatarUpload({
@@ -23,6 +24,7 @@ export function AvatarUpload({
   hasCustomAvatar,
   onRemove,
   isRemoving = false,
+  isDemoUser,
 }: AvatarUploadProps) {
   const { t } = useTranslation('account');
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -88,7 +90,7 @@ export function AvatarUpload({
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            disabled={isPending || isRemoving}
+            disabled={isDemoUser || isPending || isRemoving}
             className="cursor-pointer rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {isPending ? t('avatar.uploading') : t('avatar.changeAvatar')}
@@ -97,7 +99,7 @@ export function AvatarUpload({
             <button
               type="button"
               onClick={onRemove}
-              disabled={isRemoving || isPending}
+              disabled={isDemoUser || isRemoving || isPending}
               className="cursor-pointer rounded-md border border-gray-300 dark:border-gray-600 px-3 py-1.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               {isRemoving ? t('avatar.removing') : t('avatar.removePhoto')}

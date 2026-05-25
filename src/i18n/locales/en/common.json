@@ -80,6 +80,11 @@
     "later": "Later",
     "updateNow": "Update now"
   },
+  "demo": {
+    "bannerMessage": "You're exploring the demo workspace. Feel free to test TaskOps — demo data may be reset periodically.",
+    "signUp": "Sign up for free",
+    "actionBlocked": "This action is not available in demo mode"
+  },
   "a11y": {
     "openMenu": "Open menu",
     "userMenu": "User menu",

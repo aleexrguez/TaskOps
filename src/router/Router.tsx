@@ -5,6 +5,7 @@ import {
   RegisterContainer,
   ForgotPasswordContainer,
   ResetPasswordContainer,
+  DemoLoginContainer,
 } from '@/features/auth';
 import { LandingPage } from '@/features/landing';
 import {
@@ -89,6 +90,9 @@ export function Router() {
 
         {/* Reset password stays standalone (accessed via email link) */}
         <Route path="/reset-password" element={<ResetPasswordContainer />} />
+
+        {/* Demo login — direct route, no layout wrapper */}
+        <Route path="/demo" element={<DemoLoginContainer />} />
 
         {/* Legal pages — universally accessible */}
         <Route path="/privacy" element={<PrivacyPage />} />

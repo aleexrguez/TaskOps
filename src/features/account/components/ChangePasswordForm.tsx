@@ -8,6 +8,7 @@ interface ChangePasswordFormProps {
   error: string | null;
   isSuccess: boolean;
   onReset: () => void;
+  isDemoUser?: boolean;
 }
 
 export function ChangePasswordForm({
@@ -16,6 +17,7 @@ export function ChangePasswordForm({
   error,
   isSuccess,
   onReset,
+  isDemoUser,
 }: ChangePasswordFormProps) {
   const { t } = useTranslation('account');
   const [password, setPassword] = useState('');
@@ -68,11 +70,12 @@ export function ChangePasswordForm({
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           autoComplete="new-password"
+          disabled={isDemoUser}
           aria-describedby={
             validationErrors.password ? 'password-error' : undefined
           }
           aria-invalid={!!validationErrors.password}
-          className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+          className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 disabled:bg-gray-100 dark:disabled:bg-gray-800 disabled:cursor-not-allowed"
         />
         {validationErrors.password && (
           <p
@@ -98,13 +101,14 @@ export function ChangePasswordForm({
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
           autoComplete="new-password"
+          disabled={isDemoUser}
           aria-describedby={
             validationErrors.confirmPassword
               ? 'confirm-password-error'
               : undefined
           }
           aria-invalid={!!validationErrors.confirmPassword}
-          className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+          className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 disabled:bg-gray-100 dark:disabled:bg-gray-800 disabled:cursor-not-allowed"
         />
         {validationErrors.confirmPassword && (
           <p
@@ -131,7 +135,7 @@ export function ChangePasswordForm({
 
       <button
         type="submit"
-        disabled={isPending}
+        disabled={isDemoUser || isPending}
         className="cursor-pointer rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
       >
         {isPending ? t('password.changing') : t('password.submit')}

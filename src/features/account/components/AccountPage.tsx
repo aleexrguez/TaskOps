@@ -27,6 +27,7 @@ interface AccountPageProps {
   showDeleteDialog: boolean;
   isDeletingAccount: boolean;
   deleteAccountError: string | null;
+  isDemoUser?: boolean;
 }
 
 const CARD = 'bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm';
@@ -55,6 +56,7 @@ export function AccountPage({
   showDeleteDialog,
   isDeletingAccount,
   deleteAccountError,
+  isDemoUser,
 }: AccountPageProps) {
   const { t } = useTranslation('account');
 
@@ -63,6 +65,11 @@ export function AccountPage({
       <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
         {t('heading')}
       </h1>
+      {isDemoUser && (
+        <p className="mb-4 text-sm text-amber-600 dark:text-amber-400">
+          {t('demo.restricted')}
+        </p>
+      )}
 
       {/* Section 1 — Profile */}
       <section className={CARD}>
@@ -82,6 +89,7 @@ export function AccountPage({
           uploadAvatarError={uploadAvatarError}
           onRemoveAvatar={onRemoveAvatar}
           isRemovingAvatar={isRemovingAvatar}
+          isDemoUser={isDemoUser}
         />
       </section>
 
@@ -96,6 +104,7 @@ export function AccountPage({
           error={changePasswordError}
           isSuccess={changePasswordSuccess}
           onReset={onResetChangePassword}
+          isDemoUser={isDemoUser}
         />
       </section>
 
@@ -110,7 +119,8 @@ export function AccountPage({
         <button
           type="button"
           onClick={onOpenDeleteDialog}
-          className="cursor-pointer rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
+          disabled={isDemoUser}
+          className="cursor-pointer rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {t('dangerZone.deleteButton')}
         </button>

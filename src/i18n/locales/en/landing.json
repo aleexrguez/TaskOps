@@ -7,7 +7,7 @@
   "hero": {
     "title": "Ship Work, Not Chaos",
     "subtitle": "TaskOps is a lightweight task manager built for developers and small teams. Kanban boards, recurring tasks, smart reminders — everything you need to stay on track.",
-    "cta": { "getStarted": "Get Started", "login": "Login" }
+    "cta": { "getStarted": "Get Started", "login": "Login", "tryDemo": "Try live demo" }
   },
   "features": {
     "heading": "Everything you need, nothing you don't",

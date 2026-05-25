@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/features/auth/hooks';
 import { signOut } from '@/features/auth/api';
 import { useToastStore } from '@/shared/store/toast.store';
+import { useIsDemoUser } from '@/shared/hooks/use-is-demo-user';
 import {
   useProfile,
   useUpdateProfile,
@@ -18,7 +19,9 @@ import { AccountPage } from '../components/AccountPage';
 
 export function AccountContainer() {
   const { t } = useTranslation('account');
+  const { t: tCommon } = useTranslation('common');
   const { user } = useAuth();
+  const isDemoUser = useIsDemoUser();
   const addToast = useToastStore((s) => s.addToast);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -57,6 +60,10 @@ export function AccountContainer() {
   }
 
   function handleOpenDeleteDialog() {
+    if (isDemoUser) {
+      addToast(tCommon('demo.actionBlocked'), 'info');
+      return;
+    }
     resetDeleteAccount();
     setShowDeleteDialog(true);
   }
@@ -66,6 +73,10 @@ export function AccountContainer() {
   }
 
   function handleSaveDisplayName(name: string) {
+    if (isDemoUser) {
+      addToast(tCommon('demo.actionBlocked'), 'info');
+      return;
+    }
     updateProfile.mutate(
       { display_name: name },
       {
@@ -80,6 +91,10 @@ export function AccountContainer() {
   }
 
   function handleUploadAvatar(file: File) {
+    if (isDemoUser) {
+      addToast(tCommon('demo.actionBlocked'), 'info');
+      return;
+    }
     uploadAvatar.mutate(file, {
       onSuccess: () => addToast(t('toast.avatarUpdated'), 'success'),
       onError: (err) =>
@@ -91,6 +106,10 @@ export function AccountContainer() {
   }
 
   function handleRemoveAvatar() {
+    if (isDemoUser) {
+      addToast(tCommon('demo.actionBlocked'), 'info');
+      return;
+    }
     removeAvatarMutation.mutate(undefined, {
       onSuccess: () => addToast(t('toast.avatarRemoved'), 'success'),
       onError: (err) =>
@@ -100,6 +119,13 @@ export function AccountContainer() {
         ),
     });
   }
+
+  const handleChangePassword = isDemoUser
+    ? () => {
+        addToast(tCommon('demo.actionBlocked'), 'info');
+        return Promise.resolve();
+      }
+    : changePassword;
 
   const avatarUrl = profile?.avatar_path
     ? getAvatarPublicUrl(profile.avatar_path)
@@ -131,7 +157,8 @@ export function AccountContainer() {
             : t('toast.uploadFailed')
           : null
       }
-      onChangePassword={changePassword}
+      isDemoUser={isDemoUser}
+      onChangePassword={handleChangePassword}
       isChangingPassword={isChangingPassword}
       changePasswordError={changePasswordError}
       changePasswordSuccess={changePasswordSuccess}
