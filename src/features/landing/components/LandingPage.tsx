@@ -5,9 +5,19 @@ import { useAppPreferencesStore } from '@/shared/store/app-preferences.store';
 import { LanguageToggle } from '@/shared/components/LanguageToggle';
 import { Footer } from '@/shared/components/Footer';
 import { FeedbackSectionContainer } from '../containers/FeedbackSectionContainer';
+import { MilestonesSection } from './MilestonesSection';
+import { RoadmapSection } from './RoadmapSection';
+import { TechStackSection } from './TechStackSection';
 import type { ThemePreference } from '@/shared/types/preferences.types';
 
-const featureKeys = ['kanban', 'recurring', 'reminders', 'ordering'] as const;
+const featureKeys = [
+  'kanban',
+  'recurring',
+  'reminders',
+  'ordering',
+  'inbox',
+  'reports',
+] as const;
 
 function nextTheme(current: ThemePreference): ThemePreference {
   if (current === 'light') return 'dark';
@@ -106,7 +116,7 @@ export function LandingPage() {
             <h2 className="mb-10 text-center text-2xl font-bold text-gray-900 dark:text-gray-100">
               {t('features.heading')}
             </h2>
-            <div className="grid gap-6 sm:grid-cols-2">
+            <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
               {featureKeys.map((key) => (
                 <div
                   key={key}
@@ -123,6 +133,10 @@ export function LandingPage() {
             </div>
           </div>
         </section>
+
+        <MilestonesSection />
+        <RoadmapSection />
+        <TechStackSection />
 
         <FeedbackSectionContainer />
       </main>

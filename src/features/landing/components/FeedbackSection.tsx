@@ -184,118 +184,122 @@ export function FeedbackSection({
   }
 
   return (
-    <section className="border-t border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-900">
+    <section className="border-t border-indigo-100 bg-indigo-50 dark:border-t-indigo-900 dark:bg-indigo-950/30">
       <div className="mx-auto max-w-xl px-4 py-16">
-        <h2 className="mb-3 text-center text-2xl font-bold text-gray-900 dark:text-gray-100">
-          {t('feedback.heading')}
-        </h2>
-        <p className="mb-8 text-center text-sm text-gray-600 dark:text-gray-400">
-          {t('feedback.description')}
-        </p>
+        <div className="rounded-xl border border-indigo-200 bg-white p-6 shadow-sm dark:border-indigo-800 dark:bg-gray-800">
+          <h2 className="mb-3 text-center text-2xl font-bold text-gray-900 dark:text-gray-100">
+            {t('feedback.heading')}
+          </h2>
+          <p className="mb-8 text-center text-sm text-gray-600 dark:text-gray-400">
+            {t('feedback.description')}
+          </p>
 
-        <form onSubmit={handleSubmit} noValidate className="relative">
-          {/* Honeypot — hidden from real users */}
-          <input
-            name="website"
-            type="text"
-            tabIndex={-1}
-            autoComplete="off"
-            className="absolute opacity-0 h-0 w-0 overflow-hidden pointer-events-none"
-            value={state.honeypot}
-            onChange={(e) =>
-              dispatch({ type: 'SET_HONEYPOT', value: e.target.value })
-            }
-          />
-
-          {/* Message */}
-          <div className="mb-4">
-            <label
-              htmlFor="feedback-message"
-              className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300"
-            >
-              {t('feedback.message.label')}
-            </label>
-            <textarea
-              id="feedback-message"
-              rows={4}
-              className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-500"
-              placeholder={t('feedback.message.placeholder')}
-              value={state.message}
-              onChange={(e) =>
-                dispatch({ type: 'SET_MESSAGE', value: e.target.value })
-              }
-            />
-            <div className="mt-1 flex items-start justify-between gap-2">
-              {state.errors.message ? (
-                <p className="text-xs text-red-600 dark:text-red-400">
-                  {state.errors.message}
-                </p>
-              ) : (
-                <span />
-              )}
-              <span className="shrink-0 text-xs text-gray-400 dark:text-gray-500">
-                {state.message.length}/1000
-              </span>
-            </div>
-          </div>
-
-          {/* Category */}
-          <div className="mb-4">
-            <span className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
-              {t('feedback.category.label')}
-            </span>
-            <div className="flex flex-wrap gap-2">
-              {FEEDBACK_CATEGORIES.map((cat) => (
-                <button
-                  key={cat}
-                  type="button"
-                  onClick={() => dispatch({ type: 'SET_CATEGORY', value: cat })}
-                  className={
-                    state.category === cat
-                      ? 'rounded-md px-3 py-1.5 text-sm font-medium bg-indigo-600 text-white'
-                      : 'rounded-md px-3 py-1.5 text-sm font-medium border border-gray-300 bg-white text-gray-700 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300'
-                  }
-                >
-                  {t(`feedback.category.${cat}`)}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Email */}
-          <div className="mb-6">
-            <label
-              htmlFor="feedback-email"
-              className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300"
-            >
-              {t('feedback.email.label')}
-            </label>
+          <form onSubmit={handleSubmit} noValidate className="relative">
+            {/* Honeypot — hidden from real users */}
             <input
-              id="feedback-email"
-              type="email"
-              className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-500"
-              placeholder={t('feedback.email.placeholder')}
-              value={state.email}
+              name="website"
+              type="text"
+              tabIndex={-1}
+              autoComplete="off"
+              className="absolute opacity-0 h-0 w-0 overflow-hidden pointer-events-none"
+              value={state.honeypot}
               onChange={(e) =>
-                dispatch({ type: 'SET_EMAIL', value: e.target.value })
+                dispatch({ type: 'SET_HONEYPOT', value: e.target.value })
               }
             />
-            {state.errors.email && (
-              <p className="mt-1 text-xs text-red-600 dark:text-red-400">
-                {state.errors.email}
-              </p>
-            )}
-          </div>
 
-          {/* Submit */}
-          <button
-            type="submit"
-            disabled={isDisabled}
-            className="w-full rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60 dark:focus:ring-offset-gray-900"
-          >
-            {getSubmitLabel()}
-          </button>
-        </form>
+            {/* Message */}
+            <div className="mb-4">
+              <label
+                htmlFor="feedback-message"
+                className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300"
+              >
+                {t('feedback.message.label')}
+              </label>
+              <textarea
+                id="feedback-message"
+                rows={4}
+                className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-500"
+                placeholder={t('feedback.message.placeholder')}
+                value={state.message}
+                onChange={(e) =>
+                  dispatch({ type: 'SET_MESSAGE', value: e.target.value })
+                }
+              />
+              <div className="mt-1 flex items-start justify-between gap-2">
+                {state.errors.message ? (
+                  <p className="text-xs text-red-600 dark:text-red-400">
+                    {state.errors.message}
+                  </p>
+                ) : (
+                  <span />
+                )}
+                <span className="shrink-0 text-xs text-gray-400 dark:text-gray-500">
+                  {state.message.length}/1000
+                </span>
+              </div>
+            </div>
+
+            {/* Category */}
+            <div className="mb-4">
+              <span className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                {t('feedback.category.label')}
+              </span>
+              <div className="flex flex-wrap gap-2">
+                {FEEDBACK_CATEGORIES.map((cat) => (
+                  <button
+                    key={cat}
+                    type="button"
+                    onClick={() =>
+                      dispatch({ type: 'SET_CATEGORY', value: cat })
+                    }
+                    className={
+                      state.category === cat
+                        ? 'rounded-md px-3 py-1.5 text-sm font-medium bg-indigo-600 text-white'
+                        : 'rounded-md px-3 py-1.5 text-sm font-medium border border-gray-300 bg-white text-gray-700 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300'
+                    }
+                  >
+                    {t(`feedback.category.${cat}`)}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Email */}
+            <div className="mb-6">
+              <label
+                htmlFor="feedback-email"
+                className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300"
+              >
+                {t('feedback.email.label')}
+              </label>
+              <input
+                id="feedback-email"
+                type="email"
+                className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-500"
+                placeholder={t('feedback.email.placeholder')}
+                value={state.email}
+                onChange={(e) =>
+                  dispatch({ type: 'SET_EMAIL', value: e.target.value })
+                }
+              />
+              {state.errors.email && (
+                <p className="mt-1 text-xs text-red-600 dark:text-red-400">
+                  {state.errors.email}
+                </p>
+              )}
+            </div>
+
+            {/* Submit */}
+            <button
+              type="submit"
+              disabled={isDisabled}
+              className="w-full rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60 dark:focus:ring-offset-gray-900"
+            >
+              {getSubmitLabel()}
+            </button>
+          </form>
+        </div>
       </div>
     </section>
   );

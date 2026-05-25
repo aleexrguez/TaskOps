@@ -5,8 +5,8 @@
     "themeToggle": "Cambiar a modo {{nextTheme}}"
   },
   "hero": {
-    "title": "Organiza el trabajo, no el caos",
-    "subtitle": "TaskOps es un gestor de tareas ligero para desarrolladores y equipos pequeños. Tableros Kanban, tareas recurrentes, recordatorios inteligentes — todo lo que necesitas para mantener el rumbo.",
+    "title": "Productividad moderna, sin complejidad innecesaria",
+    "subtitle": "Tableros Kanban, tareas recurrentes, recordatorios inteligentes, captura rápida y reportes — todo en una app limpia y rápida para individuos y equipos pequeños.",
     "cta": {
       "getStarted": "Comenzar",
       "login": "Iniciar sesión",
@@ -30,7 +30,59 @@
     "ordering": {
       "title": "Orden persistente",
       "description": "El orden de tu tablero se guarda automáticamente. Arrastra una vez, mantente organizado para siempre."
+    },
+    "inbox": {
+      "title": "Captura rápida",
+      "description": "Captura ideas y tareas al instante. Revisa, convierte o descarta desde una bandeja dedicada."
+    },
+    "reports": {
+      "title": "Reportes semanales y mensuales",
+      "description": "Mide tu productividad con resúmenes automáticos del trabajo completado."
     }
+  },
+  "milestones": {
+    "heading": "Construido y en producción",
+    "items": [
+      "Tablero Kanban con drag & drop",
+      "Tareas recurrentes diarias, semanales y mensuales",
+      "Recordatorios inteligentes por prioridad",
+      "Bandeja de captura rápida",
+      "Reportes semanales y mensuales",
+      "PWA — instala en cualquier dispositivo",
+      "Soporte completo en inglés y español",
+      "Google OAuth y gestión de cuenta"
+    ]
+  },
+  "roadmap": {
+    "heading": "Qué viene",
+    "subheading": "Estamos construyendo activamente. Esto es hacia dónde va TaskOps.",
+    "items": [
+      {
+        "title": "Espacios de trabajo y proyectos",
+        "description": "Organiza tareas en múltiples proyectos con espacios dedicados."
+      },
+      {
+        "title": "Compartir en equipo",
+        "description": "Invita colaboradores y comparte tableros con tu equipo."
+      },
+      {
+        "title": "Automatización inteligente",
+        "description": "Formas de reducir trabajo repetitivo y destacar lo importante."
+      }
+    ]
+  },
+  "techStack": {
+    "heading": "Construido con herramientas modernas",
+    "items": [
+      "React 19",
+      "TypeScript",
+      "Supabase",
+      "React Query",
+      "Zustand",
+      "Tailwind CSS",
+      "Vitest",
+      "Arquitectura feature-first"
+    ]
   },
   "feedback": {
     "heading": "Ayuda a mejorar TaskOps",

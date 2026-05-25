@@ -5,8 +5,8 @@
     "themeToggle": "Switch to {{nextTheme}} mode"
   },
   "hero": {
-    "title": "Ship Work, Not Chaos",
-    "subtitle": "TaskOps is a lightweight task manager built for developers and small teams. Kanban boards, recurring tasks, smart reminders — everything you need to stay on track.",
+    "title": "Modern Productivity Without Enterprise Complexity",
+    "subtitle": "Kanban boards, recurring tasks, smart reminders, inbox capture, and reports — all in a clean, fast app built for individuals and small teams.",
     "cta": {
       "getStarted": "Get Started",
       "login": "Login",
@@ -30,7 +30,59 @@
     "ordering": {
       "title": "Persistent Ordering",
       "description": "Your board order is saved automatically. Drag once, stay organized forever."
+    },
+    "inbox": {
+      "title": "Inbox Capture",
+      "description": "Quickly capture ideas and tasks. Review, convert, or discard from a dedicated inbox."
+    },
+    "reports": {
+      "title": "Weekly & Monthly Reports",
+      "description": "Track your productivity with automatic summaries of completed work."
     }
+  },
+  "milestones": {
+    "heading": "Built and shipping",
+    "items": [
+      "Kanban board with drag & drop",
+      "Daily, weekly & monthly recurring tasks",
+      "Smart priority-based reminders",
+      "Inbox for quick task capture",
+      "Weekly & monthly reports",
+      "PWA — install on any device",
+      "Full English & Spanish support",
+      "Google OAuth & account management"
+    ]
+  },
+  "roadmap": {
+    "heading": "What's next",
+    "subheading": "We're actively building. Here's where TaskOps is headed.",
+    "items": [
+      {
+        "title": "Workspaces & Projects",
+        "description": "Organize tasks across multiple projects with dedicated workspaces."
+      },
+      {
+        "title": "Team Sharing",
+        "description": "Invite collaborators and share boards with your team."
+      },
+      {
+        "title": "Smarter Automation",
+        "description": "Explore ways to reduce repetitive work and surface what matters."
+      }
+    ]
+  },
+  "techStack": {
+    "heading": "Built with modern tools",
+    "items": [
+      "React 19",
+      "TypeScript",
+      "Supabase",
+      "React Query",
+      "Zustand",
+      "Tailwind CSS",
+      "Vitest",
+      "Feature-first architecture"
+    ]
   },
   "feedback": {
     "heading": "Help shape TaskOps",
