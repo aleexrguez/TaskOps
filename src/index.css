@@ -3,6 +3,14 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* Root background — prevents white flash on mobile overscroll */
+html {
+  background-color: theme('--color-gray-50');
+}
+html.dark {
+  background-color: theme('--color-gray-900');
+}
+
 /* Hide browser-native password reveal (Edge/Chromium) — keep custom toggle only */
 input[type='password']::-ms-reveal,
 input[type='password']::-ms-clear {

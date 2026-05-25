@@ -74,7 +74,7 @@ export function TaskDashboardContainer() {
 
   return (
     <>
-      <div className="mb-8 flex items-center justify-between">
+      <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
             {t('dashboard.title')}
@@ -91,7 +91,7 @@ export function TaskDashboardContainer() {
             <button
               type="button"
               onClick={() => setShowCleanupConfirm(true)}
-              className="cursor-pointer rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
+              className="cursor-pointer whitespace-nowrap rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
             >
               {t('dashboard.cleanupDone', { count: cleanupCount })}
             </button>
