@@ -49,6 +49,12 @@ Deno.serve(async (req: Request) => {
 
     const userId = user.id;
 
+    // Demo account guard — prevent deletion of the demo user
+    const demoEmail = Deno.env.get('DEMO_USER_EMAIL');
+    if (demoEmail && user.email === demoEmail) {
+      return jsonResponse({ error: 'Demo accounts cannot be deleted' }, 403);
+    }
+
     // Admin client — privileged operations (service_role, server-only)
     const adminClient = createClient(supabaseUrl, serviceRoleKey, {
       auth: { autoRefreshToken: false, persistSession: false },

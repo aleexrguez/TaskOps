@@ -2,12 +2,18 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { useAuth } from '@/features/auth/hooks';
+import { useIsDemoUser } from '@/shared/hooks/use-is-demo-user';
 import { AccountContainer } from '../AccountContainer';
 
 const mockNavigate = vi.fn();
 const mockQueryClientClear = vi.fn();
 const mockDeleteAccount = vi.fn();
 const mockSignOut = vi.fn();
+const mockAddToast = vi.fn();
+const mockUpdateProfileMutate = vi.fn();
+const mockUploadAvatarMutate = vi.fn();
+const mockRemoveAvatarMutate = vi.fn();
+const mockChangePassword = vi.fn();
 
 vi.mock('react-router-dom', async () => {
   const actual = await vi.importActual('react-router-dom');
@@ -16,6 +22,10 @@ vi.mock('react-router-dom', async () => {
 
 vi.mock('@/features/auth/hooks', () => ({
   useAuth: vi.fn(),
+}));
+
+vi.mock('@/shared/hooks/use-is-demo-user', () => ({
+  useIsDemoUser: vi.fn(() => false),
 }));
 
 vi.mock('@/features/auth/api', () => ({
@@ -35,26 +45,26 @@ vi.mock('@tanstack/react-query', () => ({
 
 vi.mock('@/shared/store/toast.store', () => ({
   useToastStore: vi.fn((selector) =>
-    selector({ addToast: vi.fn(), removeToast: vi.fn(), toasts: [] }),
+    selector({ addToast: mockAddToast, removeToast: vi.fn(), toasts: [] }),
   ),
 }));
 
 vi.mock('../../hooks/use-profile', () => ({
   useProfile: vi.fn(() => ({ data: null, isLoading: false })),
   useUpdateProfile: vi.fn(() => ({
-    mutate: vi.fn(),
+    mutate: mockUpdateProfileMutate,
     isPending: false,
     isError: false,
     error: null,
   })),
   useUploadAvatar: vi.fn(() => ({
-    mutate: vi.fn(),
+    mutate: mockUploadAvatarMutate,
     isPending: false,
     isError: false,
     error: null,
   })),
   useRemoveAvatar: vi.fn(() => ({
-    mutate: vi.fn(),
+    mutate: mockRemoveAvatarMutate,
     isPending: false,
     isError: false,
     error: null,
@@ -63,7 +73,7 @@ vi.mock('../../hooks/use-profile', () => ({
 
 vi.mock('../../hooks/use-change-password', () => ({
   useChangePassword: vi.fn(() => ({
-    changePassword: vi.fn(),
+    changePassword: mockChangePassword,
     isPending: false,
     error: null,
     isSuccess: false,
@@ -232,5 +242,29 @@ describe('AccountContainer', () => {
     });
     expect(mockNavigate).not.toHaveBeenCalled();
     expect(mockQueryClientClear).not.toHaveBeenCalled();
+  });
+});
+
+describe('AccountContainer — demo user blocking', () => {
+  beforeEach(() => {
+    vi.mocked(useIsDemoUser).mockReturnValue(true);
+  });
+
+  it('disables display name input and save button for demo user', () => {
+    render(<AccountContainer />);
+
+    const input = screen.getByRole('textbox', { name: /display name/i });
+    const saveButton = screen.getByRole('button', { name: /save/i });
+
+    expect(input).toBeDisabled();
+    expect(saveButton).toBeDisabled();
+  });
+
+  it('disables delete account button for demo user', () => {
+    render(<AccountContainer />);
+
+    const deleteButton = screen.getByRole('button', { name: /delete account/i });
+
+    expect(deleteButton).toBeDisabled();
   });
 });

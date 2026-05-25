@@ -17,6 +17,7 @@ interface AccountSectionProps {
   uploadAvatarError: string | null;
   onRemoveAvatar: () => void;
   isRemovingAvatar: boolean;
+  isDemoUser?: boolean;
 }
 
 export function AccountSection({
@@ -32,6 +33,7 @@ export function AccountSection({
   uploadAvatarError,
   onRemoveAvatar,
   isRemovingAvatar,
+  isDemoUser,
 }: AccountSectionProps) {
   const { t } = useTranslation('account');
   // Track only user edits — null means "use prop value"
@@ -61,6 +63,7 @@ export function AccountSection({
         hasCustomAvatar={hasCustomAvatar}
         onRemove={onRemoveAvatar}
         isRemoving={isRemovingAvatar}
+        isDemoUser={isDemoUser}
       />
 
       {/* Display name */}
@@ -81,11 +84,12 @@ export function AccountSection({
             maxLength={100}
             aria-describedby={saveNameError ? 'name-error' : undefined}
             aria-invalid={!!saveNameError}
-            className="flex-1 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+            disabled={isDemoUser}
+            className="flex-1 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 disabled:bg-gray-100 dark:disabled:bg-gray-800 disabled:cursor-not-allowed"
           />
           <button
             type="submit"
-            disabled={isSavingName || !isDirty || !name.trim()}
+            disabled={isDemoUser || isSavingName || !isDirty || !name.trim()}
             className="cursor-pointer rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {isSavingName ? t('common:action.saving') : t('common:action.save')}

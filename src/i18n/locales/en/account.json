@@ -33,6 +33,9 @@
     "removeFailed": "Remove failed",
     "deleteAccountFailed": "Failed to delete account"
   },
+  "demo": {
+    "restricted": "Demo accounts cannot modify profile settings"
+  },
   "dangerZone": {
     "heading": "Danger Zone",
     "description": "Permanently delete your account and all associated data. This action cannot be undone.",

@@ -33,6 +33,9 @@
     "removeFailed": "Error al eliminar",
     "deleteAccountFailed": "Error al eliminar cuenta"
   },
+  "demo": {
+    "restricted": "Las cuentas demo no pueden modificar la configuración del perfil"
+  },
   "dangerZone": {
     "heading": "Zona de peligro",
     "description": "Eliminar permanentemente tu cuenta y todos los datos asociados. Esta accion no se puede deshacer.",

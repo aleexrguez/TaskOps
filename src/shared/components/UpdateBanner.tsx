@@ -11,9 +11,9 @@ export function UpdateBanner({ onUpdate, onDismiss }: UpdateBannerProps) {
   return (
     <div
       role="alert"
-      className="fixed top-14 left-0 right-0 z-20 border-b border-indigo-300 bg-indigo-50 px-4 py-3 dark:border-indigo-800 dark:bg-indigo-950"
+      className="border-b border-indigo-300 bg-indigo-50 px-4 py-3 dark:border-indigo-800 dark:bg-indigo-950"
     >
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
+      <div className="flex items-center justify-between gap-4">
         <p className="text-sm font-medium text-indigo-800 dark:text-indigo-200">
           {t('updateBanner.message')}
         </p>

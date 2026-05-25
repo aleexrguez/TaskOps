@@ -5,6 +5,7 @@ import { useAppPreferencesStore } from '@/shared/store/app-preferences.store';
 import { useSignOut, useAuth } from '@/features/auth/hooks';
 import { useApplyTheme } from '@/shared/hooks/use-apply-theme';
 import { usePWAUpdate } from '@/shared/hooks/use-pwa-update';
+import { useIsDemoUser } from '@/shared/hooks/use-is-demo-user';
 import { useTasks } from '@/features/task-manager/hooks/use-tasks';
 import { useRecurrences } from '@/features/recurrences/hooks/use-recurrences';
 import { useAutoGenerate } from '@/features/recurrences/hooks/use-auto-generate';
@@ -43,6 +44,7 @@ export function AppShellContainer() {
     },
   ];
   useApplyTheme();
+  const isDemoUser = useIsDemoUser();
   const { needRefresh, updateServiceWorker, dismissUpdate } = usePWAUpdate();
 
   const { data: tasksData } = useTasks();
@@ -75,10 +77,21 @@ export function AppShellContainer() {
     navigate('/');
   }
 
+  async function handleDemoSignUp() {
+    try {
+      await signOut();
+    } catch {
+      // best-effort
+    }
+    navigate('/register');
+  }
+
   return (
     <>
       <AppShellLayout
         animatedBackground={animatedBackground}
+        isDemoUser={isDemoUser}
+        onDemoSignUp={handleDemoSignUp}
         headerProps={{
           appName: 'TaskOps',
           isCollapsed: isSidebarCollapsed,

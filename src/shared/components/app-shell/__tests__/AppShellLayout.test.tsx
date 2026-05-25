@@ -4,6 +4,14 @@ import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { AppShellLayout } from '../AppShellLayout';
 import type { AppShellLayoutProps, UserMenuProps } from '../app-shell.types';
 
+vi.mock('@/shared/components/DemoBanner', () => ({
+  DemoBanner: ({ onSignUpClick }: { onSignUpClick: () => void }) => (
+    <div data-testid="demo-banner">
+      <button onClick={onSignUpClick}>Sign up</button>
+    </div>
+  ),
+}));
+
 const defaultNavItems = [
   { label: 'Tasks', to: '/app/tasks', icon: '/TaskIcon.png' },
   { label: 'Recurrences', to: '/app/recurrences', icon: '/RecurrenceIcon.png' },
@@ -111,5 +119,36 @@ describe('AppShellLayout — ParticleBackground', () => {
     renderWithRouter(defaultProps);
 
     expect(screen.queryByTestId('particle-background')).not.toBeInTheDocument();
+  });
+});
+
+describe('AppShellLayout — DemoBanner', () => {
+  it('renders DemoBanner when isDemoUser is true and onDemoSignUp is provided', () => {
+    renderWithRouter({
+      ...defaultProps,
+      isDemoUser: true,
+      onDemoSignUp: vi.fn(),
+    });
+
+    expect(screen.getByTestId('demo-banner')).toBeInTheDocument();
+  });
+
+  it('does not render DemoBanner when isDemoUser is false', () => {
+    renderWithRouter({
+      ...defaultProps,
+      isDemoUser: false,
+      onDemoSignUp: vi.fn(),
+    });
+
+    expect(screen.queryByTestId('demo-banner')).not.toBeInTheDocument();
+  });
+
+  it('does not render DemoBanner when onDemoSignUp is not provided', () => {
+    renderWithRouter({
+      ...defaultProps,
+      isDemoUser: true,
+    });
+
+    expect(screen.queryByTestId('demo-banner')).not.toBeInTheDocument();
   });
 });

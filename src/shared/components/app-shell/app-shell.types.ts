@@ -39,4 +39,6 @@ export interface AppShellLayoutProps {
   sidebarProps: SidebarProps;
   pwaUpdateProps?: PWAUpdateProps;
   animatedBackground?: boolean;
+  isDemoUser?: boolean;
+  onDemoSignUp?: () => void;
 }

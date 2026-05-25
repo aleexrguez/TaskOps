@@ -7,7 +7,7 @@
   "hero": {
     "title": "Organiza el trabajo, no el caos",
     "subtitle": "TaskOps es un gestor de tareas ligero para desarrolladores y equipos pequeños. Tableros Kanban, tareas recurrentes, recordatorios inteligentes — todo lo que necesitas para mantener el rumbo.",
-    "cta": { "getStarted": "Comenzar", "login": "Iniciar sesión" }
+    "cta": { "getStarted": "Comenzar", "login": "Iniciar sesión", "tryDemo": "Probar demo" }
   },
   "features": {
     "heading": "Todo lo que necesitas, nada que no",
