@@ -29,6 +29,7 @@ export function useAutoGenerate(
         queryClient.invalidateQueries({ queryKey: taskKeys.lists() });
       })
       .catch((err) => {
+        lastRunRef.current = '';
         console.error('[useAutoGenerate] generation failed:', err);
       });
   }, [templates, tasks, queryClient]);

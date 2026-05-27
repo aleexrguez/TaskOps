@@ -21,7 +21,7 @@
     },
     "recurring": {
       "title": "Recurring Tasks",
-      "description": "Set up daily, weekly, or monthly recurring tasks that generate automatically."
+      "description": "Daily standups, weekly reviews, monthly reports — set the schedule once and tasks appear automatically. Configure lead time to prepare ahead."
     },
     "reminders": {
       "title": "Smart Reminders",
@@ -44,7 +44,7 @@
     "heading": "Built and shipping",
     "items": [
       "Persistent Kanban drag & drop",
-      "Daily, weekly & monthly recurring tasks",
+      "Recurring tasks with lead-time generation",
       "Reminders and upcoming tasks",
       "Quick capture Inbox",
       "Weekly & monthly reports",

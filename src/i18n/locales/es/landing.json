@@ -21,7 +21,7 @@
     },
     "recurring": {
       "title": "Tareas recurrentes",
-      "description": "Configura tareas diarias, semanales o mensuales que se generan automáticamente."
+      "description": "Standups diarios, informes semanales y revisiones mensuales: configura el calendario una vez y las tareas aparecen automáticamente. Usa la generación anticipada para prepararte con tiempo."
     },
     "reminders": {
       "title": "Recordatorios inteligentes",
@@ -44,7 +44,7 @@
     "heading": "Construido y en producción",
     "items": [
       "Tablero Kanban con drag & drop persistente",
-      "Tareas recurrentes diarias, semanales y mensuales",
+      "Tareas recurrentes con generación anticipada",
       "Recordatorios y tareas próximas",
       "Inbox de captura rápida",
       "Reportes semanales y mensuales",
