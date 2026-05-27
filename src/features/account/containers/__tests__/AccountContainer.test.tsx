@@ -263,7 +263,9 @@ describe('AccountContainer — demo user blocking', () => {
   it('disables delete account button for demo user', () => {
     render(<AccountContainer />);
 
-    const deleteButton = screen.getByRole('button', { name: /delete account/i });
+    const deleteButton = screen.getByRole('button', {
+      name: /delete account/i,
+    });
 
     expect(deleteButton).toBeDisabled();
   });

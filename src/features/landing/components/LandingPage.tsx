@@ -4,6 +4,7 @@ import { useApplyTheme } from '@/shared/hooks/use-apply-theme';
 import { useAppPreferencesStore } from '@/shared/store/app-preferences.store';
 import { LanguageToggle } from '@/shared/components/LanguageToggle';
 import { Footer } from '@/shared/components/Footer';
+import { FeedbackSectionContainer } from '../containers/FeedbackSectionContainer';
 import type { ThemePreference } from '@/shared/types/preferences.types';
 
 const featureKeys = ['kanban', 'recurring', 'reminders', 'ordering'] as const;
@@ -122,6 +123,8 @@ export function LandingPage() {
             </div>
           </div>
         </section>
+
+        <FeedbackSectionContainer />
       </main>
 
       <Footer />
