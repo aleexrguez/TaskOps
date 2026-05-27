@@ -38,7 +38,7 @@ export function ResetPasswordForm({
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const inputClass =
-    'rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-400';
+    'min-h-[44px] rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-400';
 
   const labelClass = 'text-sm font-medium text-gray-700 dark:text-gray-300';
 
@@ -126,7 +126,7 @@ export function ResetPasswordForm({
                 : t('resetPassword.showPassword')
             }
             onClick={() => setShowPassword((prev) => !prev)}
-            className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
+            className="absolute inset-y-0 right-0 flex min-w-[44px] items-center justify-center text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
           >
             <img
               src={showPassword ? '/HidePassword.png' : '/ShowPassword.png'}
@@ -166,7 +166,7 @@ export function ResetPasswordForm({
                 : t('resetPassword.showPassword')
             }
             onClick={() => setShowConfirmPassword((prev) => !prev)}
-            className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
+            className="absolute inset-y-0 right-0 flex min-w-[44px] items-center justify-center text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
           >
             <img
               src={
@@ -187,7 +187,7 @@ export function ResetPasswordForm({
       <button
         type="submit"
         disabled={isPending}
-        className="cursor-pointer rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
+        className="min-h-[44px] cursor-pointer rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
       >
         {isPending ? t('resetPassword.submitting') : t('resetPassword.submit')}
       </button>

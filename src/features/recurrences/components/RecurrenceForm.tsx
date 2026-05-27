@@ -83,7 +83,7 @@ function formatPreviewDate(dateKey: string, locale: string): string {
 }
 
 const inputClass =
-  'rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100';
+  'min-h-[44px] rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100';
 
 const labelClass = 'text-sm font-medium text-gray-700 dark:text-gray-300';
 
@@ -501,7 +501,7 @@ export function RecurrenceForm({
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full cursor-pointer rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
+          className="min-h-[44px] w-full cursor-pointer rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {isSubmitting ? `${submitLabel}...` : submitLabel}
         </button>

@@ -178,7 +178,7 @@ export function TaskDetailView({
             )}
           </div>
 
-          <div className="grid grid-cols-2 gap-4 border-t border-gray-100 pt-4 text-sm dark:border-gray-700">
+          <div className="grid grid-cols-1 gap-4 border-t border-gray-100 pt-4 text-sm sm:grid-cols-2 dark:border-gray-700">
             <div>
               <span className="font-medium text-gray-500 dark:text-gray-400">
                 {t('task:detail.created')}

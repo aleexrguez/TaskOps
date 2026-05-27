@@ -25,7 +25,7 @@ export function ToastContainer() {
       role="region"
       aria-label="Notifications"
       aria-live="polite"
-      className="fixed bottom-4 right-4 z-50 flex flex-col gap-2"
+      className="fixed bottom-4 left-4 right-4 z-50 flex flex-col gap-2 sm:left-auto max-w-[calc(100vw-2rem)]"
     >
       {toasts.map((toast) => (
         <Toast
