@@ -43,31 +43,31 @@
   "milestones": {
     "heading": "Built and shipping",
     "items": [
-      "Kanban board with drag & drop",
+      "Persistent Kanban drag & drop",
       "Daily, weekly & monthly recurring tasks",
-      "Smart priority-based reminders",
-      "Inbox for quick task capture",
+      "Reminders and upcoming tasks",
+      "Quick capture Inbox",
       "Weekly & monthly reports",
-      "PWA — install on any device",
+      "Installable PWA on any device",
       "Full English & Spanish support",
       "Google OAuth & account management"
     ]
   },
   "roadmap": {
     "heading": "What's next",
-    "subheading": "We're actively building. Here's where TaskOps is headed.",
+    "subheading": "We're actively building. This is where TaskOps is heading.",
     "items": [
       {
-        "title": "Workspaces & Projects",
-        "description": "Organize tasks across multiple projects with dedicated workspaces."
+        "title": "Advanced recurrences",
+        "description": "More flexible recurring tasks with series editing, skipped occurrences and better control over future tasks."
       },
       {
-        "title": "Team Sharing",
-        "description": "Invite collaborators and share boards with your team."
+        "title": "Lightweight daily planning",
+        "description": "A Today view to prioritize the day, review overdue tasks and plan without turning TaskOps into a heavy calendar."
       },
       {
-        "title": "Smarter Automation",
-        "description": "Explore ways to reduce repetitive work and surface what matters."
+        "title": "Quick capture and optional AI",
+        "description": "Improvements to create tasks faster, detect simple dates and add intelligent help only when it provides value."
       }
     ]
   },
@@ -104,6 +104,10 @@
       "label": "Email (optional)",
       "placeholder": "you@example.com",
       "invalid": "Please enter a valid email"
+    },
+    "toggle": {
+      "open": "Send feedback",
+      "close": "Hide form"
     },
     "submit": "Send feedback",
     "submitting": "Sending...",

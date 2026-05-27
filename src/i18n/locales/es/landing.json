@@ -43,12 +43,12 @@
   "milestones": {
     "heading": "Construido y en producción",
     "items": [
-      "Tablero Kanban con drag & drop",
+      "Tablero Kanban con drag & drop persistente",
       "Tareas recurrentes diarias, semanales y mensuales",
-      "Recordatorios inteligentes por prioridad",
-      "Bandeja de captura rápida",
+      "Recordatorios y tareas próximas",
+      "Inbox de captura rápida",
       "Reportes semanales y mensuales",
-      "PWA — instala en cualquier dispositivo",
+      "PWA instalable en cualquier dispositivo",
       "Soporte completo en inglés y español",
       "Google OAuth y gestión de cuenta"
     ]
@@ -58,16 +58,16 @@
     "subheading": "Estamos construyendo activamente. Esto es hacia dónde va TaskOps.",
     "items": [
       {
-        "title": "Espacios de trabajo y proyectos",
-        "description": "Organiza tareas en múltiples proyectos con espacios dedicados."
+        "title": "Recurrencias avanzadas",
+        "description": "Recurrencias más flexibles con edición de series, omitir ocurrencias y mejor control de tareas futuras."
       },
       {
-        "title": "Compartir en equipo",
-        "description": "Invita colaboradores y comparte tableros con tu equipo."
+        "title": "Plan diario ligero",
+        "description": "Una vista Today para priorizar el día, revisar tareas vencidas y planificar sin convertir TaskOps en un calendario pesado."
       },
       {
-        "title": "Automatización inteligente",
-        "description": "Formas de reducir trabajo repetitivo y destacar lo importante."
+        "title": "Captura rápida e IA opcional",
+        "description": "Mejoras para crear tareas más rápido, detectar fechas simples y añadir ayuda inteligente solo cuando aporte valor."
       }
     ]
   },
@@ -104,6 +104,10 @@
       "label": "Email (opcional)",
       "placeholder": "tu@ejemplo.com",
       "invalid": "Introduce un email válido"
+    },
+    "toggle": {
+      "open": "Enviar feedback",
+      "close": "Ocultar formulario"
     },
     "submit": "Enviar feedback",
     "submitting": "Enviando...",
