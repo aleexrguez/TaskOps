@@ -17,7 +17,7 @@ export function Footer({ className }: FooterProps) {
 
   return (
     <footer
-      className={`border-t border-gray-200 py-6 text-center text-sm text-gray-500 dark:border-gray-700 dark:text-gray-400 ${className ?? ''}`}
+      className={`border-t border-gray-200 px-6 py-6 text-center text-sm text-gray-500 sm:px-8 dark:border-gray-700 dark:text-gray-400 ${className ?? ''}`}
     >
       <nav className="mb-2 flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
         {legalLinks.map(({ to, labelKey }) => (

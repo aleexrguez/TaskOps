@@ -94,7 +94,7 @@ export function TaskDashboardContainer() {
               : t('dashboard.tasksShown', { count: totalTasks })}
           </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           <ViewToggle
             viewMode={viewMode}
             onViewModeChange={(mode) => {
@@ -107,7 +107,7 @@ export function TaskDashboardContainer() {
             <button
               type="button"
               onClick={() => setShowCleanupConfirm(true)}
-              className="cursor-pointer whitespace-nowrap rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
+              className="order-3 w-full cursor-pointer whitespace-nowrap rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:order-2 sm:w-auto dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
             >
               {t('dashboard.cleanupDone', { count: cleanupCount })}
             </button>
@@ -115,7 +115,7 @@ export function TaskDashboardContainer() {
           <button
             type="button"
             onClick={openCreateModal}
-            className="cursor-pointer flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            className="order-2 cursor-pointer flex items-center gap-2 whitespace-nowrap rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:order-3"
           >
             <span aria-hidden="true">+</span>
             {t('common:action.newTask')}

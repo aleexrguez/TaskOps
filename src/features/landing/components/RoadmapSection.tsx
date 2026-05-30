@@ -10,7 +10,7 @@ export function RoadmapSection() {
   const items = t('roadmap.items', { returnObjects: true }) as RoadmapItem[];
 
   return (
-    <section className="border-t border-gray-200 bg-gray-50 px-4 py-16 dark:border-gray-700 dark:bg-gray-900">
+    <section className="border-t border-gray-200 bg-gray-50 px-6 py-16 sm:px-8 dark:border-gray-700 dark:bg-gray-900">
       <div className="mx-auto max-w-5xl">
         <h2 className="mb-2 text-center text-2xl font-bold text-gray-900 dark:text-gray-100">
           {t('roadmap.heading')}

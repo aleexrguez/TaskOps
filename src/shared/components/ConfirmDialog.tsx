@@ -1,6 +1,7 @@
 import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useFocusTrap } from '../hooks/use-focus-trap';
+import { useScrollLock } from '../hooks/use-scroll-lock';
 
 interface ConfirmDialogProps {
   isOpen: boolean;
@@ -28,6 +29,7 @@ export function ConfirmDialog({
   children,
 }: ConfirmDialogProps) {
   const { t } = useTranslation('common');
+  useScrollLock(isOpen);
   const cancelButtonRef = useRef<HTMLButtonElement>(null);
 
   const dialogRef = useFocusTrap({

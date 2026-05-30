@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { useFocusTrap } from '../hooks/use-focus-trap';
+import { useScrollLock } from '../hooks/use-scroll-lock';
 import { Footer } from './Footer';
 
 interface AuthModalProps {
@@ -10,6 +11,7 @@ interface AuthModalProps {
 
 export function AuthModal({ children, title, onClose }: AuthModalProps) {
   const { t } = useTranslation('auth');
+  useScrollLock(true);
 
   const dialogRef = useFocusTrap({
     isOpen: true,

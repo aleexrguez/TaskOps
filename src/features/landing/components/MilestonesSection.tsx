@@ -5,7 +5,7 @@ export function MilestonesSection() {
   const items = t('milestones.items', { returnObjects: true }) as string[];
 
   return (
-    <section className="border-t border-gray-200 bg-white px-4 py-16 dark:border-gray-700 dark:bg-gray-800">
+    <section className="border-t border-gray-200 bg-white px-6 py-16 sm:px-8 dark:border-gray-700 dark:bg-gray-800">
       <div className="mx-auto max-w-5xl">
         <h2 className="mb-10 text-center text-2xl font-bold text-gray-900 dark:text-gray-100">
           {t('milestones.heading')}
