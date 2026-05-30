@@ -3,10 +3,21 @@ import type { AnalyticsEventName } from './analytics.types';
 
 const sessionId = crypto.randomUUID();
 
+function isOptedOut(): boolean {
+  try {
+    return localStorage.getItem('taskops.analytics.optOut') === 'true';
+  } catch {
+    return false;
+  }
+}
+
 export function trackEvent(
   eventName: AnalyticsEventName,
   metadata: Record<string, unknown> = {},
 ): void {
+  if (import.meta.env.VITE_ANALYTICS_ENABLED !== 'true') return;
+  if (isOptedOut()) return;
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (supabase as any)
     .from('analytics_events')

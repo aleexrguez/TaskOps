@@ -151,6 +151,26 @@ TaskOps uses a custom Supabase-based analytics system. Events are stored in the 
 * No cookies or localStorage used for tracking
 * No external analytics vendor or third-party SDK
 
+### Activation
+
+Analytics is disabled by default. To enable it, set the environment variable:
+
+```env
+VITE_ANALYTICS_ENABLED=true
+```
+
+To exclude your own browser in production (internal traffic):
+
+```js
+localStorage.setItem('taskops.analytics.optOut', 'true')
+```
+
+To re-enable analytics in your browser:
+
+```js
+localStorage.removeItem('taskops.analytics.optOut')
+```
+
 ### Privacy note
 
 `user_id` (an opaque UUID set server-side via `auth.uid()`) is stored as a pseudonymous identifier for authenticated users. This should be disclosed in privacy policy and legal documentation. No direct PII is collected by the analytics system.

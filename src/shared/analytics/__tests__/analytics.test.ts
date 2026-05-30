@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 vi.mock('@/shared/services/supabase', () => ({
   supabase: {
@@ -13,8 +13,21 @@ function flushPromises(): Promise<void> {
   return new Promise((r) => setTimeout(r, 0));
 }
 
+let originalEnv: string | undefined;
+
 beforeEach(() => {
   vi.mocked(supabase.from).mockReset();
+  originalEnv = import.meta.env.VITE_ANALYTICS_ENABLED;
+  import.meta.env.VITE_ANALYTICS_ENABLED = 'true';
+  localStorage.removeItem('taskops.analytics.optOut');
+});
+
+afterEach(() => {
+  if (originalEnv === undefined) {
+    delete import.meta.env.VITE_ANALYTICS_ENABLED;
+  } else {
+    import.meta.env.VITE_ANALYTICS_ENABLED = originalEnv;
+  }
 });
 
 describe('trackEvent', () => {
@@ -78,5 +91,23 @@ describe('trackEvent', () => {
 
     expect(() => trackEvent('task_created')).not.toThrow();
     await flushPromises();
+  });
+
+  it('does not insert when VITE_ANALYTICS_ENABLED is not true', async () => {
+    import.meta.env.VITE_ANALYTICS_ENABLED = '';
+
+    trackEvent('task_created');
+    await flushPromises();
+
+    expect(supabase.from).not.toHaveBeenCalled();
+  });
+
+  it('does not insert when opt-out is set in localStorage', async () => {
+    localStorage.setItem('taskops.analytics.optOut', 'true');
+
+    trackEvent('task_created');
+    await flushPromises();
+
+    expect(supabase.from).not.toHaveBeenCalled();
   });
 });
