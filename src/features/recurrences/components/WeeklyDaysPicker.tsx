@@ -30,7 +30,7 @@ export function WeeklyDaysPicker({
   }
 
   return (
-    <div className="flex gap-1">
+    <div className="flex flex-wrap gap-2">
       {DAYS.map(({ value, label }) => {
         const isSelected = selectedDays.includes(value);
         return (
@@ -39,7 +39,7 @@ export function WeeklyDaysPicker({
             type="button"
             aria-pressed={isSelected}
             onClick={() => handleToggle(value)}
-            className={`cursor-pointer rounded px-2 py-1 text-xs font-medium transition-colors ${
+            className={`min-h-[44px] min-w-[44px] cursor-pointer rounded px-2 py-1 text-xs font-medium transition-colors flex items-center justify-center ${
               isSelected
                 ? 'bg-indigo-600 text-white'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'

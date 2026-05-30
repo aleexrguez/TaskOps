@@ -1,8 +1,10 @@
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useSignIn, useSignInWithGoogle } from '../hooks';
 import { LoginForm } from '../components';
 import { useApplyTheme } from '@/shared/hooks/use-apply-theme';
+import { trackEvent } from '@/shared/analytics';
 
 import { AuthModal } from '@/shared/components/AuthModal';
 import type { LoginInput } from '../types';
@@ -11,6 +13,10 @@ export function LoginContainer() {
   useApplyTheme();
   const { t } = useTranslation('auth');
   const navigate = useNavigate();
+
+  useEffect(() => {
+    trackEvent('auth_modal_opened', { variant: 'login' });
+  }, []);
   const { signIn, isPending, error } = useSignIn();
   const {
     signInWithGoogle,

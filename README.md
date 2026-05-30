@@ -126,6 +126,57 @@ npm run build
 
 ---
 
+## Analytics
+
+TaskOps uses a custom Supabase-based analytics system. Events are stored in the `analytics_events` table (append-only, queryable via Supabase dashboard with `service_role`).
+
+### Tracked events
+
+| Event | Description |
+|-------|-------------|
+| `landing_viewed` | Landing page visited |
+| `demo_started` | User navigates to demo login |
+| `auth_modal_opened` | Login or register page visited |
+| `feedback_submitted` | Feedback form submitted |
+| `task_created` | Task created (including duplicates) |
+| `task_completed` | Task transitioned to done |
+| `board_viewed` | Kanban board rendered or toggled to |
+| `recurrence_viewed` | Recurrences page visited |
+| `inbox_task_created` | Inbox item created |
+
+### What is NOT tracked
+
+* Task content, titles, or descriptions
+* Email addresses or user names
+* No cookies or localStorage used for tracking
+* No external analytics vendor or third-party SDK
+
+### Activation
+
+Analytics is disabled by default. To enable it, set the environment variable:
+
+```env
+VITE_ANALYTICS_ENABLED=true
+```
+
+To exclude your own browser in production (internal traffic):
+
+```js
+localStorage.setItem('taskops.analytics.optOut', 'true')
+```
+
+To re-enable analytics in your browser:
+
+```js
+localStorage.removeItem('taskops.analytics.optOut')
+```
+
+### Privacy note
+
+`user_id` (an opaque UUID set server-side via `auth.uid()`) is stored as a pseudonymous identifier for authenticated users. This should be disclosed in privacy policy and legal documentation. No direct PII is collected by the analytics system.
+
+---
+
 ## 🛣️ Roadmap
 
 ### V2

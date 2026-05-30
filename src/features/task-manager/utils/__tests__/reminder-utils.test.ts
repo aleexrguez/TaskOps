@@ -188,3 +188,37 @@ describe('computeReminders', () => {
     expect(result[0].topTask.daysRemaining).toBe(-6);
   });
 });
+
+describe('computeReminders — recurring tasks', () => {
+  it('recurring overdue task gets critical reminder', () => {
+    const task = makeTask({
+      id: 'rec-1',
+      title: 'Daily standup',
+      dueDate: '2026-04-19',
+      recurrenceTemplateId: 'aaaaaaaa-aaaa-4aaa-aaaa-aaaaaaaaa001',
+      recurrenceDateKey: '2026-04-19',
+    });
+    const result = computeReminders([task], new Set(), TODAY);
+
+    expect(result).toHaveLength(1);
+    expect(result[0].tier).toBe('critical');
+    expect(result[0].topTask.taskId).toBe('rec-1');
+    expect(result[0].topTask.daysRemaining).toBe(-2);
+  });
+
+  it('recurring task due today gets urgent reminder', () => {
+    const task = makeTask({
+      id: 'rec-2',
+      title: 'Weekly report',
+      dueDate: TODAY,
+      recurrenceTemplateId: 'aaaaaaaa-aaaa-4aaa-aaaa-aaaaaaaaa002',
+      recurrenceDateKey: TODAY,
+    });
+    const result = computeReminders([task], new Set(), TODAY);
+
+    expect(result).toHaveLength(1);
+    expect(result[0].tier).toBe('urgent');
+    expect(result[0].topTask.taskId).toBe('rec-2');
+    expect(result[0].topTask.daysRemaining).toBe(0);
+  });
+});

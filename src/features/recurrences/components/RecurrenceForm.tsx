@@ -83,7 +83,7 @@ function formatPreviewDate(dateKey: string, locale: string): string {
 }
 
 const inputClass =
-  'rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100';
+  'min-h-[44px] rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100';
 
 const labelClass = 'text-sm font-medium text-gray-700 dark:text-gray-300';
 
@@ -294,200 +294,218 @@ export function RecurrenceForm({
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      <div className="flex flex-col gap-1">
-        <label htmlFor="title" className={labelClass}>
-          {t('form.titleLabel')} <span className="text-red-500">*</span>
-        </label>
-        <input
-          ref={titleRef}
-          id="title"
-          name="title"
-          type="text"
-          value={fields.title}
-          onChange={handleChange}
-          className={inputClass}
-          placeholder={t('form.titlePlaceholder')}
-        />
-        {errors.title && <p className="text-xs text-red-500">{errors.title}</p>}
-      </div>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        {/* ---- Left column: base fields ---- */}
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-1">
+            <label htmlFor="title" className={labelClass}>
+              {t('form.titleLabel')} <span className="text-red-500">*</span>
+            </label>
+            <input
+              ref={titleRef}
+              id="title"
+              name="title"
+              type="text"
+              value={fields.title}
+              onChange={handleChange}
+              className={inputClass}
+              placeholder={t('form.titlePlaceholder')}
+            />
+            {errors.title && (
+              <p className="text-xs text-red-500">{errors.title}</p>
+            )}
+          </div>
 
-      <div className="flex flex-col gap-1">
-        <label htmlFor="description" className={labelClass}>
-          {t('form.descriptionLabel')}
-        </label>
-        <textarea
-          id="description"
-          name="description"
-          rows={3}
-          value={fields.description}
-          onChange={handleChange}
-          className={inputClass}
-          placeholder={t('form.descriptionPlaceholder')}
-        />
-      </div>
+          <div className="flex flex-col gap-1">
+            <label htmlFor="description" className={labelClass}>
+              {t('form.descriptionLabel')}
+            </label>
+            <textarea
+              id="description"
+              name="description"
+              rows={3}
+              value={fields.description}
+              onChange={handleChange}
+              className={inputClass}
+              placeholder={t('form.descriptionPlaceholder')}
+            />
+          </div>
 
-      <div className="flex flex-col gap-1">
-        <label htmlFor="priority" className={labelClass}>
-          {t('common:form.priority')}
-        </label>
-        <select
-          id="priority"
-          name="priority"
-          value={fields.priority}
-          onChange={handleChange}
-          className={inputClass}
-        >
-          <option value="low">{t('common:priority.low')}</option>
-          <option value="medium">{t('common:priority.medium')}</option>
-          <option value="high">{t('common:priority.high')}</option>
-        </select>
-      </div>
+          <div className="flex flex-col gap-1">
+            <label htmlFor="priority" className={labelClass}>
+              {t('common:form.priority')}
+            </label>
+            <select
+              id="priority"
+              name="priority"
+              value={fields.priority}
+              onChange={handleChange}
+              className={inputClass}
+            >
+              <option value="low">{t('common:priority.low')}</option>
+              <option value="medium">{t('common:priority.medium')}</option>
+              <option value="high">{t('common:priority.high')}</option>
+            </select>
+          </div>
 
-      <div className="flex flex-col gap-1">
-        <label htmlFor="frequency" className={labelClass}>
-          {t('form.frequencyLabel')}
-        </label>
-        <select
-          id="frequency"
-          name="frequency"
-          value={fields.frequency}
-          onChange={handleChange}
-          className={inputClass}
-        >
-          <option value="daily">{t('form.frequency.daily')}</option>
-          <option value="weekly">{t('form.frequency.weekly')}</option>
-          <option value="monthly">{t('form.frequency.monthly')}</option>
-        </select>
-      </div>
+          <div className="flex flex-col gap-1">
+            <label htmlFor="frequency" className={labelClass}>
+              {t('form.frequencyLabel')}
+            </label>
+            <select
+              id="frequency"
+              name="frequency"
+              value={fields.frequency}
+              onChange={handleChange}
+              className={inputClass}
+            >
+              <option value="daily">{t('form.frequency.daily')}</option>
+              <option value="weekly">{t('form.frequency.weekly')}</option>
+              <option value="monthly">{t('form.frequency.monthly')}</option>
+            </select>
+          </div>
 
-      <div className="flex flex-col gap-1">
-        <label htmlFor="interval" className={labelClass}>
-          {t('form.repeatEvery')}
-        </label>
-        <div className="flex items-center gap-2">
-          <input
-            id="interval"
-            name="interval"
-            type="number"
-            min={1}
-            max={365}
-            value={fields.interval}
-            onChange={handleChange}
-            className={`${inputClass} w-20`}
+          <div className="flex flex-col gap-1">
+            <label htmlFor="interval" className={labelClass}>
+              {t('form.repeatEvery')}
+            </label>
+            <div className="flex items-center gap-2">
+              <input
+                id="interval"
+                name="interval"
+                type="number"
+                min={1}
+                max={365}
+                value={fields.interval}
+                onChange={handleChange}
+                className={`${inputClass} w-20`}
+              />
+              <span className="text-sm text-gray-600 dark:text-gray-400">
+                {fields.frequency === 'daily' &&
+                  t('form.intervalUnit.day', {
+                    count: Number(fields.interval),
+                  })}
+                {fields.frequency === 'weekly' &&
+                  t('form.intervalUnit.week', {
+                    count: Number(fields.interval),
+                  })}
+                {fields.frequency === 'monthly' &&
+                  t('form.intervalUnit.month', {
+                    count: Number(fields.interval),
+                  })}
+              </span>
+            </div>
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              {getIntervalHelperText(fields.frequency, t)}
+            </p>
+            {errors.interval && (
+              <p className="text-xs text-red-500">{errors.interval}</p>
+            )}
+          </div>
+
+          <DatePicker
+            id="startDate"
+            label={t('form.startingFrom')}
+            value={fields.startDate || undefined}
+            onChange={handleStartDateChange}
           />
-          <span className="text-sm text-gray-600 dark:text-gray-400">
-            {fields.frequency === 'daily' &&
-              t('form.intervalUnit.day', { count: Number(fields.interval) })}
-            {fields.frequency === 'weekly' &&
-              t('form.intervalUnit.week', { count: Number(fields.interval) })}
-            {fields.frequency === 'monthly' &&
-              t('form.intervalUnit.month', { count: Number(fields.interval) })}
-          </span>
-        </div>
-        <p className="text-xs text-gray-500 dark:text-gray-400">
-          {getIntervalHelperText(fields.frequency, t)}
-        </p>
-        {errors.interval && (
-          <p className="text-xs text-red-500">{errors.interval}</p>
-        )}
-      </div>
-
-      <DatePicker
-        id="startDate"
-        label={t('form.startingFrom')}
-        value={fields.startDate || undefined}
-        onChange={handleStartDateChange}
-      />
-      {errors.startDate && (
-        <p className="text-xs text-red-500">{errors.startDate}</p>
-      )}
-
-      {fields.frequency === 'weekly' && (
-        <div className="flex flex-col gap-1">
-          <span className={labelClass}>{t('form.daysOfWeek')}</span>
-          <WeeklyDaysPicker
-            selectedDays={fields.weeklyDays}
-            onChange={handleWeeklyDaysChange}
-          />
-          {errors.weeklyDays && (
-            <p className="text-xs text-red-500">{errors.weeklyDays}</p>
+          {errors.startDate && (
+            <p className="text-xs text-red-500">{errors.startDate}</p>
           )}
         </div>
-      )}
 
-      {fields.frequency === 'monthly' && (
-        <div className="flex flex-col gap-1">
-          <label htmlFor="monthlyDay" className={labelClass}>
-            {t('form.monthlyDay')}
-          </label>
-          <input
-            id="monthlyDay"
-            name="monthlyDay"
-            type="number"
-            min={1}
-            max={31}
-            value={fields.monthlyDay}
-            onChange={handleChange}
-            className={inputClass}
-          />
-          {errors.monthlyDay && (
-            <p className="text-xs text-red-500">{errors.monthlyDay}</p>
+        {/* ---- Right column: frequency-specific + preview ---- */}
+        <div className="flex flex-col gap-4">
+          {fields.frequency === 'weekly' && (
+            <div className="flex flex-col gap-1">
+              <span className={labelClass}>{t('form.daysOfWeek')}</span>
+              <WeeklyDaysPicker
+                selectedDays={fields.weeklyDays}
+                onChange={handleWeeklyDaysChange}
+              />
+              {errors.weeklyDays && (
+                <p className="text-xs text-red-500">{errors.weeklyDays}</p>
+              )}
+            </div>
           )}
-        </div>
-      )}
 
-      {fields.frequency !== 'daily' && (
-        <div className="flex flex-col gap-1">
-          <label htmlFor="leadTimeDays" className={labelClass}>
-            {t('form.leadTimeDays')}
-          </label>
-          <input
-            id="leadTimeDays"
-            name="leadTimeDays"
-            type="number"
-            min={0}
-            max={fields.frequency === 'weekly' ? 7 : 14}
-            value={fields.leadTimeDays}
-            onChange={handleChange}
-            className={inputClass}
-          />
-          <p className="text-xs text-gray-500 dark:text-gray-400">
-            {t('form.leadTimeDaysHelper', {
-              max: fields.frequency === 'weekly' ? 7 : 14,
-            })}
-          </p>
-          {errors.leadTimeDays && (
-            <p className="text-xs text-red-500">{errors.leadTimeDays}</p>
+          {fields.frequency === 'monthly' && (
+            <div className="flex flex-col gap-1">
+              <label htmlFor="monthlyDay" className={labelClass}>
+                {t('form.monthlyDay')}
+              </label>
+              <input
+                id="monthlyDay"
+                name="monthlyDay"
+                type="number"
+                min={1}
+                max={31}
+                value={fields.monthlyDay}
+                onChange={handleChange}
+                className={inputClass}
+              />
+              {errors.monthlyDay && (
+                <p className="text-xs text-red-500">{errors.monthlyDay}</p>
+              )}
+            </div>
           )}
-        </div>
-      )}
 
-      {nextDates.length > 0 && (
-        <div className="flex flex-col gap-1">
-          <span className={labelClass}>{t('form.nextOccurrences')}</span>
-          <ul
-            className="flex flex-wrap gap-2"
-            aria-label={t('form.nextOccurrences')}
-          >
-            {nextDates.map((dateKey) => (
-              <li
-                key={dateKey}
-                className="rounded-md bg-gray-100 px-2 py-1 text-xs text-gray-700 dark:bg-gray-700 dark:text-gray-300"
+          {fields.frequency !== 'daily' && (
+            <div className="flex flex-col gap-1">
+              <label htmlFor="leadTimeDays" className={labelClass}>
+                {t('form.leadTimeDays')}
+              </label>
+              <input
+                id="leadTimeDays"
+                name="leadTimeDays"
+                type="number"
+                min={0}
+                max={fields.frequency === 'weekly' ? 7 : 14}
+                value={fields.leadTimeDays}
+                onChange={handleChange}
+                className={inputClass}
+              />
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                {t('form.leadTimeDaysHelper', {
+                  max: fields.frequency === 'weekly' ? 7 : 14,
+                })}
+              </p>
+              {errors.leadTimeDays && (
+                <p className="text-xs text-red-500">{errors.leadTimeDays}</p>
+              )}
+            </div>
+          )}
+
+          {nextDates.length > 0 && (
+            <div className="flex flex-col gap-1">
+              <span className={labelClass}>{t('form.nextOccurrences')}</span>
+              <ul
+                className="flex flex-wrap gap-2"
+                aria-label={t('form.nextOccurrences')}
               >
-                {formatPreviewDate(dateKey, i18n.resolvedLanguage ?? 'en')}
-              </li>
-            ))}
-          </ul>
+                {nextDates.map((dateKey) => (
+                  <li
+                    key={dateKey}
+                    className="rounded-md bg-gray-100 px-2 py-1 text-xs text-gray-700 dark:bg-gray-700 dark:text-gray-300"
+                  >
+                    {formatPreviewDate(dateKey, i18n.resolvedLanguage ?? 'en')}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
-      )}
+      </div>
 
-      <button
-        type="submit"
-        disabled={isSubmitting}
-        className="cursor-pointer rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
-      >
-        {isSubmitting ? `${submitLabel}...` : submitLabel}
-      </button>
+      <div className="sticky bottom-0 border-t border-gray-200 bg-white pt-4 dark:border-gray-700 dark:bg-gray-800">
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="min-h-[44px] w-full cursor-pointer rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {isSubmitting ? `${submitLabel}...` : submitLabel}
+        </button>
+      </div>
     </form>
   );
 }

@@ -1,13 +1,25 @@
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useApplyTheme } from '@/shared/hooks/use-apply-theme';
+import { trackEvent } from '@/shared/analytics';
 import { useAppPreferencesStore } from '@/shared/store/app-preferences.store';
 import { LanguageToggle } from '@/shared/components/LanguageToggle';
 import { Footer } from '@/shared/components/Footer';
 import { FeedbackSectionContainer } from '../containers/FeedbackSectionContainer';
+import { MilestonesSection } from './MilestonesSection';
+import { RoadmapSection } from './RoadmapSection';
+import { TechStackSection } from './TechStackSection';
 import type { ThemePreference } from '@/shared/types/preferences.types';
 
-const featureKeys = ['kanban', 'recurring', 'reminders', 'ordering'] as const;
+const featureKeys = [
+  'kanban',
+  'recurring',
+  'reminders',
+  'ordering',
+  'inbox',
+  'reports',
+] as const;
 
 function nextTheme(current: ThemePreference): ThemePreference {
   if (current === 'light') return 'dark';
@@ -22,6 +34,10 @@ function themeIcon(current: ThemePreference): string {
 export function LandingPage() {
   useApplyTheme();
   const { t } = useTranslation('landing');
+
+  useEffect(() => {
+    trackEvent('landing_viewed');
+  }, []);
 
   const theme = useAppPreferencesStore((s) => s.theme);
   const setTheme = useAppPreferencesStore((s) => s.setTheme);
@@ -76,7 +92,7 @@ export function LandingPage() {
           <p className="mt-4 max-w-xl text-lg text-gray-600 dark:text-gray-400">
             {t('hero.subtitle')}
           </p>
-          <div className="mt-8 flex items-center gap-4">
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
             <Link
               to="/register"
               className="cursor-pointer rounded-lg bg-indigo-600 px-6 py-3 text-base font-semibold text-white transition-colors hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
@@ -106,7 +122,7 @@ export function LandingPage() {
             <h2 className="mb-10 text-center text-2xl font-bold text-gray-900 dark:text-gray-100">
               {t('features.heading')}
             </h2>
-            <div className="grid gap-6 sm:grid-cols-2">
+            <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
               {featureKeys.map((key) => (
                 <div
                   key={key}
@@ -123,6 +139,10 @@ export function LandingPage() {
             </div>
           </div>
         </section>
+
+        <MilestonesSection />
+        <RoadmapSection />
+        <TechStackSection />
 
         <FeedbackSectionContainer />
       </main>

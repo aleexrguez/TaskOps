@@ -61,7 +61,7 @@ export function UserMenu({
       {isOpen && (
         <div
           role="menu"
-          className="absolute right-0 top-full mt-2 z-20 w-64 rounded-lg shadow-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"
+          className="absolute right-0 top-full mt-2 z-20 w-64 max-w-[calc(100vw-2rem)] rounded-lg shadow-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"
         >
           <div className="flex items-center gap-3 px-4 py-3">
             <img

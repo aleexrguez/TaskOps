@@ -144,7 +144,7 @@ export function DatePicker({
         <div
           role="dialog"
           aria-label={t('date.datePickerCalendar')}
-          className={`absolute left-0 z-50 max-h-[min(24rem,calc(100vh-2rem))] overflow-y-auto overscroll-contain rounded-lg border border-gray-300 bg-white p-3 shadow-lg dark:border-gray-600 dark:bg-gray-800 ${popoverPlacement}`}
+          className={`absolute left-0 z-50 max-h-[min(24rem,calc(100vh-2rem))] max-w-[calc(100vw-2rem)] overflow-y-auto overscroll-contain rounded-lg border border-gray-300 bg-white p-3 shadow-lg dark:border-gray-600 dark:bg-gray-800 ${popoverPlacement}`}
         >
           <DayPicker
             mode="single"

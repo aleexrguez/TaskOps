@@ -35,14 +35,14 @@ export function CreateRecurrenceContainer() {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/50 p-4">
       <div
         role="dialog"
         aria-modal="true"
         aria-labelledby="create-recurrence-title"
-        className="w-full max-w-md rounded-lg bg-white p-6 shadow-xl dark:bg-gray-800"
+        className="flex w-full max-w-2xl flex-col rounded-lg bg-white shadow-xl dark:bg-gray-800 max-h-[calc(100vh-2rem)]"
       >
-        <div className="mb-4 flex items-center justify-between">
+        <div className="flex items-center justify-between border-b border-gray-200 px-6 py-4 dark:border-gray-700">
           <h2
             id="create-recurrence-title"
             className="text-lg font-semibold text-gray-900 dark:text-gray-100"
@@ -58,12 +58,14 @@ export function CreateRecurrenceContainer() {
             ✕
           </button>
         </div>
-        <RecurrenceForm
-          onSubmit={handleSubmit}
-          isSubmitting={isPending}
-          submitLabel={t('modal.submitCreate')}
-          autoFocusTitle
-        />
+        <div className="overflow-y-auto px-6 py-4">
+          <RecurrenceForm
+            onSubmit={handleSubmit}
+            isSubmitting={isPending}
+            submitLabel={t('modal.submitCreate')}
+            autoFocusTitle
+          />
+        </div>
       </div>
     </div>
   );

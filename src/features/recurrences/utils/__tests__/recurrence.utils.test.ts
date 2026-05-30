@@ -1598,3 +1598,107 @@ describe('getOccurrencesInWindow — weekly lead time', () => {
     ]);
   });
 });
+
+// ---------------------------------------------------------------------------
+// 15. Critical recurrence regression scenarios
+// ---------------------------------------------------------------------------
+
+describe('Critical recurrence regression scenarios', () => {
+  it('daily interval=1 generates on consecutive days', () => {
+    const template = makeTemplate({
+      frequency: 'daily',
+      interval: 1,
+      startDate: '2026-06-01',
+    });
+
+    // Day 1: June 15 — task exists for this day
+    const day1 = new Date(2026, 5, 15);
+    const existingTask = makeTask({
+      recurrenceTemplateId: template.id,
+      recurrenceDateKey: '2026-06-15',
+    });
+
+    const result1 = getPendingGenerations([template], [existingTask], day1);
+    expect(result1).toHaveLength(0);
+
+    // Day 2: June 16 — no task for this day yet, should generate
+    const day2 = new Date(2026, 5, 16);
+    const result2 = getPendingGenerations([template], [existingTask], day2);
+    expect(result2).toHaveLength(1);
+    expect(result2[0].dateKey).toBe('2026-06-16');
+  });
+
+  it('weekly multi-day does not duplicate occurrences on a single day', () => {
+    const template = makeTemplate({
+      frequency: 'weekly',
+      weeklyDays: [1, 3],
+      startDate: '2026-01-05',
+    });
+
+    // Monday June 15, 2026
+    const monday = new Date(2026, 5, 15);
+    const result = getPendingGenerations([template], [], monday);
+
+    expect(result).toHaveLength(1);
+    expect(result[0].dateKey).toBe('2026-06-15');
+  });
+
+  it('monthly day=31 clamps correctly across different months', () => {
+    const template = makeTemplate({
+      frequency: 'monthly',
+      monthlyDay: 31,
+      interval: 1,
+      startDate: '2026-01-01',
+    });
+
+    // January 31 — exact match
+    expect(getOccurrencesInWindow(template, new Date(2026, 0, 31))).toContain(
+      '2026-01-31',
+    );
+
+    // February 28 — clamp from 31 to 28 (2026 is not a leap year)
+    expect(getOccurrencesInWindow(template, new Date(2026, 1, 28))).toContain(
+      '2026-02-28',
+    );
+
+    // April 30 — clamp from 31 to 30
+    expect(getOccurrencesInWindow(template, new Date(2026, 3, 30))).toContain(
+      '2026-04-30',
+    );
+  });
+
+  it('completed task with matching templateId/dateKey blocks re-generation', () => {
+    const template = makeTemplate({
+      frequency: 'daily',
+      interval: 1,
+      startDate: '2026-06-01',
+    });
+
+    const today = new Date(2026, 5, 15);
+    const doneTask = makeTask({
+      status: 'done',
+      recurrenceTemplateId: template.id,
+      recurrenceDateKey: '2026-06-15',
+      completedAt: '2026-06-15T10:00:00.000Z',
+    });
+
+    const result = getPendingGenerations([template], [doneTask], today);
+    expect(result).toHaveLength(0);
+  });
+
+  it('lead time dateKey is the occurrence date, not today', () => {
+    const template = makeTemplate({
+      frequency: 'weekly',
+      weeklyDays: [5],
+      leadTimeDays: 2,
+      startDate: '2026-01-02',
+    });
+
+    // Wednesday June 17, 2026 — Friday June 19 is 2 days away (within lead window)
+    const wednesday = new Date(2026, 5, 17);
+    const result = getOccurrencesInWindow(template, wednesday);
+
+    expect(result).toHaveLength(1);
+    expect(result[0]).toBe('2026-06-19');
+  });
+});

@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { useSubmitFeedback } from '../hooks/use-submit-feedback';
 import { useToastStore } from '@/shared/store/toast.store';
+import { trackEvent } from '@/shared/analytics';
 import { FeedbackSection } from '../components/FeedbackSection';
 import type { SubmitFeedbackInput } from '../types/feedback.types';
 
@@ -13,6 +14,7 @@ export function FeedbackSectionContainer() {
     mutate(data, {
       onSuccess: () => {
         addToast(t('feedback.toast.success'), 'success');
+        trackEvent('feedback_submitted', { category: data.category });
       },
       onError: () => {
         addToast(t('feedback.toast.error'), 'error');

@@ -18,6 +18,7 @@ import {
 import { ConvertToTaskContainer } from './ConvertToTaskContainer';
 import { useAuth } from '@/features/auth/hooks';
 import { useProfile } from '@/features/account/hooks/use-profile';
+import { trackEvent } from '@/shared/analytics';
 import { getGreetingKey, getDisplayName } from '../utils/greeting.utils';
 import { InboxHero } from '../components/InboxHero';
 
@@ -45,7 +46,10 @@ export function InboxDashboardContainer() {
     createMutation.mutate(
       { title: input.title, notes: input.notes ?? null },
       {
-        onSuccess: () => addToast(t('inbox:toast.captured'), 'success'),
+        onSuccess: () => {
+          addToast(t('inbox:toast.captured'), 'success');
+          trackEvent('inbox_task_created');
+        },
         onError: () => addToast(t('inbox:toast.captureFailed'), 'error'),
       },
     );

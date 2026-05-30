@@ -30,6 +30,7 @@ import {
   celebrateTaskDone,
   getConfettiOriginFromElement,
 } from '../utils/confetti';
+import { trackEvent } from '@/shared/analytics';
 
 const BoardView = lazy(() =>
   import('../components/BoardView').then((m) => ({ default: m.BoardView })),
@@ -151,7 +152,10 @@ export function TaskListContainer() {
     const task = data?.tasks.find((t) => t.id === id);
     if (!task) return;
     createTask(buildDuplicateInput(task), {
-      onSuccess: (createdTask) => recorder.recordTaskCreated(createdTask.id),
+      onSuccess: (createdTask) => {
+        recorder.recordTaskCreated(createdTask.id);
+        trackEvent('task_created', { source: 'duplicate' });
+      },
     });
   }
 
@@ -206,6 +210,17 @@ export function TaskListContainer() {
           if (!oldTask || oldTask.status === update.status) continue;
           recorder.recordTaskUpdate(update.id, oldTask, {
             status: update.status,
+          });
+        }
+
+        const newDoneCount = updates.filter(
+          (u) =>
+            u.status === 'done' && previousTaskMap.get(u.id)?.status !== 'done',
+        ).length;
+        if (newDoneCount > 0) {
+          trackEvent('task_completed', {
+            source: 'board',
+            count: newDoneCount,
           });
         }
       },

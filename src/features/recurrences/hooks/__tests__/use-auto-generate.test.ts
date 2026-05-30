@@ -255,4 +255,61 @@ describe('useAutoGenerate', () => {
 
     expect(generateTasks).not.toHaveBeenCalled();
   });
+
+  it('allows retry on next render after generateTasks rejects', async () => {
+    const pending = [makePending('template-1', '2026-06-15')];
+    (getPendingGenerations as ReturnType<typeof vi.fn>).mockReturnValue(
+      pending,
+    );
+    (generateTasks as ReturnType<typeof vi.fn>).mockRejectedValueOnce(
+      new Error('Network error'),
+    );
+
+    const templates = [makeTemplate()];
+    const tasks: Task[] = [];
+    const { Wrapper } = createWrapper();
+
+    const { rerender } = renderHook(
+      ({ t, k }: { t: RecurrenceTemplate[]; k: Task[] }) =>
+        useAutoGenerate(t, k),
+      { wrapper: Wrapper, initialProps: { t: templates, k: tasks } },
+    );
+
+    await waitFor(() => expect(generateTasks).toHaveBeenCalledTimes(1));
+
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 50));
+    });
+
+    (generateTasks as ReturnType<typeof vi.fn>).mockResolvedValueOnce(
+      undefined,
+    );
+
+    // Pass new array references to trigger useEffect re-run
+    rerender({ t: [...templates], k: [...tasks] });
+
+    await waitFor(() => expect(generateTasks).toHaveBeenCalledTimes(2));
+  });
+
+  it('does NOT re-generate when completed task matches templateId and dateKey', async () => {
+    (getPendingGenerations as ReturnType<typeof vi.fn>).mockReturnValue([]);
+
+    const templates = [makeTemplate()];
+    const tasks = [
+      makeTask({
+        status: 'done',
+        recurrenceTemplateId: 'template-1',
+        recurrenceDateKey: '2026-06-15',
+      }),
+    ];
+    const { Wrapper } = createWrapper();
+
+    renderHook(() => useAutoGenerate(templates, tasks), { wrapper: Wrapper });
+
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 50));
+    });
+
+    expect(generateTasks).not.toHaveBeenCalled();
+  });
 });

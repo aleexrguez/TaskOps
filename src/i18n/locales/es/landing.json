@@ -5,8 +5,8 @@
     "themeToggle": "Cambiar a modo {{nextTheme}}"
   },
   "hero": {
-    "title": "Organiza el trabajo, no el caos",
-    "subtitle": "TaskOps es un gestor de tareas ligero para desarrolladores y equipos pequeños. Tableros Kanban, tareas recurrentes, recordatorios inteligentes — todo lo que necesitas para mantener el rumbo.",
+    "title": "Productividad moderna, sin complejidad innecesaria",
+    "subtitle": "Tableros Kanban, tareas recurrentes, recordatorios inteligentes, captura rápida y reportes — todo en una app limpia y rápida para individuos y equipos pequeños.",
     "cta": {
       "getStarted": "Comenzar",
       "login": "Iniciar sesión",
@@ -21,7 +21,7 @@
     },
     "recurring": {
       "title": "Tareas recurrentes",
-      "description": "Configura tareas diarias, semanales o mensuales que se generan automáticamente."
+      "description": "Standups diarios, informes semanales y revisiones mensuales: configura el calendario una vez y las tareas aparecen automáticamente. Usa la generación anticipada para prepararte con tiempo."
     },
     "reminders": {
       "title": "Recordatorios inteligentes",
@@ -30,7 +30,59 @@
     "ordering": {
       "title": "Orden persistente",
       "description": "El orden de tu tablero se guarda automáticamente. Arrastra una vez, mantente organizado para siempre."
+    },
+    "inbox": {
+      "title": "Captura rápida",
+      "description": "Captura ideas y tareas al instante. Revisa, convierte o descarta desde una bandeja dedicada."
+    },
+    "reports": {
+      "title": "Reportes semanales y mensuales",
+      "description": "Mide tu productividad con resúmenes automáticos del trabajo completado."
     }
+  },
+  "milestones": {
+    "heading": "Construido y en producción",
+    "items": [
+      "Tablero Kanban con drag & drop persistente",
+      "Tareas recurrentes con generación anticipada",
+      "Recordatorios y tareas próximas",
+      "Inbox de captura rápida",
+      "Reportes semanales y mensuales",
+      "PWA instalable en cualquier dispositivo",
+      "Soporte completo en inglés y español",
+      "Google OAuth y gestión de cuenta"
+    ]
+  },
+  "roadmap": {
+    "heading": "Qué viene",
+    "subheading": "Estamos construyendo activamente. Esto es hacia dónde va TaskOps.",
+    "items": [
+      {
+        "title": "Recurrencias avanzadas",
+        "description": "Recurrencias más flexibles con edición de series, omitir ocurrencias y mejor control de tareas futuras."
+      },
+      {
+        "title": "Plan diario ligero",
+        "description": "Una vista Today para priorizar el día, revisar tareas vencidas y planificar sin convertir TaskOps en un calendario pesado."
+      },
+      {
+        "title": "Captura rápida e IA opcional",
+        "description": "Mejoras para crear tareas más rápido, detectar fechas simples y añadir ayuda inteligente solo cuando aporte valor."
+      }
+    ]
+  },
+  "techStack": {
+    "heading": "Construido con herramientas modernas",
+    "items": [
+      "React 19",
+      "TypeScript",
+      "Supabase",
+      "React Query",
+      "Zustand",
+      "Tailwind CSS",
+      "Vitest",
+      "Arquitectura feature-first"
+    ]
   },
   "feedback": {
     "heading": "Ayuda a mejorar TaskOps",
@@ -52,6 +104,10 @@
       "label": "Email (opcional)",
       "placeholder": "tu@ejemplo.com",
       "invalid": "Introduce un email válido"
+    },
+    "toggle": {
+      "open": "Enviar feedback",
+      "close": "Ocultar formulario"
     },
     "submit": "Enviar feedback",
     "submitting": "Enviando...",

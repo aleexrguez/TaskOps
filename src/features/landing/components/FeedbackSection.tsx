@@ -1,4 +1,4 @@
-import { useReducer, useEffect, useRef } from 'react';
+import { useReducer, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   FEEDBACK_CATEGORIES,
@@ -9,6 +9,7 @@ import {
 
 const COOLDOWN_MS = 30_000;
 const COOLDOWN_KEY = 'feedback_cooldown_until';
+const ANIMATION_MS = 300;
 
 export interface FeedbackSectionProps {
   onSubmit: (data: SubmitFeedbackInput) => void;
@@ -96,6 +97,11 @@ export function FeedbackSection({
     }),
   );
 
+  const [isOpen, setIsOpen] = useState(false);
+  const [shouldRenderForm, setShouldRenderForm] = useState(false);
+  const toggleRef = useRef<HTMLButtonElement>(null);
+  const collapseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const animationTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // Manage the countdown interval. Runs after every render; the guard on
@@ -134,7 +140,47 @@ export function FeedbackSection({
     if (!isSuccess) return;
     sessionStorage.setItem(COOLDOWN_KEY, String(Date.now() + COOLDOWN_MS));
     dispatch({ type: 'RESET' });
+    collapseTimerRef.current = setTimeout(() => {
+      setIsOpen(false);
+      animationTimerRef.current = setTimeout(() => {
+        setShouldRenderForm(false);
+        animationTimerRef.current = null;
+        toggleRef.current?.focus();
+      }, ANIMATION_MS);
+    }, 2000);
+    return () => {
+      if (collapseTimerRef.current) clearTimeout(collapseTimerRef.current);
+      if (animationTimerRef.current) clearTimeout(animationTimerRef.current);
+    };
   }, [isSuccess]);
+
+  useEffect(() => {
+    return () => {
+      if (animationTimerRef.current) clearTimeout(animationTimerRef.current);
+    };
+  }, []);
+
+  function handleToggle(): void {
+    if (!isOpen && !shouldRenderForm) {
+      // Opening — clear any pending unmount, mount form, then animate
+      if (animationTimerRef.current) {
+        clearTimeout(animationTimerRef.current);
+        animationTimerRef.current = null;
+      }
+      setShouldRenderForm(true);
+      // setTimeout(0) ensures the collapsed state is committed to DOM
+      // before triggering the CSS transition to expanded.
+      setTimeout(() => setIsOpen(true), 0);
+    } else if (isOpen) {
+      // Closing — animate, then unmount
+      setIsOpen(false);
+      animationTimerRef.current = setTimeout(() => {
+        setShouldRenderForm(false);
+        animationTimerRef.current = null;
+      }, ANIMATION_MS);
+    }
+    // If !isOpen && shouldRenderForm → close animation in progress, ignore
+  }
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>): void {
     e.preventDefault();
@@ -184,118 +230,147 @@ export function FeedbackSection({
   }
 
   return (
-    <section className="border-t border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-900">
+    <section className="border-t border-indigo-100 bg-indigo-50 dark:border-t-indigo-900 dark:bg-indigo-950/30">
       <div className="mx-auto max-w-xl px-4 py-16">
-        <h2 className="mb-3 text-center text-2xl font-bold text-gray-900 dark:text-gray-100">
-          {t('feedback.heading')}
-        </h2>
-        <p className="mb-8 text-center text-sm text-gray-600 dark:text-gray-400">
-          {t('feedback.description')}
-        </p>
+        <div className="rounded-xl border border-indigo-200 bg-white p-6 shadow-sm dark:border-indigo-800 dark:bg-gray-800">
+          <h2 className="mb-3 text-center text-2xl font-bold text-gray-900 dark:text-gray-100">
+            {t('feedback.heading')}
+          </h2>
+          <p className="text-center text-sm text-gray-600 dark:text-gray-400">
+            {t('feedback.description')}
+          </p>
 
-        <form onSubmit={handleSubmit} noValidate className="relative">
-          {/* Honeypot — hidden from real users */}
-          <input
-            name="website"
-            type="text"
-            tabIndex={-1}
-            autoComplete="off"
-            className="absolute opacity-0 h-0 w-0 overflow-hidden pointer-events-none"
-            value={state.honeypot}
-            onChange={(e) =>
-              dispatch({ type: 'SET_HONEYPOT', value: e.target.value })
-            }
-          />
-
-          {/* Message */}
-          <div className="mb-4">
-            <label
-              htmlFor="feedback-message"
-              className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300"
-            >
-              {t('feedback.message.label')}
-            </label>
-            <textarea
-              id="feedback-message"
-              rows={4}
-              className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-500"
-              placeholder={t('feedback.message.placeholder')}
-              value={state.message}
-              onChange={(e) =>
-                dispatch({ type: 'SET_MESSAGE', value: e.target.value })
-              }
-            />
-            <div className="mt-1 flex items-start justify-between gap-2">
-              {state.errors.message ? (
-                <p className="text-xs text-red-600 dark:text-red-400">
-                  {state.errors.message}
-                </p>
-              ) : (
-                <span />
-              )}
-              <span className="shrink-0 text-xs text-gray-400 dark:text-gray-500">
-                {state.message.length}/1000
-              </span>
-            </div>
-          </div>
-
-          {/* Category */}
-          <div className="mb-4">
-            <span className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
-              {t('feedback.category.label')}
-            </span>
-            <div className="flex flex-wrap gap-2">
-              {FEEDBACK_CATEGORIES.map((cat) => (
-                <button
-                  key={cat}
-                  type="button"
-                  onClick={() => dispatch({ type: 'SET_CATEGORY', value: cat })}
-                  className={
-                    state.category === cat
-                      ? 'rounded-md px-3 py-1.5 text-sm font-medium bg-indigo-600 text-white'
-                      : 'rounded-md px-3 py-1.5 text-sm font-medium border border-gray-300 bg-white text-gray-700 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300'
-                  }
-                >
-                  {t(`feedback.category.${cat}`)}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Email */}
-          <div className="mb-6">
-            <label
-              htmlFor="feedback-email"
-              className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300"
-            >
-              {t('feedback.email.label')}
-            </label>
-            <input
-              id="feedback-email"
-              type="email"
-              className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-500"
-              placeholder={t('feedback.email.placeholder')}
-              value={state.email}
-              onChange={(e) =>
-                dispatch({ type: 'SET_EMAIL', value: e.target.value })
-              }
-            />
-            {state.errors.email && (
-              <p className="mt-1 text-xs text-red-600 dark:text-red-400">
-                {state.errors.email}
-              </p>
-            )}
-          </div>
-
-          {/* Submit */}
           <button
-            type="submit"
-            disabled={isDisabled}
-            className="w-full rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60 dark:focus:ring-offset-gray-900"
+            ref={toggleRef}
+            type="button"
+            onClick={handleToggle}
+            aria-expanded={isOpen}
+            aria-controls="feedback-form-panel"
+            className="mx-auto mt-4 flex items-center gap-2 rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus-visible:ring-2 dark:focus:ring-offset-gray-800"
           >
-            {getSubmitLabel()}
+            {isOpen ? t('feedback.toggle.close') : t('feedback.toggle.open')}
           </button>
-        </form>
+
+          {shouldRenderForm && (
+            <div
+              id="feedback-form-panel"
+              className={`mt-6 grid transition-[grid-template-rows,opacity] duration-300 ease-in-out motion-reduce:transition-none ${
+                isOpen
+                  ? 'grid-rows-[1fr] opacity-100'
+                  : 'grid-rows-[0fr] opacity-0'
+              }`}
+              inert={!isOpen ? true : undefined}
+            >
+              <div className="overflow-hidden">
+                <form onSubmit={handleSubmit} noValidate className="relative">
+                  {/* Honeypot — hidden from real users */}
+                  <input
+                    name="website"
+                    type="text"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    className="absolute opacity-0 h-0 w-0 overflow-hidden pointer-events-none"
+                    value={state.honeypot}
+                    onChange={(e) =>
+                      dispatch({ type: 'SET_HONEYPOT', value: e.target.value })
+                    }
+                  />
+
+                  {/* Message */}
+                  <div className="mb-4">
+                    <label
+                      htmlFor="feedback-message"
+                      className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300"
+                    >
+                      {t('feedback.message.label')}
+                    </label>
+                    <textarea
+                      id="feedback-message"
+                      rows={4}
+                      className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-500"
+                      placeholder={t('feedback.message.placeholder')}
+                      value={state.message}
+                      onChange={(e) =>
+                        dispatch({ type: 'SET_MESSAGE', value: e.target.value })
+                      }
+                    />
+                    <div className="mt-1 flex items-start justify-between gap-2">
+                      {state.errors.message ? (
+                        <p className="text-xs text-red-600 dark:text-red-400">
+                          {state.errors.message}
+                        </p>
+                      ) : (
+                        <span />
+                      )}
+                      <span className="shrink-0 text-xs text-gray-400 dark:text-gray-500">
+                        {state.message.length}/1000
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Category */}
+                  <div className="mb-4">
+                    <span className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                      {t('feedback.category.label')}
+                    </span>
+                    <div className="flex flex-wrap gap-2">
+                      {FEEDBACK_CATEGORIES.map((cat) => (
+                        <button
+                          key={cat}
+                          type="button"
+                          onClick={() =>
+                            dispatch({ type: 'SET_CATEGORY', value: cat })
+                          }
+                          className={
+                            state.category === cat
+                              ? 'rounded-md px-3 py-1.5 text-sm font-medium bg-indigo-600 text-white'
+                              : 'rounded-md px-3 py-1.5 text-sm font-medium border border-gray-300 bg-white text-gray-700 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300'
+                          }
+                        >
+                          {t(`feedback.category.${cat}`)}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Email */}
+                  <div className="mb-6">
+                    <label
+                      htmlFor="feedback-email"
+                      className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300"
+                    >
+                      {t('feedback.email.label')}
+                    </label>
+                    <input
+                      id="feedback-email"
+                      type="email"
+                      className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-500"
+                      placeholder={t('feedback.email.placeholder')}
+                      value={state.email}
+                      onChange={(e) =>
+                        dispatch({ type: 'SET_EMAIL', value: e.target.value })
+                      }
+                    />
+                    {state.errors.email && (
+                      <p className="mt-1 text-xs text-red-600 dark:text-red-400">
+                        {state.errors.email}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Submit */}
+                  <button
+                    type="submit"
+                    disabled={isDisabled}
+                    className="w-full rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60 dark:focus:ring-offset-gray-900"
+                  >
+                    {getSubmitLabel()}
+                  </button>
+                </form>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </section>
   );

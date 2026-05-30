@@ -5,8 +5,8 @@
     "themeToggle": "Switch to {{nextTheme}} mode"
   },
   "hero": {
-    "title": "Ship Work, Not Chaos",
-    "subtitle": "TaskOps is a lightweight task manager built for developers and small teams. Kanban boards, recurring tasks, smart reminders — everything you need to stay on track.",
+    "title": "Modern Productivity Without Enterprise Complexity",
+    "subtitle": "Kanban boards, recurring tasks, smart reminders, inbox capture, and reports — all in a clean, fast app built for individuals and small teams.",
     "cta": {
       "getStarted": "Get Started",
       "login": "Login",
@@ -21,7 +21,7 @@
     },
     "recurring": {
       "title": "Recurring Tasks",
-      "description": "Set up daily, weekly, or monthly recurring tasks that generate automatically."
+      "description": "Daily standups, weekly reviews, monthly reports — set the schedule once and tasks appear automatically. Configure lead time to prepare ahead."
     },
     "reminders": {
       "title": "Smart Reminders",
@@ -30,7 +30,59 @@
     "ordering": {
       "title": "Persistent Ordering",
       "description": "Your board order is saved automatically. Drag once, stay organized forever."
+    },
+    "inbox": {
+      "title": "Inbox Capture",
+      "description": "Quickly capture ideas and tasks. Review, convert, or discard from a dedicated inbox."
+    },
+    "reports": {
+      "title": "Weekly & Monthly Reports",
+      "description": "Track your productivity with automatic summaries of completed work."
     }
+  },
+  "milestones": {
+    "heading": "Built and shipping",
+    "items": [
+      "Persistent Kanban drag & drop",
+      "Recurring tasks with lead-time generation",
+      "Reminders and upcoming tasks",
+      "Quick capture Inbox",
+      "Weekly & monthly reports",
+      "Installable PWA on any device",
+      "Full English & Spanish support",
+      "Google OAuth & account management"
+    ]
+  },
+  "roadmap": {
+    "heading": "What's next",
+    "subheading": "We're actively building. This is where TaskOps is heading.",
+    "items": [
+      {
+        "title": "Advanced recurrences",
+        "description": "More flexible recurring tasks with series editing, skipped occurrences and better control over future tasks."
+      },
+      {
+        "title": "Lightweight daily planning",
+        "description": "A Today view to prioritize the day, review overdue tasks and plan without turning TaskOps into a heavy calendar."
+      },
+      {
+        "title": "Quick capture and optional AI",
+        "description": "Improvements to create tasks faster, detect simple dates and add intelligent help only when it provides value."
+      }
+    ]
+  },
+  "techStack": {
+    "heading": "Built with modern tools",
+    "items": [
+      "React 19",
+      "TypeScript",
+      "Supabase",
+      "React Query",
+      "Zustand",
+      "Tailwind CSS",
+      "Vitest",
+      "Feature-first architecture"
+    ]
   },
   "feedback": {
     "heading": "Help shape TaskOps",
@@ -52,6 +104,10 @@
       "label": "Email (optional)",
       "placeholder": "you@example.com",
       "invalid": "Please enter a valid email"
+    },
+    "toggle": {
+      "open": "Send feedback",
+      "close": "Hide form"
     },
     "submit": "Send feedback",
     "submitting": "Sending...",

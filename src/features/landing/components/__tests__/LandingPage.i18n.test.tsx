@@ -29,14 +29,48 @@ describe('LandingPage — i18n', () => {
 
   it('renders hero title in English by default', () => {
     render(<LandingPage />, { wrapper: createWrapper() });
-    expect(screen.getByText('Ship Work, Not Chaos')).toBeInTheDocument();
+    expect(
+      screen.getByText('Modern Productivity Without Enterprise Complexity'),
+    ).toBeInTheDocument();
   });
 
   it('renders hero title in Spanish when language is es', async () => {
     await i18n.changeLanguage('es');
     render(<LandingPage />, { wrapper: createWrapper() });
     expect(
-      screen.getByText('Organiza el trabajo, no el caos'),
+      screen.getByText('Productividad moderna, sin complejidad innecesaria'),
     ).toBeInTheDocument();
+  });
+
+  it('renders new sections headings in English', () => {
+    render(<LandingPage />, { wrapper: createWrapper() });
+    expect(screen.getByText('Built and shipping')).toBeInTheDocument();
+    expect(screen.getByText("What's next")).toBeInTheDocument();
+    expect(screen.getByText('Built with modern tools')).toBeInTheDocument();
+  });
+
+  it('renders new sections headings in Spanish', async () => {
+    await i18n.changeLanguage('es');
+    render(<LandingPage />, { wrapper: createWrapper() });
+    expect(screen.getByText('Construido y en producción')).toBeInTheDocument();
+    expect(screen.getByText('Qué viene')).toBeInTheDocument();
+    expect(
+      screen.getByText('Construido con herramientas modernas'),
+    ).toBeInTheDocument();
+  });
+
+  it('renders new feature cards in English', () => {
+    render(<LandingPage />, { wrapper: createWrapper() });
+    expect(screen.getByText('Inbox Capture')).toBeInTheDocument();
+    expect(screen.getByText('Weekly & Monthly Reports')).toBeInTheDocument();
+  });
+
+  it('renders new feature cards in Spanish', async () => {
+    await i18n.changeLanguage('es');
+    render(<LandingPage />, { wrapper: createWrapper() });
+    expect(screen.getByText('Captura rápida')).toBeInTheDocument();
+    expect(
+      screen.getAllByText('Reportes semanales y mensuales').length,
+    ).toBeGreaterThanOrEqual(1);
   });
 });
