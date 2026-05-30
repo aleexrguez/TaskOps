@@ -6,6 +6,7 @@ import { useToastStore } from '@/shared/store/toast.store';
 import { TaskForm } from '../components';
 import type { CreateTaskInput } from '../types';
 import { useActivityRecorder } from '../hooks/use-activity-recorder';
+import { trackEvent } from '@/shared/analytics';
 
 export function CreateTaskContainer() {
   const { t } = useTranslation('task');
@@ -35,6 +36,7 @@ export function CreateTaskContainer() {
         addToast(t('toast.created'), 'success');
         closeCreateModal();
         recorder.recordTaskCreated(createdTask.id);
+        trackEvent('task_created');
       },
       onError: () => {
         addToast(t('toast.createFailed'), 'error');

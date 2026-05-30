@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTasks } from '../hooks/use-tasks';
 import { useAutoPurge } from '../hooks/use-auto-purge';
@@ -12,6 +12,7 @@ import {
   applyAllFilters,
 } from '../utils/task.utils';
 import { TaskStats, ViewToggle, ConfirmDialog } from '../components';
+import { trackEvent } from '@/shared/analytics';
 import { TaskListContainer } from './TaskListContainer';
 import { CreateTaskContainer } from './CreateTaskContainer';
 import { EditTaskContainer } from './EditTaskContainer';
@@ -30,6 +31,14 @@ export function TaskDashboardContainer() {
   const { mutate: cleanupDone, isPending: isCleaning } = useCleanupDoneTasks();
   const addToast = useToastStore((s) => s.addToast);
   const [showCleanupConfirm, setShowCleanupConfirm] = useState(false);
+
+  const boardTrackedRef = useRef(false);
+  useEffect(() => {
+    if (viewMode === 'board' && !boardTrackedRef.current) {
+      trackEvent('board_viewed', { source: 'initial' });
+    }
+    boardTrackedRef.current = true;
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const allVisible = useMemo(
     () => filterVisibleTasks(data?.tasks ?? [], showArchived),
@@ -86,7 +95,14 @@ export function TaskDashboardContainer() {
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <ViewToggle viewMode={viewMode} onViewModeChange={setViewMode} />
+          <ViewToggle
+            viewMode={viewMode}
+            onViewModeChange={(mode) => {
+              setViewMode(mode);
+              if (mode === 'board')
+                trackEvent('board_viewed', { source: 'toggle' });
+            }}
+          />
           {cleanupCount > 0 && (
             <button
               type="button"

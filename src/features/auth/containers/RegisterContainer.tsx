@@ -1,8 +1,10 @@
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useSignUp, useSignInWithGoogle } from '../hooks';
 import { RegisterForm } from '../components';
 import { useApplyTheme } from '@/shared/hooks/use-apply-theme';
+import { trackEvent } from '@/shared/analytics';
 
 import { AuthModal } from '@/shared/components/AuthModal';
 import type { RegisterInput } from '../types';
@@ -11,6 +13,10 @@ export function RegisterContainer() {
   useApplyTheme();
   const { t } = useTranslation('auth');
   const navigate = useNavigate();
+
+  useEffect(() => {
+    trackEvent('auth_modal_opened', { variant: 'register' });
+  }, []);
   const { signUp, isPending, error, isSuccess } = useSignUp();
   const {
     signInWithGoogle,

@@ -1,6 +1,8 @@
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useApplyTheme } from '@/shared/hooks/use-apply-theme';
+import { trackEvent } from '@/shared/analytics';
 import { useAppPreferencesStore } from '@/shared/store/app-preferences.store';
 import { LanguageToggle } from '@/shared/components/LanguageToggle';
 import { Footer } from '@/shared/components/Footer';
@@ -32,6 +34,10 @@ function themeIcon(current: ThemePreference): string {
 export function LandingPage() {
   useApplyTheme();
   const { t } = useTranslation('landing');
+
+  useEffect(() => {
+    trackEvent('landing_viewed');
+  }, []);
 
   const theme = useAppPreferencesStore((s) => s.theme);
   const setTheme = useAppPreferencesStore((s) => s.setTheme);

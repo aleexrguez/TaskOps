@@ -9,6 +9,7 @@ import {
   celebrateTaskDone,
   getConfettiOriginFromElement,
 } from '../utils/confetti';
+import { trackEvent } from '@/shared/analytics';
 
 export function EditTaskContainer() {
   const { t } = useTranslation('task');
@@ -52,6 +53,7 @@ export function EditTaskContainer() {
               `[data-task-id="${CSS.escape(selectedTaskId!)}"]`,
             );
             celebrateTaskDone(getConfettiOriginFromElement(el));
+            trackEvent('task_completed');
           }
         },
         onError: () => {

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useRecurrences, useDeleteRecurrence } from '../hooks/use-recurrences';
 import { useRecurrenceUIStore } from '../store/recurrence-ui.store';
@@ -8,9 +8,14 @@ import { ConfirmDialog } from '@/shared/components/ConfirmDialog';
 import { CreateRecurrenceContainer } from './CreateRecurrenceContainer';
 import { EditRecurrenceContainer } from './EditRecurrenceContainer';
 import { groupByFrequency } from '../utils/recurrence.utils';
+import { trackEvent } from '@/shared/analytics';
 
 export function RecurrenceDashboardContainer() {
   const { t } = useTranslation('recurrence');
+
+  useEffect(() => {
+    trackEvent('recurrence_viewed');
+  }, []);
   const { data, isLoading, isError, error, refetch } = useRecurrences();
   const { mutate: deleteRecurrence, isPending: isDeleting } =
     useDeleteRecurrence();

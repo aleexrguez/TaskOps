@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/features/auth/hooks';
 import { useIsDemoUser } from '@/shared/hooks/use-is-demo-user';
 import { useApplyTheme } from '@/shared/hooks/use-apply-theme';
+import { trackEvent } from '@/shared/analytics';
 import { signIn, signOut } from '../api';
 
 function FullPageLayout({ children }: { children: React.ReactNode }) {
@@ -38,6 +39,10 @@ export function DemoLoginContainer() {
 
   const [error, setError] = useState(false);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
+
+  useEffect(() => {
+    trackEvent('demo_started');
+  }, []);
 
   const demoEmail = import.meta.env.VITE_DEMO_EMAIL as string | undefined;
   const demoPassword = import.meta.env.VITE_DEMO_PASSWORD as string | undefined;
