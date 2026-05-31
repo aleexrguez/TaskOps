@@ -1,6 +1,6 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import type { Task } from '../types';
+import type { Task, TaskStatus } from '../types';
 import type { ChecklistSummary } from '../api/checklist-api';
 import { TaskCard } from './TaskCard';
 
@@ -10,6 +10,7 @@ interface SortableTaskCardProps {
   onClick?: (id: string) => void;
   onArchive?: (id: string) => void;
   onDuplicate?: (id: string) => void;
+  onMove?: (id: string, newStatus: TaskStatus) => void;
   isDeleting?: boolean;
   checklistSummary?: ChecklistSummary;
 }
@@ -20,6 +21,7 @@ export function SortableTaskCard({
   onClick,
   onArchive,
   onDuplicate,
+  onMove,
   isDeleting,
   checklistSummary,
 }: SortableTaskCardProps) {
@@ -49,6 +51,7 @@ export function SortableTaskCard({
         onClick={onClick}
         onArchive={onArchive}
         onDuplicate={onDuplicate}
+        onMove={onMove}
         isDeleting={isDeleting}
         checklistSummary={checklistSummary}
       />

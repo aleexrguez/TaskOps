@@ -27,7 +27,9 @@
     "duplicate": "Duplicate",
     "newTask": "New Task",
     "archive": "Archive",
-    "unarchive": "Unarchive"
+    "unarchive": "Unarchive",
+    "move": "Move",
+    "moveTo": "Move to {{status}}"
   },
   "status": {
     "todo": "Todo",

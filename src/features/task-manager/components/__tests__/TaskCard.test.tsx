@@ -452,3 +452,57 @@ describe('TaskCard — checklist progress', () => {
     expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
   });
 });
+
+describe('TaskCard — board move', () => {
+  const baseTask: Task = {
+    id: 'task-board-move-001',
+    title: 'Board Move Task',
+    status: 'todo',
+    priority: 'medium',
+    isArchived: false,
+    position: 0,
+    createdAt: '2026-04-01T10:00:00.000Z',
+    updatedAt: '2026-04-01T10:00:00.000Z',
+  };
+
+  it('renders BoardMoveMenu when onMove is provided', () => {
+    render(<TaskCard task={baseTask} onMove={vi.fn()} />);
+
+    expect(screen.getByRole('button', { name: /move/i })).toBeInTheDocument();
+  });
+
+  it('does NOT render BoardMoveMenu when onMove is omitted', () => {
+    render(<TaskCard task={baseTask} />);
+
+    expect(
+      screen.queryByRole('button', { name: /^move$/i }),
+    ).not.toBeInTheDocument();
+  });
+
+  it('click destination calls onMove with (taskId, targetStatus)', async () => {
+    const user = userEvent.setup();
+    const onMove = vi.fn();
+
+    render(<TaskCard task={baseTask} onMove={onMove} />);
+
+    await user.click(screen.getByRole('button', { name: /^move$/i }));
+    await user.click(screen.getByRole('menuitem', { name: /in progress/i }));
+
+    expect(onMove).toHaveBeenCalledOnce();
+    expect(onMove).toHaveBeenCalledWith('task-board-move-001', 'in-progress');
+  });
+
+  it('click destination does not trigger onClick', async () => {
+    const user = userEvent.setup();
+    const onMove = vi.fn();
+    const onClick = vi.fn();
+
+    render(<TaskCard task={baseTask} onMove={onMove} onClick={onClick} />);
+
+    await user.click(screen.getByRole('button', { name: /^move$/i }));
+    await user.click(screen.getByRole('menuitem', { name: /in progress/i }));
+
+    expect(onMove).toHaveBeenCalledOnce();
+    expect(onClick).not.toHaveBeenCalled();
+  });
+});
