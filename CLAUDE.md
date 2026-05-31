@@ -54,8 +54,11 @@ src/
 |---------|------|-------------|
 | auth | src/features/auth/ | Authentication + password reset |
 | landing | src/features/landing/ | Landing page |
+| inbox | src/features/inbox/ | Quick capture + convert to tasks |
 | recurrences | src/features/recurrences/ | Recurring task templates + generation |
 | settings | src/features/settings/ | User settings + theme |
+| account | src/features/account/ | Profile, avatar, password, delete account |
+| legal | src/features/legal/ | Privacy, terms, cookies, legal notice |
 | task-manager | src/features/task-manager/ | Core tasks: CRUD, kanban, filtering |
 
 ## Scripts

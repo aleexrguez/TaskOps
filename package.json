@@ -1,7 +1,14 @@
 {
   "name": "task-manager",
   "private": true,
-  "version": "0.0.0",
+  "version": "2.9.8",
+  "description": "Full-stack SaaS task management app with kanban, recurring tasks, inbox, reports, and PWA support",
+  "author": "Alessandro",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aleexrguez/TaskOps"
+  },
   "type": "module",
   "scripts": {
     "dev": "vite",
