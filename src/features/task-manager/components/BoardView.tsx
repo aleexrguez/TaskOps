@@ -266,6 +266,23 @@ export function BoardView({
     setLocalBoard(board);
   }
 
+  function handleMoveTask(taskId: string, newStatus: TaskStatus): void {
+    const currentStatus = findContainer(localBoard, taskId);
+    if (!currentStatus || currentStatus === newStatus) return;
+
+    const task = localBoard[currentStatus].find((t) => t.id === taskId);
+    if (!task) return;
+
+    const newBoard: TaskBoard = {
+      ...localBoard,
+      [currentStatus]: localBoard[currentStatus].filter((t) => t.id !== taskId),
+      [newStatus]: [...localBoard[newStatus], { ...task, status: newStatus }],
+    };
+
+    setLocalBoard(newBoard);
+    onBoardChange?.(newBoard);
+  }
+
   return (
     <DndContext
       sensors={sensors}
@@ -284,6 +301,7 @@ export function BoardView({
           onClick={onClick}
           onArchive={onArchive}
           onDuplicate={onDuplicate}
+          onMove={handleMoveTask}
           deletingId={deletingId}
           checklistSummaries={checklistSummaries}
         />
@@ -295,6 +313,7 @@ export function BoardView({
           onClick={onClick}
           onArchive={onArchive}
           onDuplicate={onDuplicate}
+          onMove={handleMoveTask}
           deletingId={deletingId}
           checklistSummaries={checklistSummaries}
         />
@@ -306,6 +325,7 @@ export function BoardView({
           onClick={onClick}
           onArchive={onArchive}
           onDuplicate={onDuplicate}
+          onMove={handleMoveTask}
           deletingId={deletingId}
           checklistSummaries={checklistSummaries}
         />

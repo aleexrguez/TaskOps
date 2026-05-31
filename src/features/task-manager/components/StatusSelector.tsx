@@ -1,7 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { TaskStatus } from '../types';
-import { STATUS_I18N_KEYS, STATUS_STYLES } from './status.constants';
+import {
+  STATUS_DOT_STYLES,
+  STATUS_I18N_KEYS,
+  STATUS_STYLES,
+} from './status.constants';
 
 interface StatusSelectorProps {
   status: TaskStatus;
@@ -10,12 +14,6 @@ interface StatusSelectorProps {
 }
 
 const ALL_STATUSES: TaskStatus[] = ['todo', 'in-progress', 'done'];
-
-const STATUS_DOT_STYLES: Record<TaskStatus, string> = {
-  todo: 'bg-gray-400 dark:bg-gray-500',
-  'in-progress': 'bg-blue-500 dark:bg-blue-400',
-  done: 'bg-green-500 dark:bg-green-400',
-};
 
 export function StatusSelector({
   status,

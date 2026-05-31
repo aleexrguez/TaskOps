@@ -5,6 +5,7 @@ import { useRecurrenceUIStore } from '../store/recurrence-ui.store';
 import { useToastStore } from '@/shared/store/toast.store';
 import { RecurrenceForm } from '../components/RecurrenceForm';
 import type { CreateRecurrenceInput } from '../types/recurrence.types';
+import { useScrollLock } from '@/shared/hooks/use-scroll-lock';
 
 export function CreateRecurrenceContainer() {
   const { t } = useTranslation('recurrence');
@@ -12,6 +13,7 @@ export function CreateRecurrenceContainer() {
   const closeCreateModal = useRecurrenceUIStore((s) => s.closeCreateModal);
   const addToast = useToastStore((s) => s.addToast);
   const { mutateAsync: createRecurrence, isPending } = useCreateRecurrence();
+  useScrollLock(isOpen);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -58,7 +60,7 @@ export function CreateRecurrenceContainer() {
             ✕
           </button>
         </div>
-        <div className="overflow-y-auto px-6 py-4">
+        <div className="overflow-y-auto overscroll-contain px-6 py-4">
           <RecurrenceForm
             onSubmit={handleSubmit}
             isSubmitting={isPending}

@@ -16,6 +16,7 @@ interface BoardColumnProps {
   onClick?: (id: string) => void;
   onArchive?: (id: string) => void;
   onDuplicate?: (id: string) => void;
+  onMove?: (id: string, newStatus: TaskStatus) => void;
   deletingId?: string | null;
   checklistSummaries?: ChecklistSummaries;
 }
@@ -28,6 +29,7 @@ export function BoardColumn({
   onClick,
   onArchive,
   onDuplicate,
+  onMove,
   deletingId = null,
   checklistSummaries,
 }: BoardColumnProps) {
@@ -69,6 +71,7 @@ export function BoardColumn({
                 onClick={onClick}
                 onArchive={onArchive}
                 onDuplicate={onDuplicate}
+                onMove={onMove}
                 isDeleting={deletingId === task.id}
                 checklistSummary={checklistSummaries?.[task.id]}
               />

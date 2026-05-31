@@ -6,6 +6,7 @@ import { useToastStore } from '@/shared/store/toast.store';
 import { ConvertToTaskForm } from '../components/ConvertToTaskForm';
 import type { ConvertToTaskFormData } from '../components/ConvertToTaskForm';
 import type { InboxItem } from '../types/inbox.types';
+import { useScrollLock } from '@/shared/hooks/use-scroll-lock';
 
 interface ConvertToTaskContainerProps {
   item: InboxItem;
@@ -16,6 +17,7 @@ export function ConvertToTaskContainer({ item }: ConvertToTaskContainerProps) {
   const setConvertingItem = useInboxUIStore((s) => s.setConvertingItem);
   const addToast = useToastStore((s) => s.addToast);
   const { mutate: convert, isPending } = useConvertInboxItem();
+  useScrollLock(true);
 
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
@@ -57,31 +59,33 @@ export function ConvertToTaskContainer({ item }: ConvertToTaskContainerProps) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="convert-task-title"
-        className="mx-4 w-full max-w-md rounded-lg bg-white p-4 shadow-xl md:mx-auto md:p-6 dark:bg-gray-800"
+        className="mx-4 flex w-full max-w-md flex-col rounded-lg bg-white shadow-xl md:mx-auto dark:bg-gray-800 max-h-[calc(100vh-2rem)]"
       >
-        <div className="mb-4 flex items-center justify-between">
-          <h2
-            id="convert-task-title"
-            className="text-lg font-semibold text-gray-900 dark:text-gray-100"
-          >
-            {t('inbox:convertForm.dialogTitle')}
-          </h2>
-          <button
-            type="button"
-            aria-label={t('common:action.close')}
-            onClick={handleCancel}
-            className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
-          >
-            ✕
-          </button>
+        <div className="overflow-y-auto overscroll-contain p-4 md:p-6">
+          <div className="mb-4 flex items-center justify-between">
+            <h2
+              id="convert-task-title"
+              className="text-lg font-semibold text-gray-900 dark:text-gray-100"
+            >
+              {t('inbox:convertForm.dialogTitle')}
+            </h2>
+            <button
+              type="button"
+              aria-label={t('common:action.close')}
+              onClick={handleCancel}
+              className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
+            >
+              ✕
+            </button>
+          </div>
+          <ConvertToTaskForm
+            initialTitle={item.title}
+            initialDescription={item.notes ?? ''}
+            onSubmit={handleSubmit}
+            onCancel={handleCancel}
+            isSubmitting={isPending}
+          />
         </div>
-        <ConvertToTaskForm
-          initialTitle={item.title}
-          initialDescription={item.notes ?? ''}
-          onSubmit={handleSubmit}
-          onCancel={handleCancel}
-          isSubmitting={isPending}
-        />
       </div>
     </div>
   );

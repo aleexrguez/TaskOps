@@ -13,3 +13,9 @@ export const STATUS_I18N_KEYS: Record<TaskStatus, string> = {
   'in-progress': 'status.inProgress',
   done: 'status.done',
 };
+
+export const STATUS_DOT_STYLES: Record<TaskStatus, string> = {
+  todo: 'bg-gray-400 dark:bg-gray-500',
+  'in-progress': 'bg-blue-500 dark:bg-blue-400',
+  done: 'bg-green-500 dark:bg-green-400',
+};

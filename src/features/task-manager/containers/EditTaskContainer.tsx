@@ -10,6 +10,7 @@ import {
   getConfettiOriginFromElement,
 } from '../utils/confetti';
 import { trackEvent } from '@/shared/analytics';
+import { useScrollLock } from '@/shared/hooks/use-scroll-lock';
 
 export function EditTaskContainer() {
   const { t } = useTranslation('task');
@@ -20,6 +21,7 @@ export function EditTaskContainer() {
   const { mutate: updateTask, isPending, isError, error } = useUpdateTask();
 
   const { data: task, isLoading } = useTask(selectedTaskId ?? '');
+  useScrollLock(isOpen);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -71,45 +73,47 @@ export function EditTaskContainer() {
         role="dialog"
         aria-modal="true"
         aria-labelledby="edit-task-title"
-        className="mx-4 w-full max-w-md rounded-lg bg-white p-4 shadow-xl md:mx-auto md:p-6 dark:bg-gray-800"
+        className="mx-4 flex w-full max-w-md flex-col rounded-lg bg-white shadow-xl md:mx-auto dark:bg-gray-800 max-h-[calc(100vh-2rem)]"
       >
-        <div className="mb-4 flex items-center justify-between">
-          <h2
-            id="edit-task-title"
-            className="text-lg font-semibold text-gray-900 dark:text-gray-100"
-          >
-            {t('modal.editTitle')}
-          </h2>
-          <button
-            type="button"
-            aria-label={t('common:action.close')}
-            onClick={closeEditModal}
-            className="min-h-[44px] min-w-[44px] flex items-center justify-center text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
-          >
-            ✕
-          </button>
-        </div>
-        {isLoading ? (
-          <div className="flex justify-center py-8">
-            <div className="h-6 w-6 animate-spin rounded-full border-2 border-indigo-600 border-t-transparent" />
+        <div className="overflow-y-auto overscroll-contain p-4 md:p-6">
+          <div className="mb-4 flex items-center justify-between">
+            <h2
+              id="edit-task-title"
+              className="text-lg font-semibold text-gray-900 dark:text-gray-100"
+            >
+              {t('modal.editTitle')}
+            </h2>
+            <button
+              type="button"
+              aria-label={t('common:action.close')}
+              onClick={closeEditModal}
+              className="min-h-[44px] min-w-[44px] flex items-center justify-center text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
+            >
+              ✕
+            </button>
           </div>
-        ) : (
-          <>
-            {errorMessage && (
-              <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 dark:border-red-800 dark:bg-red-900/20">
-                <p className="text-sm text-red-700 dark:text-red-400">
-                  {errorMessage}
-                </p>
-              </div>
-            )}
-            <TaskForm
-              onSubmit={handleSubmit}
-              initialValues={task}
-              isSubmitting={isPending}
-              submitLabel={t('modal.submitSave')}
-            />
-          </>
-        )}
+          {isLoading ? (
+            <div className="flex justify-center py-8">
+              <div className="h-6 w-6 animate-spin rounded-full border-2 border-indigo-600 border-t-transparent" />
+            </div>
+          ) : (
+            <>
+              {errorMessage && (
+                <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 dark:border-red-800 dark:bg-red-900/20">
+                  <p className="text-sm text-red-700 dark:text-red-400">
+                    {errorMessage}
+                  </p>
+                </div>
+              )}
+              <TaskForm
+                onSubmit={handleSubmit}
+                initialValues={task}
+                isSubmitting={isPending}
+                submitLabel={t('modal.submitSave')}
+              />
+            </>
+          )}
+        </div>
       </div>
     </div>
   );

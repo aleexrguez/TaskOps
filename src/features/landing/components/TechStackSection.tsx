@@ -5,7 +5,7 @@ export function TechStackSection() {
   const items = t('techStack.items', { returnObjects: true }) as string[];
 
   return (
-    <section className="border-t border-gray-200 bg-white px-4 py-12 dark:border-gray-700 dark:bg-gray-800">
+    <section className="border-t border-gray-200 bg-white px-6 py-12 sm:px-8 dark:border-gray-700 dark:bg-gray-800">
       <div className="mx-auto max-w-5xl">
         <h2 className="mb-6 text-center text-2xl font-bold text-gray-900 dark:text-gray-100">
           {t('techStack.heading')}

@@ -8,6 +8,7 @@ import type {
   CreateRecurrenceInput,
   UpdateRecurrenceInput,
 } from '../types/recurrence.types';
+import { useScrollLock } from '@/shared/hooks/use-scroll-lock';
 
 export function EditRecurrenceContainer() {
   const { t } = useTranslation('recurrence');
@@ -18,6 +19,7 @@ export function EditRecurrenceContainer() {
   const { mutateAsync: updateRecurrence, isPending } = useUpdateRecurrence();
 
   const { data: template, isLoading } = useRecurrence(selectedTemplateId ?? '');
+  useScrollLock(isOpen);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -86,7 +88,7 @@ export function EditRecurrenceContainer() {
             ✕
           </button>
         </div>
-        <div className="overflow-y-auto px-6 py-4">
+        <div className="overflow-y-auto overscroll-contain px-6 py-4">
           {isLoading ? (
             <div className="flex justify-center py-8">
               <div className="h-6 w-6 animate-spin rounded-full border-2 border-indigo-600 border-t-transparent" />

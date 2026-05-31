@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import type { Task } from '../types';
+import type { Task, TaskStatus } from '../types';
 import type { ChecklistSummary } from '../api/checklist-api';
 import { isGeneratedTask } from '@/features/recurrences/utils/recurrence.utils';
 import { formatDate, formatDateTime } from '../utils/date.utils';
@@ -8,6 +8,7 @@ import { StatusBadge } from './StatusBadge';
 import { PriorityIndicator } from './PriorityIndicator';
 import { DueDateDisplay } from './DueDateDisplay';
 import { ChecklistProgress } from './ChecklistProgress';
+import { BoardMoveMenu } from './BoardMoveMenu';
 
 interface TaskCardProps {
   task: Task;
@@ -15,6 +16,7 @@ interface TaskCardProps {
   onClick?: (id: string) => void;
   onArchive?: (id: string) => void;
   onDuplicate?: (id: string) => void;
+  onMove?: (id: string, newStatus: TaskStatus) => void;
   isDeleting?: boolean;
   checklistSummary?: ChecklistSummary;
   compact?: boolean;
@@ -26,6 +28,7 @@ export function TaskCard({
   onClick,
   onArchive,
   onDuplicate,
+  onMove,
   isDeleting = false,
   checklistSummary,
   compact = false,
@@ -44,6 +47,12 @@ export function TaskCard({
         <div
           className={`pointer-events-auto flex shrink-0 gap-1 opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-within:opacity-100 touch-show-actions${compact ? ' hidden sm:flex' : ''}`}
         >
+          {onMove && (
+            <BoardMoveMenu
+              currentStatus={task.status}
+              onMove={(newStatus) => onMove(task.id, newStatus)}
+            />
+          )}
           {onDuplicate && (
             <button
               onClick={(e) => {
