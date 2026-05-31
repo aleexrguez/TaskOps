@@ -338,6 +338,225 @@ describe('useUpdateChecklistItem', () => {
 
     expect(result.current.error).toEqual(new Error('Update failed'));
   });
+
+  describe('optimistic updates', () => {
+    it('optimistically updates the items cache on toggle', async () => {
+      const items = [
+        createMockChecklistItem({
+          id: 'item-1',
+          taskId: TASK_ID,
+          isCompleted: false,
+        }),
+        createMockChecklistItem({
+          id: 'item-2',
+          taskId: TASK_ID,
+          isCompleted: true,
+          position: 1,
+        }),
+      ];
+      (updateChecklistItem as ReturnType<typeof vi.fn>).mockReturnValue(
+        new Promise(() => {}),
+      );
+
+      const { Wrapper, queryClient } = createWrapper();
+      queryClient.setQueryData(checklistKeys.list(TASK_ID), items);
+
+      const { result } = renderHook(() => useUpdateChecklistItem(TASK_ID), {
+        wrapper: Wrapper,
+      });
+
+      result.current.mutate({ id: 'item-1', input: { isCompleted: true } });
+
+      await waitFor(() => {
+        const cached = queryClient.getQueryData<typeof items>(
+          checklistKeys.list(TASK_ID),
+        );
+        expect(cached?.find((i) => i.id === 'item-1')?.isCompleted).toBe(true);
+      });
+    });
+
+    it('optimistically updates the summaries cache on toggle', async () => {
+      const items = [
+        createMockChecklistItem({
+          id: 'item-1',
+          taskId: TASK_ID,
+          isCompleted: false,
+        }),
+      ];
+      const summaries = { [TASK_ID]: { total: 3, completed: 1 } };
+      (updateChecklistItem as ReturnType<typeof vi.fn>).mockReturnValue(
+        new Promise(() => {}),
+      );
+
+      const { Wrapper, queryClient } = createWrapper();
+      queryClient.setQueryData(checklistKeys.list(TASK_ID), items);
+      queryClient.setQueryData(checklistKeys.summaries(), summaries);
+
+      const { result } = renderHook(() => useUpdateChecklistItem(TASK_ID), {
+        wrapper: Wrapper,
+      });
+
+      result.current.mutate({ id: 'item-1', input: { isCompleted: true } });
+
+      await waitFor(() => {
+        const cached = queryClient.getQueryData<typeof summaries>(
+          checklistKeys.summaries(),
+        );
+        expect(cached?.[TASK_ID]?.completed).toBe(2);
+      });
+    });
+
+    it('rolls back items cache on error', async () => {
+      const items = [
+        createMockChecklistItem({
+          id: 'item-1',
+          taskId: TASK_ID,
+          isCompleted: false,
+        }),
+      ];
+      (updateChecklistItem as ReturnType<typeof vi.fn>).mockRejectedValue(
+        new Error('API error'),
+      );
+
+      const { Wrapper, queryClient } = createWrapper();
+      queryClient.setQueryData(checklistKeys.list(TASK_ID), items);
+
+      const { result } = renderHook(() => useUpdateChecklistItem(TASK_ID), {
+        wrapper: Wrapper,
+      });
+
+      result.current.mutate({ id: 'item-1', input: { isCompleted: true } });
+
+      await waitFor(() => expect(result.current.isError).toBe(true));
+
+      const cached = queryClient.getQueryData<typeof items>(
+        checklistKeys.list(TASK_ID),
+      );
+      expect(cached?.find((i) => i.id === 'item-1')?.isCompleted).toBe(false);
+    });
+
+    it('rolls back summaries cache on error', async () => {
+      const items = [
+        createMockChecklistItem({
+          id: 'item-1',
+          taskId: TASK_ID,
+          isCompleted: false,
+        }),
+      ];
+      const summaries = { [TASK_ID]: { total: 3, completed: 1 } };
+      (updateChecklistItem as ReturnType<typeof vi.fn>).mockRejectedValue(
+        new Error('API error'),
+      );
+
+      const { Wrapper, queryClient } = createWrapper();
+      queryClient.setQueryData(checklistKeys.list(TASK_ID), items);
+      queryClient.setQueryData(checklistKeys.summaries(), summaries);
+
+      const { result } = renderHook(() => useUpdateChecklistItem(TASK_ID), {
+        wrapper: Wrapper,
+      });
+
+      result.current.mutate({ id: 'item-1', input: { isCompleted: true } });
+
+      await waitFor(() => expect(result.current.isError).toBe(true));
+
+      const cached = queryClient.getQueryData<typeof summaries>(
+        checklistKeys.summaries(),
+      );
+      expect(cached?.[TASK_ID]?.completed).toBe(1);
+    });
+
+    it('does not update summaries when only title changes', async () => {
+      const items = [
+        createMockChecklistItem({
+          id: 'item-1',
+          taskId: TASK_ID,
+          isCompleted: false,
+        }),
+      ];
+      const summaries = { [TASK_ID]: { total: 3, completed: 1 } };
+      (updateChecklistItem as ReturnType<typeof vi.fn>).mockReturnValue(
+        new Promise(() => {}),
+      );
+
+      const { Wrapper, queryClient } = createWrapper();
+      queryClient.setQueryData(checklistKeys.list(TASK_ID), items);
+      queryClient.setQueryData(checklistKeys.summaries(), summaries);
+
+      const { result } = renderHook(() => useUpdateChecklistItem(TASK_ID), {
+        wrapper: Wrapper,
+      });
+
+      result.current.mutate({ id: 'item-1', input: { title: 'New title' } });
+
+      await waitFor(() => {
+        const cached = queryClient.getQueryData<typeof items>(
+          checklistKeys.list(TASK_ID),
+        );
+        expect(cached?.find((i) => i.id === 'item-1')?.title).toBe('New title');
+      });
+
+      const cachedSummaries = queryClient.getQueryData<typeof summaries>(
+        checklistKeys.summaries(),
+      );
+      expect(cachedSummaries?.[TASK_ID]?.completed).toBe(1);
+    });
+
+    it('cancels in-flight queries before optimistic update', async () => {
+      (updateChecklistItem as ReturnType<typeof vi.fn>).mockReturnValue(
+        new Promise(() => {}),
+      );
+
+      const { Wrapper, queryClient } = createWrapper();
+      const cancelSpy = vi.spyOn(queryClient, 'cancelQueries');
+
+      const { result } = renderHook(() => useUpdateChecklistItem(TASK_ID), {
+        wrapper: Wrapper,
+      });
+
+      result.current.mutate({ id: 'item-1', input: { isCompleted: true } });
+
+      await waitFor(() => expect(cancelSpy).toHaveBeenCalled());
+
+      expect(cancelSpy).toHaveBeenCalledWith({
+        queryKey: checklistKeys.list(TASK_ID),
+      });
+      expect(cancelSpy).toHaveBeenCalledWith({
+        queryKey: checklistKeys.summaries(),
+      });
+    });
+
+    it('clamps summary completed count between 0 and total', async () => {
+      const items = [
+        createMockChecklistItem({
+          id: 'item-1',
+          taskId: TASK_ID,
+          isCompleted: true,
+        }),
+      ];
+      const summaries = { [TASK_ID]: { total: 2, completed: 0 } };
+      (updateChecklistItem as ReturnType<typeof vi.fn>).mockReturnValue(
+        new Promise(() => {}),
+      );
+
+      const { Wrapper, queryClient } = createWrapper();
+      queryClient.setQueryData(checklistKeys.list(TASK_ID), items);
+      queryClient.setQueryData(checklistKeys.summaries(), summaries);
+
+      const { result } = renderHook(() => useUpdateChecklistItem(TASK_ID), {
+        wrapper: Wrapper,
+      });
+
+      result.current.mutate({ id: 'item-1', input: { isCompleted: false } });
+
+      await waitFor(() => {
+        const cached = queryClient.getQueryData<typeof summaries>(
+          checklistKeys.summaries(),
+        );
+        expect(cached?.[TASK_ID]?.completed).toBe(0);
+      });
+    });
+  });
 });
 
 // ---------------------------------------------------------------------------

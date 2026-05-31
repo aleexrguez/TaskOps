@@ -53,6 +53,7 @@ import {
   deleteTask,
   updateTask,
   fetchChecklistItems,
+  updateChecklistItem,
 } from '@/features/task-manager/api';
 
 const mockFetchTaskById = fetchTaskById as MockedFunction<typeof fetchTaskById>;
@@ -60,6 +61,9 @@ const mockDeleteTask = deleteTask as MockedFunction<typeof deleteTask>;
 const mockUpdateTask = updateTask as MockedFunction<typeof updateTask>;
 const mockFetchChecklistItems = fetchChecklistItems as MockedFunction<
   typeof fetchChecklistItems
+>;
+const mockUpdateChecklistItem = updateChecklistItem as MockedFunction<
+  typeof updateChecklistItem
 >;
 
 const mockTask: Task = {
@@ -452,5 +456,40 @@ describe('TaskDetailContainer', () => {
 
     // Checkbox should have been clicked (toggle fired)
     expect(checkbox).toBeInTheDocument();
+  });
+
+  it('shows error toast when checklist toggle fails', async () => {
+    const user = userEvent.setup();
+    mockFetchTaskById.mockResolvedValue(mockTask);
+    mockFetchChecklistItems.mockResolvedValue([
+      {
+        id: 'cl-1',
+        taskId: 'task-uuid-001',
+        title: 'Subtask A',
+        isCompleted: false,
+        position: 0,
+        createdAt: '2026-05-07T10:00:00.000Z',
+        updatedAt: '2026-05-07T10:00:00.000Z',
+      },
+    ]);
+    mockUpdateChecklistItem.mockRejectedValue(new Error('API error'));
+
+    renderWithProviders('task-uuid-001');
+
+    const checkbox = await screen.findByRole('checkbox', {
+      name: /mark "subtask a" as complete/i,
+    });
+    await user.click(checkbox);
+
+    await waitFor(() => {
+      const { toasts } = useToastStore.getState();
+      expect(
+        toasts.some(
+          (t) =>
+            t.type === 'error' &&
+            t.message === 'Failed to update checklist item',
+        ),
+      ).toBe(true);
+    });
   });
 });

@@ -13,7 +13,8 @@
     "duplicateFailed": "Error al duplicar la tarea",
     "archiveFailed": "Error al archivar la tarea",
     "unarchiveFailed": "Error al desarchivar la tarea",
-    "statusUpdateFailed": "Error al actualizar el estado"
+    "statusUpdateFailed": "Error al actualizar el estado",
+    "checklistToggleFailed": "Error al actualizar el elemento de la lista"
   },
   "modal": {
     "createTitle": "Nueva tarea",

@@ -7,7 +7,9 @@ import {
   deleteChecklistItem,
   reorderChecklistItems,
 } from '../api';
+import type { ChecklistSummaries } from '../api/checklist-api';
 import type {
+  ChecklistItem,
   CreateChecklistItemInput,
   UpdateChecklistItemInput,
   ReorderChecklistItem,
@@ -58,7 +60,68 @@ export function useUpdateChecklistItem(taskId: string) {
       id: string;
       input: UpdateChecklistItemInput;
     }) => updateChecklistItem(id, input),
-    onSuccess: () => {
+
+    onMutate: async ({ id, input }) => {
+      await queryClient.cancelQueries({
+        queryKey: checklistKeys.list(taskId),
+      });
+      await queryClient.cancelQueries({
+        queryKey: checklistKeys.summaries(),
+      });
+
+      const previousItems = queryClient.getQueryData<ChecklistItem[]>(
+        checklistKeys.list(taskId),
+      );
+      const previousSummaries = queryClient.getQueryData<ChecklistSummaries>(
+        checklistKeys.summaries(),
+      );
+
+      if (previousItems) {
+        queryClient.setQueryData<ChecklistItem[]>(
+          checklistKeys.list(taskId),
+          previousItems.map((item) =>
+            item.id === id ? { ...item, ...input } : item,
+          ),
+        );
+      }
+
+      if (previousSummaries && input.isCompleted !== undefined) {
+        const summary = previousSummaries[taskId];
+        if (summary) {
+          const delta = input.isCompleted ? 1 : -1;
+          const completed = Math.max(
+            0,
+            Math.min(summary.total, summary.completed + delta),
+          );
+          queryClient.setQueryData<ChecklistSummaries>(
+            checklistKeys.summaries(),
+            {
+              ...previousSummaries,
+              [taskId]: { ...summary, completed },
+            },
+          );
+        }
+      }
+
+      return { previousItems, previousSummaries };
+    },
+
+    onError: (_err, _vars, context) => {
+      if (context?.previousItems) {
+        queryClient.setQueryData(
+          checklistKeys.list(taskId),
+          context.previousItems,
+        );
+      }
+      if (context?.previousSummaries) {
+        queryClient.setQueryData(
+          checklistKeys.summaries(),
+          context.previousSummaries,
+        );
+      }
+    },
+
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: checklistKeys.list(taskId) });
       queryClient.invalidateQueries({
         queryKey: checklistKeys.summaries(),

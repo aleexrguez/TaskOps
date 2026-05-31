@@ -86,6 +86,9 @@ export function TaskDetailContainer() {
             recorder.recordChecklistItemCompleted(id, item.title);
           }
         },
+        onError: () => {
+          addToast(t('toast.checklistToggleFailed'), 'error');
+        },
       },
     );
   }
