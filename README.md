@@ -1,139 +1,192 @@
-# 🚀 TaskOps
+# TaskOps
 
-TaskOps is a modern SaaS-style task management application focused on **clean UX, real product behavior, and scalable architecture**.
+A production-grade task management application built with React 19 and TypeScript. TaskOps covers the full lifecycle of personal productivity: quick capture via inbox, structured task management with kanban boards, recurring task templates, analytics reports, and multi-language support — all backed by Supabase and deployed as a PWA.
 
-It is not a simple CRUD app — it’s designed as a production-ready system with advanced features like **kanban boards, recurring tasks, reminders, and persistent ordering**.
-
----
-
-## ✨ Features
-
-### 🧱 Core Task Management
-
-* Create, edit and delete tasks
-* Status workflow: `Todo`, `In Progress`, `Done`
-* Priority system (low, medium, high)
-* Due dates
-* Archive / unarchive tasks
-
-### 📊 Kanban Board
-
-* Drag & drop with smooth animations
-* Reordering within columns
-* Moving tasks across columns
-* Persistent ordering stored in database
-
-### 🔁 Recurring Tasks
-
-* Daily, weekly and monthly templates
-* Automatic task generation
-* Editable recurrence templates
-* Sync between template updates and active tasks
-
-### 🔔 Smart Reminders
-
-* Overdue / today / upcoming task detection
-* Toast notifications
-* Click → navigate to task
-* Temporary highlight system
-
-### 🎯 Task Detail UX
-
-* Inline editing (no modal clutter)
-* Clear action flow
-* Better user control
-
-### 🎨 UX & Accessibility
-
-* Fully interactive UI (pointer states everywhere)
-* Keyboard navigation support
-* Accessible labels (aria)
-* Dark / Light mode with persistence
+Live demo: https://taskops-project.vercel.app/
 
 ---
 
-## 🧠 Tech Stack
+## Features
 
-* **Frontend:** React 19 + TypeScript
-* **State Management:**
+### Authentication
 
-  * React Query (server state)
-  * Zustand (UI state)
-* **Styling:** TailwindCSS
-* **Testing:** Vitest + Testing Library
-* **Backend:** Supabase (Auth + Database)
-* **Architecture:** Feature-first + container/presentational
+- Login, register, forgot password, and reset password flows
+- Demo login — a read-only account for trying features without registering
+
+### Inbox
+
+- Quick capture input with a personalized greeting
+- Inline edit and delete for inbox items
+- Batch convert inbox items into tasks
+
+### Task Manager
+
+- Full CRUD with status workflow: `todo`, `in-progress`, `done`
+- Priority levels: low, medium, high
+- Due dates with countdown badge (overdue, today, upcoming)
+- List view with filters and full-text search
+- Board view (kanban) with drag and drop via @dnd-kit and an accessible board move menu as an alternative
+- Task detail view with checklist, activity timeline, and due date countdown
+- Archive and unarchive; auto-purge based on configurable retention policy
+- Overdue, today, and upcoming reminders delivered as toast notifications
+- Confetti animation on task completion
+
+### Reports
+
+- Weekly and monthly task analytics
+- Summary cards and breakdown by status
+
+### Recurrences
+
+- Templates for daily, weekly (multi-day), monthly (with lead time), and yearly recurrences
+- Automatic generation of task instances from templates
+- Grouped display by frequency
+
+### Settings
+
+- Theme: light, dark, or system
+- Language: English or Spanish (Rioplatense)
+- Data retention policy: 3 days to never
+- Due date reminders toggle
+- Animated background toggle
+
+### Account
+
+- Display name editor
+- Avatar upload and removal (Supabase Storage)
+- Change password
+- Delete account with confirmation dialog
+
+### Legal
+
+- Privacy Policy, Terms of Service, Cookie Policy, and Legal Notice pages
 
 ---
 
-## 🏗️ Architecture Highlights
+## Tech Stack
 
-* Strict separation between UI and logic
-* No server data in global state
-* Reusable hooks for domain logic
-* Optimistic updates for smooth UX
-* Clean domain modeling (tasks, recurrences, reminders)
-
----
-
-## 📸 Screenshots
-
-<img width="1886" height="1081" alt="image" src="https://github.com/user-attachments/assets/669db06e-c771-4568-93ba-66b986f8f8ac" />
-<img width="1909" height="1035" alt="image" src="https://github.com/user-attachments/assets/38f4a15f-aa0a-49b3-a914-e085b6a149fa" />
-<img width="1877" height="1033" alt="image" src="https://github.com/user-attachments/assets/e0592cc8-1091-4996-ac2a-5cb68c322e4c" />
-<img width="1885" height="1029" alt="image" src="https://github.com/user-attachments/assets/f0dac740-2d2b-46f0-995a-9ce28ac212f6" />
-
-
-
-
----
-
-## 🚀 Live Demo
-
-👉 [Pagina Web Desplegada](https://taskops-project.vercel.app/)
+| Category | Library | Version |
+|---|---|---|
+| UI | React | ^19.2.4 |
+| Language | TypeScript | ~5.9.3 |
+| Build tool | Vite | ^8.0.1 |
+| Routing | react-router-dom | ^7.13.2 |
+| Server state | @tanstack/react-query | ^5.96.0 |
+| UI state | Zustand | ^5.0.12 |
+| Validation / types | Zod | ^4.3.6 |
+| Styling | Tailwind CSS | ^4.2.2 |
+| Backend | @supabase/supabase-js | ^2.103.0 |
+| Drag and drop | @dnd-kit/core | ^6.3.1 |
+| Date picker | react-day-picker | ^10.0.0 |
+| Date utilities | date-fns | ^4.1.0 |
+| i18n | i18next + react-i18next | ^26.2.0 / ^17.0.8 |
+| PWA | vite-plugin-pwa | ^1.3.0 |
+| Confetti | canvas-confetti | ^1.9.4 |
+| Testing | Vitest | ^4.1.2 |
+| Testing | @testing-library/react | ^16.3.2 |
 
 ---
 
-## ⚙️ Setup
+## Architecture Highlights
+
+### Feature-first structure with a scope rule
+
+Code lives in `src/features/{name}/` by default. It moves to `src/shared/` only when two or more features need it. Cross-feature imports are only allowed through a feature's public barrel (`index.ts`), never from internal files.
+
+### Container/presentational pattern
+
+Containers own data fetching, state, and business logic. Presentational components receive props and return JSX — no direct store access, no API calls, no transformations.
+
+### Strict state separation
+
+React Query handles all server state (fetching, caching, mutations, optimistic updates with rollback). Zustand handles UI-only state that needs to be shared across unrelated components. These two concerns never mix.
+
+### Zod as single source of truth
+
+Domain types are derived from Zod schemas via `z.infer<>`. There are no duplicate manual type definitions alongside schemas.
+
+### Code splitting
+
+Protected routes (`/app/*`) are loaded with `React.lazy()` + `Suspense`. Heavy dependencies are isolated in their own chunks and never pulled into the initial bundle:
+
+| Dependency | Loads when |
+|---|---|
+| @dnd-kit/core | User opens board view |
+| react-day-picker | A date field is opened |
+| canvas-confetti | Task is marked done |
+
+### PWA
+
+A service worker is registered via `vite-plugin-pwa`. The app is installable and supports offline-first asset caching.
+
+### i18n
+
+Full English and Spanish (Rioplatense) support via `i18next`. Language preference is persisted in user settings.
+
+---
+
+## Screenshots
+
+Screenshots coming soon.
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 18 or later
+- A Supabase project (free tier works)
+
+### Clone and install
 
 ```bash
-git clone https://github.com/your-repo/taskops.git
-cd taskops
+git clone https://github.com/aleexrguez/TaskOps.git
+cd TaskOps
 npm install
+```
+
+### Environment variables
+
+Create a `.env` file at the project root:
+
+```env
+VITE_SUPABASE_URL=your_supabase_project_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+VITE_ANALYTICS_ENABLED=false
+```
+
+### Start the dev server
+
+```bash
 npm run dev
 ```
 
 ---
 
-## 🔐 Environment Variables
+## Scripts
 
-Create a `.env` file:
-
-```env
-VITE_SUPABASE_URL=your_url
-VITE_SUPABASE_ANON_KEY=your_key
-```
-
----
-
-## 🧪 Tests
-
-```bash
-npm run test
-npm run lint
-npm run build
-```
+| Command | Description |
+|---|---|
+| `npm run dev` | Start Vite dev server |
+| `npm run build` | Type-check + production build |
+| `npm run test` | Run all tests with Vitest |
+| `npm run test:watch` | Run tests in watch mode |
+| `npm run lint` | Run ESLint |
+| `npm run lint:fix` | Run ESLint with auto-fix |
+| `npm run format` | Format source files with Prettier |
+| `npm run format:check` | Check formatting without writing |
 
 ---
 
 ## Analytics
 
-TaskOps uses a custom Supabase-based analytics system. Events are stored in the `analytics_events` table (append-only, queryable via Supabase dashboard with `service_role`).
+TaskOps uses a custom Supabase-based analytics system. Events are stored in the `analytics_events` table (append-only). The table is queryable via the Supabase dashboard using the `service_role` key.
 
 ### Tracked events
 
 | Event | Description |
-|-------|-------------|
+|---|---|
 | `landing_viewed` | Landing page visited |
 | `demo_started` | User navigates to demo login |
 | `auth_modal_opened` | Login or register page visited |
@@ -144,28 +197,28 @@ TaskOps uses a custom Supabase-based analytics system. Events are stored in the 
 | `recurrence_viewed` | Recurrences page visited |
 | `inbox_task_created` | Inbox item created |
 
-### What is NOT tracked
+### What is not tracked
 
-* Task content, titles, or descriptions
-* Email addresses or user names
-* No cookies or localStorage used for tracking
-* No external analytics vendor or third-party SDK
+- Task content, titles, or descriptions
+- Email addresses or display names
+- No cookies used for tracking
+- No external analytics vendor or third-party SDK
 
 ### Activation
 
-Analytics is disabled by default. To enable it, set the environment variable:
+Analytics is disabled by default. To enable it:
 
 ```env
 VITE_ANALYTICS_ENABLED=true
 ```
 
-To exclude your own browser in production (internal traffic):
+To opt out your own browser in production (suppress internal traffic):
 
 ```js
 localStorage.setItem('taskops.analytics.optOut', 'true')
 ```
 
-To re-enable analytics in your browser:
+To re-enable:
 
 ```js
 localStorage.removeItem('taskops.analytics.optOut')
@@ -173,40 +226,42 @@ localStorage.removeItem('taskops.analytics.optOut')
 
 ### Privacy note
 
-`user_id` (an opaque UUID set server-side via `auth.uid()`) is stored as a pseudonymous identifier for authenticated users. This should be disclosed in privacy policy and legal documentation. No direct PII is collected by the analytics system.
+`user_id` is stored as an opaque UUID assigned server-side via `auth.uid()`. It is a pseudonymous identifier — no direct PII is collected by the analytics system. This is disclosed in the Privacy Policy and Legal Notice pages of the application.
 
 ---
 
-## 🛣️ Roadmap
+## Navigation
 
-### V2
-
-* Code splitting & performance improvements
-* i18n (EN / ES)
-* Projects / Workspaces
-* Activity history
-
-### V3
-
-* Task sharing & permissions
-* Roles (viewer, editor, owner)
-
-### V4
-
-* AI features (task breakdown, priority suggestions)
-
----
-
-## 🧠 Why this project?
-
-This project was built to:
-
-* simulate a real SaaS product
-* apply production-level architecture
-* focus on UX decisions, not just features
+| Path | Description |
+|---|---|
+| `/` | Landing page |
+| `/login` | Login |
+| `/register` | Register |
+| `/forgot-password` | Forgot password |
+| `/reset-password` | Reset password (from email link) |
+| `/demo` | Demo login |
+| `/privacy` | Privacy Policy |
+| `/terms` | Terms of Service |
+| `/cookies` | Cookie Policy |
+| `/legal` | Legal Notice |
+| `/app/inbox` | Inbox (quick capture) |
+| `/app/tasks` | Task list and board view |
+| `/app/tasks/:id` | Task detail |
+| `/app/recurrences` | Recurrence templates |
+| `/app/reports` | Analytics reports |
+| `/app/settings` | User preferences |
+| `/app/account` | Profile and account management |
 
 ---
 
-## 📄 License
+## Roadmap
+
+- Projects and workspaces — group tasks by project with shared context
+- Task sharing and permissions — viewer, editor, and owner roles
+- AI features — task breakdown suggestions and priority recommendations
+
+---
+
+## License
 
 MIT
