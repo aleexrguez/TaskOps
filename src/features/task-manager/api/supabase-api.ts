@@ -88,6 +88,34 @@ export async function createTask(input: CreateTaskInput): Promise<Task> {
   return fromDbRow(data);
 }
 
+export async function createTaskWithChecklist(
+  input: CreateTaskInput,
+  checklistTitles: string[],
+): Promise<Task> {
+  const task = await createTask(input);
+
+  if (checklistTitles.length > 0) {
+    const userId = await requireAuthenticatedUser();
+    const rows = checklistTitles.map((title, i) => ({
+      task_id: task.id,
+      user_id: userId,
+      title,
+      position: i,
+    }));
+    const { error } = await supabase.from('checklist_items').insert(rows);
+    if (error) {
+      try {
+        await deleteTask(task.id);
+      } catch {
+        // Best-effort rollback — original checklist error still thrown below
+      }
+      throw new Error(error.message);
+    }
+  }
+
+  return task;
+}
+
 export async function updateTask(
   id: string,
   input: UpdateTaskInput,

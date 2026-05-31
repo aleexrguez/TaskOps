@@ -3,14 +3,16 @@ import {
   fetchTasks,
   fetchTaskById,
   createTask,
+  createTaskWithChecklist,
   updateTask,
   deleteTask,
   reorderTasks,
 } from '../api';
 import type { CreateTaskRequest, UpdateTaskRequest } from '../api';
-import type { ReorderUpdate } from '../types';
+import type { CreateTaskWithChecklistInput, ReorderUpdate } from '../types';
 import { useAuth } from '@/features/auth/hooks';
 import { taskKeys } from './task.keys';
+import { checklistKeys } from './checklist.keys';
 
 export function useTasks() {
   const { user } = useAuth();
@@ -36,6 +38,21 @@ export function useCreateTask() {
     mutationFn: (input: CreateTaskRequest) => createTask(input),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: taskKeys.lists() });
+    },
+  });
+}
+
+export function useCreateTaskWithChecklist() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      taskInput,
+      checklistTitles,
+    }: CreateTaskWithChecklistInput) =>
+      createTaskWithChecklist(taskInput, checklistTitles),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: taskKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: checklistKeys.summaries() });
     },
   });
 }

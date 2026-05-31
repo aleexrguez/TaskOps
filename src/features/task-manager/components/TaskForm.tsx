@@ -1,15 +1,22 @@
 import { useEffect, useRef, useState } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { CreateTaskInput, TaskStatus, TaskPriority } from '../types';
+import type {
+  CreateTaskInput,
+  CreateTaskWithChecklistInput,
+  TaskStatus,
+  TaskPriority,
+} from '../types';
 import { DatePicker } from '@/shared/components/DatePicker';
+import { DraftChecklistInput } from './DraftChecklistInput';
 
 interface TaskFormProps {
-  onSubmit: (data: CreateTaskInput) => void;
+  onSubmit: (data: CreateTaskWithChecklistInput) => void;
   initialValues?: Partial<CreateTaskInput>;
   isSubmitting?: boolean;
   submitLabel?: string;
   autoFocusTitle?: boolean;
+  enableChecklist?: boolean;
 }
 
 interface FormState {
@@ -36,12 +43,14 @@ export function TaskForm({
   isSubmitting = false,
   submitLabel = 'Submit',
   autoFocusTitle = false,
+  enableChecklist = false,
 }: TaskFormProps) {
   const { t } = useTranslation();
   const titleRef = useRef<HTMLInputElement>(null);
   const [fields, setFields] = useState<FormState>(() =>
     buildInitialState(initialValues),
   );
+  const [checklistItems, setChecklistItems] = useState<string[]>([]);
 
   useEffect(() => {
     if (autoFocusTitle) {
@@ -66,7 +75,7 @@ export function TaskForm({
     const normalizedDescription = fields.description?.trim() ?? '';
     payload.description = normalizedDescription;
     if (fields.dueDate) payload.dueDate = fields.dueDate;
-    onSubmit(payload);
+    onSubmit({ taskInput: payload, checklistTitles: checklistItems });
   }
 
   const inputClass =
@@ -152,6 +161,16 @@ export function TaskForm({
           }
         />
       </div>
+
+      {enableChecklist && (
+        <DraftChecklistInput
+          items={checklistItems}
+          onAdd={(title) => setChecklistItems((prev) => [...prev, title])}
+          onRemove={(index) =>
+            setChecklistItems((prev) => prev.filter((_, i) => i !== index))
+          }
+        />
+      )}
 
       <button
         type="submit"

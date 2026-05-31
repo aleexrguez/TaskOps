@@ -4,7 +4,7 @@ import { useTask, useUpdateTask } from '../hooks/use-tasks';
 import { useTaskUIStore } from '../store/task-ui.store';
 import { useToastStore } from '@/shared/store/toast.store';
 import { TaskForm } from '../components';
-import type { CreateTaskInput } from '../types';
+import type { CreateTaskWithChecklistInput } from '../types';
 import {
   celebrateTaskDone,
   getConfettiOriginFromElement,
@@ -37,17 +37,17 @@ export function EditTaskContainer() {
 
   if (!isOpen || !selectedTaskId) return null;
 
-  function handleSubmit(data: CreateTaskInput): void {
+  function handleSubmit(data: CreateTaskWithChecklistInput): void {
     if (!selectedTaskId) return;
     const previousStatus = task?.status;
     updateTask(
-      { id: selectedTaskId, input: data },
+      { id: selectedTaskId, input: data.taskInput },
       {
         onSuccess: () => {
           addToast(t('toast.updated'), 'success');
           closeEditModal();
           if (
-            data.status === 'done' &&
+            data.taskInput.status === 'done' &&
             previousStatus !== undefined &&
             previousStatus !== 'done'
           ) {

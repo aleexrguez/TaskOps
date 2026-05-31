@@ -17,6 +17,7 @@ export { SortableTaskCard } from './SortableTaskCard';
 export { ReminderToast } from './ReminderToast';
 export { ReminderContainer } from './ReminderContainer';
 export { Checklist } from './Checklist';
+export { DraftChecklistInput } from './DraftChecklistInput';
 export { ChecklistProgress } from './ChecklistProgress';
 export { DatePicker } from '@/shared/components/DatePicker';
 export { ReportSummaryCards } from './ReportSummaryCards';

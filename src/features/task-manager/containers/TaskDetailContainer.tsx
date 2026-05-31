@@ -29,7 +29,7 @@ import {
   formatFrequencyLabel,
 } from '@/features/recurrences/utils/recurrence.utils';
 import { useRecurrence } from '@/features/recurrences/hooks/use-recurrences';
-import type { CreateTaskInput } from '../types';
+import type { CreateTaskWithChecklistInput } from '../types';
 import { celebrateTaskDone } from '../utils/confetti';
 
 export function TaskDetailContainer() {
@@ -126,17 +126,17 @@ export function TaskDetailContainer() {
     setIsEditing(true);
   }
 
-  function handleSave(data: CreateTaskInput): void {
+  function handleSave(data: CreateTaskWithChecklistInput): void {
     if (!task) return;
     const previousStatus = task.status;
     updateTask(
-      { id: task.id, input: data },
+      { id: task.id, input: data.taskInput },
       {
         onSuccess: () => {
           addToast(t('toast.updated'), 'success');
           setIsEditing(false);
-          recorder.recordTaskUpdate(task.id, task, data);
-          if (data.status === 'done' && previousStatus !== 'done') {
+          recorder.recordTaskUpdate(task.id, task, data.taskInput);
+          if (data.taskInput.status === 'done' && previousStatus !== 'done') {
             celebrateTaskDone();
           }
         },
