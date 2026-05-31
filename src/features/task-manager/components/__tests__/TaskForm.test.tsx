@@ -39,8 +39,11 @@ describe('TaskForm — dueDate support', () => {
     await user.click(screen.getByRole('button', { name: /submit/i }));
 
     expect(onSubmit).toHaveBeenCalledOnce();
-    const payload = onSubmit.mock.calls[0][0] as Record<string, unknown>;
-    expect(payload.dueDate).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    const payload = onSubmit.mock.calls[0][0] as {
+      taskInput: Record<string, unknown>;
+      checklistTitles: string[];
+    };
+    expect(payload.taskInput.dueDate).toMatch(/^\d{4}-\d{2}-\d{2}$/);
   });
 
   it('does NOT include dueDate in submit payload when empty', async () => {
@@ -53,7 +56,7 @@ describe('TaskForm — dueDate support', () => {
 
     expect(onSubmit).toHaveBeenCalledOnce();
     const payload = onSubmit.mock.calls[0][0];
-    expect(payload.dueDate).toBeUndefined();
+    expect(payload.taskInput.dueDate).toBeUndefined();
   });
 });
 
@@ -68,7 +71,7 @@ describe('TaskForm — description normalization', () => {
     await user.click(screen.getByRole('button', { name: /submit/i }));
 
     expect(onSubmit).toHaveBeenCalledOnce();
-    expect(onSubmit.mock.calls[0][0].description).toBe('hello world');
+    expect(onSubmit.mock.calls[0][0].taskInput.description).toBe('hello world');
   });
 
   it('sends empty string when description is cleared', async () => {
@@ -87,7 +90,7 @@ describe('TaskForm — description normalization', () => {
     await user.click(screen.getByRole('button', { name: /submit/i }));
 
     expect(onSubmit).toHaveBeenCalledOnce();
-    expect(onSubmit.mock.calls[0][0].description).toBe('');
+    expect(onSubmit.mock.calls[0][0].taskInput.description).toBe('');
   });
 
   it('sends empty string when description has only spaces', async () => {
@@ -100,6 +103,66 @@ describe('TaskForm — description normalization', () => {
     await user.click(screen.getByRole('button', { name: /submit/i }));
 
     expect(onSubmit).toHaveBeenCalledOnce();
-    expect(onSubmit.mock.calls[0][0].description).toBe('');
+    expect(onSubmit.mock.calls[0][0].taskInput.description).toBe('');
+  });
+});
+
+describe('TaskForm — checklist section', () => {
+  it('does not render checklist section when enableChecklist is not passed', () => {
+    render(<TaskForm onSubmit={vi.fn()} />);
+    expect(screen.queryByText('Add checklist')).not.toBeInTheDocument();
+  });
+
+  it('renders checklist section when enableChecklist is true', () => {
+    render(<TaskForm onSubmit={vi.fn()} enableChecklist />);
+    expect(screen.getByText('Add checklist')).toBeInTheDocument();
+  });
+
+  it('includes empty checklistTitles in submit payload when no items added', async () => {
+    const user = userEvent.setup();
+    const onSubmit = vi.fn();
+    render(<TaskForm onSubmit={onSubmit} enableChecklist />);
+
+    await user.type(screen.getByLabelText(/title/i), 'My Task');
+    await user.click(screen.getByRole('button', { name: /submit/i }));
+
+    expect(onSubmit).toHaveBeenCalledOnce();
+    expect(onSubmit.mock.calls[0][0].checklistTitles).toEqual([]);
+  });
+
+  it('includes checklistTitles in submit payload when items added', async () => {
+    const user = userEvent.setup();
+    const onSubmit = vi.fn();
+    render(<TaskForm onSubmit={onSubmit} enableChecklist />);
+
+    await user.type(screen.getByLabelText(/title/i), 'My Task');
+    await user.click(screen.getByText('Add checklist'));
+    await user.type(
+      screen.getByLabelText(/new checklist item/i),
+      'Item 1{Enter}',
+    );
+    await user.type(
+      screen.getByLabelText(/new checklist item/i),
+      'Item 2{Enter}',
+    );
+    await user.click(screen.getByRole('button', { name: /submit/i }));
+
+    expect(onSubmit).toHaveBeenCalledOnce();
+    expect(onSubmit.mock.calls[0][0].checklistTitles).toEqual([
+      'Item 1',
+      'Item 2',
+    ]);
+  });
+
+  it('always sends checklistTitles even when enableChecklist is false', async () => {
+    const user = userEvent.setup();
+    const onSubmit = vi.fn();
+    render(<TaskForm onSubmit={onSubmit} />);
+
+    await user.type(screen.getByLabelText(/title/i), 'My Task');
+    await user.click(screen.getByRole('button', { name: /submit/i }));
+
+    expect(onSubmit).toHaveBeenCalledOnce();
+    expect(onSubmit.mock.calls[0][0].checklistTitles).toEqual([]);
   });
 });

@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useCreateTask } from '../hooks/use-tasks';
+import { useCreateTaskWithChecklist } from '../hooks/use-tasks';
 import { useTaskUIStore } from '../store/task-ui.store';
 import { useToastStore } from '@/shared/store/toast.store';
 import { TaskForm } from '../components';
-import type { CreateTaskInput } from '../types';
+import type { CreateTaskWithChecklistInput } from '../types';
 import { useActivityRecorder } from '../hooks/use-activity-recorder';
 import { trackEvent } from '@/shared/analytics';
 import { useScrollLock } from '@/shared/hooks/use-scroll-lock';
@@ -14,7 +14,12 @@ export function CreateTaskContainer() {
   const isOpen = useTaskUIStore((s) => s.isCreateModalOpen);
   const closeCreateModal = useTaskUIStore((s) => s.closeCreateModal);
   const addToast = useToastStore((s) => s.addToast);
-  const { mutate: createTask, isPending, isError, error } = useCreateTask();
+  const {
+    mutate: createTask,
+    isPending,
+    isError,
+    error,
+  } = useCreateTaskWithChecklist();
   const recorder = useActivityRecorder();
   useScrollLock(isOpen);
 
@@ -32,7 +37,7 @@ export function CreateTaskContainer() {
 
   if (!isOpen) return null;
 
-  function handleSubmit(data: CreateTaskInput): void {
+  function handleSubmit(data: CreateTaskWithChecklistInput): void {
     createTask(data, {
       onSuccess: (createdTask) => {
         addToast(t('toast.created'), 'success');
@@ -85,6 +90,7 @@ export function CreateTaskContainer() {
             isSubmitting={isPending}
             submitLabel={t('modal.submitCreate')}
             autoFocusTitle
+            enableChecklist
           />
         </div>
       </div>

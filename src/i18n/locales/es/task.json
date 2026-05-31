@@ -94,6 +94,15 @@
     "unknownStatus": "desconocido",
     "noneValue": "ninguno"
   },
+  "draftChecklist": {
+    "addChecklist": "Agregar checklist",
+    "hideChecklist": "Ocultar checklist",
+    "placeholder": "Item de checklist...",
+    "inputLabel": "Nuevo item de checklist",
+    "addItem": "Agregar item de checklist",
+    "items": "Items de checklist",
+    "removeItem": "Eliminar \"{{item}}\""
+  },
   "a11y": {
     "loadingTasks": "Cargando tareas",
     "loadingTaskDetails": "Cargando detalles de la tarea",

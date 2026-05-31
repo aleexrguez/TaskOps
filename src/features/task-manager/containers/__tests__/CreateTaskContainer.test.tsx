@@ -4,7 +4,7 @@ import { CreateTaskContainer } from '../CreateTaskContainer';
 import { useTaskUIStore } from '../../store/task-ui.store';
 
 vi.mock('../../hooks/use-tasks', () => ({
-  useCreateTask: () => ({
+  useCreateTaskWithChecklist: () => ({
     mutate: vi.fn(),
     isPending: false,
     isError: false,

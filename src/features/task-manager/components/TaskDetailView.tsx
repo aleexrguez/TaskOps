@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import type {
   CreateTaskInput,
+  CreateTaskWithChecklistInput,
   Task,
   TaskStatus,
   ChecklistItem,
@@ -22,7 +23,7 @@ interface TaskDetailViewProps {
   onEdit: () => void;
   onDelete: () => void;
   isEditing?: boolean;
-  onSave?: (data: CreateTaskInput) => void;
+  onSave?: (data: CreateTaskWithChecklistInput) => void;
   onCancel?: () => void;
   isSubmitting?: boolean;
   isRecurring?: boolean;

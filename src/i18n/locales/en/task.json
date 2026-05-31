@@ -94,6 +94,15 @@
     "unknownStatus": "unknown",
     "noneValue": "none"
   },
+  "draftChecklist": {
+    "addChecklist": "Add checklist",
+    "hideChecklist": "Hide checklist",
+    "placeholder": "Checklist item...",
+    "inputLabel": "New checklist item",
+    "addItem": "Add checklist item",
+    "items": "Checklist items",
+    "removeItem": "Remove \"{{item}}\""
+  },
   "a11y": {
     "loadingTasks": "Loading tasks",
     "loadingTaskDetails": "Loading task details",

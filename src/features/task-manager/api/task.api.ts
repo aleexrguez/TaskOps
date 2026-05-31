@@ -2,6 +2,7 @@ export {
   fetchTasks,
   fetchTaskById,
   createTask,
+  createTaskWithChecklist,
   updateTask,
   deleteTask,
   archiveTask,

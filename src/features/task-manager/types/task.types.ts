@@ -32,6 +32,11 @@ export const createTaskInputSchema = z.object({
 });
 export type CreateTaskInput = z.infer<typeof createTaskInputSchema>;
 
+export interface CreateTaskWithChecklistInput {
+  taskInput: CreateTaskInput;
+  checklistTitles: string[];
+}
+
 export const updateTaskInputSchema = createTaskInputSchema.partial();
 export type UpdateTaskInput = z.infer<typeof updateTaskInputSchema>;
 
