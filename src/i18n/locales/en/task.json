@@ -13,7 +13,8 @@
     "duplicateFailed": "Failed to duplicate task",
     "archiveFailed": "Failed to archive task",
     "unarchiveFailed": "Failed to unarchive task",
-    "statusUpdateFailed": "Failed to update status"
+    "statusUpdateFailed": "Failed to update status",
+    "checklistToggleFailed": "Failed to update checklist item"
   },
   "modal": {
     "createTitle": "New Task",
