@@ -54,7 +54,7 @@
     "selectDate": "Seleccionar fecha",
     "overdue": "Vencida",
     "dueToday": "Vence hoy",
-    "tomorrow": "Manana",
+    "tomorrow": "Mañana",
     "daysLeft_one": "{{count}} dia restante",
     "daysLeft_other": "{{count}} dias restantes",
     "datePickerCalendar": "Calendario de seleccion de fecha"
