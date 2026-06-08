@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { LandingPage } from '../LandingPage';
 
 function createWrapper() {
@@ -22,37 +22,10 @@ vi.mock('@/shared/hooks/use-apply-theme', () => ({
 }));
 
 describe('LandingPage — demo CTA', () => {
-  beforeEach(() => {
-    vi.stubEnv('VITE_DEMO_EMAIL', 'demo@test.com');
-  });
-
-  afterEach(() => {
-    vi.unstubAllEnvs();
-  });
-
-  it('renders "Try live demo" link pointing to /demo when VITE_DEMO_EMAIL is set', () => {
+  it('always renders "Try live demo" link pointing to /demo', () => {
     render(<LandingPage />, { wrapper: createWrapper() });
 
-    const links = screen.getAllByRole('link', { name: /try.*demo/i });
-    expect(links.length).toBeGreaterThanOrEqual(1);
-    links.forEach((link) => expect(link).toHaveAttribute('href', '/demo'));
-  });
-});
-
-describe('LandingPage — demo CTA hidden', () => {
-  beforeEach(() => {
-    vi.stubEnv('VITE_DEMO_EMAIL', '');
-  });
-
-  afterEach(() => {
-    vi.unstubAllEnvs();
-  });
-
-  it('does not render "Try live demo" link when VITE_DEMO_EMAIL is not set', () => {
-    render(<LandingPage />, { wrapper: createWrapper() });
-
-    expect(
-      screen.queryByRole('link', { name: /try.*demo/i }),
-    ).not.toBeInTheDocument();
+    const link = screen.getByRole('link', { name: /try.*demo/i });
+    expect(link).toHaveAttribute('href', '/demo');
   });
 });
